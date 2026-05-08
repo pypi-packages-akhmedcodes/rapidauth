@@ -37,7 +37,7 @@ from fastauth.schemas.auth import (
     UserBaseSchema,
 )
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 __all__ = [
     "FastAuth",
     # Decorators

@@ -2,11 +2,13 @@
 
 Commands
 --------
-fastauth init                         – scaffold .env.example + auth_config.py + main.py
-fastauth --default-setup sqlite       – generate database.py + models.py (Tortoise + SQLite)
-fastauth --default-setup sqlalchemy   – generate database.py + models.py (SQLAlchemy + SQLite)
-fastauth --default-setup postgresql   – generate database.py + models.py (SQLAlchemy + PostgreSQL)
-fastauth version                      – print version
+fastauth init                                    – scaffold .env.example + auth_config.py
+fastauth --default-setup sqlite     [--async|--sync]  – Tortoise async | SQLAlchemy sync + SQLite
+fastauth --default-setup sqlalchemy [--async|--sync]  – SQLAlchemy + SQLite (async or sync)
+fastauth --default-setup postgresql [--async|--sync]  – SQLAlchemy + PostgreSQL (async or sync)
+fastauth version                                 – print version
+
+Default mode when no flag given: --async
 """
 
 from __future__ import annotations
@@ -16,7 +18,7 @@ import sys
 import textwrap
 
 
-# ── Templates ─────────────────────────────────────────────────────────────────
+# ── Shared templates ──────────────────────────────────────────────────────────
 
 _ENV_EXAMPLE = textwrap.dedent("""\
     # FastAuth environment variables
@@ -32,12 +34,7 @@ _ENV_EXAMPLE = textwrap.dedent("""\
     EMAIL_PASS=yourpassword
     EMAIL_FROM=you@example.com
 
-    # Google OAuth (optional)
-    GOOGLE_CLIENT_ID=
-    GOOGLE_CLIENT_SECRET=
-    GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
-
-    # Database (PostgreSQL)
+    # Database
     DATABASE_URL=postgresql+asyncpg://user:password@localhost/dbname
 """)
 
@@ -54,10 +51,11 @@ _AUTH_CONFIG_PY = textwrap.dedent("""\
 """)
 
 
-# ── database.py templates ─────────────────────────────────────────────────────
+# ── ASYNC templates ───────────────────────────────────────────────────────────
 
-_DB_TORTOISE_SQLITE = textwrap.dedent("""\
-    # database.py  –  Tortoise ORM + SQLite
+# sqlite --async  →  Tortoise ORM + aiosqlite
+_DB_SQLITE_ASYNC = textwrap.dedent("""\
+    # database.py  –  Tortoise ORM + SQLite (async)
     from fastapi import FastAPI
     from tortoise.contrib.fastapi import register_tortoise
 
@@ -72,74 +70,8 @@ _DB_TORTOISE_SQLITE = textwrap.dedent("""\
         )
 """)
 
-_DB_SQLALCHEMY_SQLITE = textwrap.dedent("""\
-    # database.py  –  SQLAlchemy 2.x async + SQLite
-    import os
-    from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-    from sqlalchemy.orm import DeclarativeBase, sessionmaker
-
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./app.db")
-
-    engine = create_async_engine(DATABASE_URL, echo=False)
-    AsyncSessionLocal = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
-
-
-    class Base(DeclarativeBase):
-        pass
-
-
-    async def get_db():
-        async with AsyncSessionLocal() as session:
-            yield session
-
-
-    async def create_tables() -> None:
-        \"\"\"Call this on startup to create all tables.\"\"\"
-        async with engine.begin() as conn:
-            from models import User  # noqa: F401 – ensure model is registered
-            await conn.run_sync(Base.metadata.create_all)
-""")
-
-_DB_SQLALCHEMY_POSTGRES = textwrap.dedent("""\
-    # database.py  –  SQLAlchemy 2.x async + PostgreSQL
-    import os
-    from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-    from sqlalchemy.orm import DeclarativeBase, sessionmaker
-
-    DATABASE_URL = os.getenv(
-        "DATABASE_URL",
-        "postgresql+asyncpg://user:password@localhost/dbname",
-    )
-
-    engine = create_async_engine(DATABASE_URL, echo=False, pool_size=10, max_overflow=20)
-    AsyncSessionLocal = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
-
-
-    class Base(DeclarativeBase):
-        pass
-
-
-    async def get_db():
-        async with AsyncSessionLocal() as session:
-            yield session
-
-
-    async def create_tables() -> None:
-        \"\"\"Call this on startup to create all tables.\"\"\"
-        async with engine.begin() as conn:
-            from models import User  # noqa: F401 – ensure model is registered
-            await conn.run_sync(Base.metadata.create_all)
-""")
-
-
-# ── models.py templates ───────────────────────────────────────────────────────
-
 _MODELS_TORTOISE = textwrap.dedent("""\
-    # models.py  –  Tortoise ORM User model
+    # models.py  –  Tortoise ORM User model (async)
     from tortoise import fields
     from tortoise.models import Model
 
@@ -157,44 +89,12 @@ _MODELS_TORTOISE = textwrap.dedent("""\
 
         class Meta:
             table = "users"
-
-        def __str__(self) -> str:
-            return f"<User id={self.id} username={self.username}>"
 """)
 
-_MODELS_SQLALCHEMY = textwrap.dedent("""\
-    # models.py  –  SQLAlchemy 2.x User model
-    from typing import List, Optional
-    from sqlalchemy import Boolean, DateTime, Integer, String, func
-    from sqlalchemy.dialects.postgresql import JSONB
-    from sqlalchemy.types import JSON
-    from sqlalchemy.orm import Mapped, mapped_column
-
-    from database import Base
-
-
-    class User(Base):
-        __tablename__ = "users"
-
-        id:          Mapped[int]           = mapped_column(Integer, primary_key=True, index=True)
-        username:    Mapped[str]           = mapped_column(String(100), unique=True, index=True, nullable=False)
-        email:       Mapped[str]           = mapped_column(String(254), unique=True, index=True, nullable=False)
-        password:    Mapped[str]           = mapped_column(String(200), nullable=False)
-        is_active:   Mapped[bool]          = mapped_column(Boolean, default=True)
-        is_verified: Mapped[bool]          = mapped_column(Boolean, default=False)
-        roles:       Mapped[list]          = mapped_column(JSON, default=list)
-        permissions: Mapped[list]          = mapped_column(JSON, default=list)
-        created_at:  Mapped[DateTime]      = mapped_column(DateTime(timezone=True), server_default=func.now())
-
-        def __repr__(self) -> str:
-            return f"<User id={self.id} username={self.username}>"
-""")
-
-_MAIN_PY_TORTOISE = textwrap.dedent("""\
-    # main.py  –  FastAPI + FastAuth + Tortoise ORM
+_MAIN_SQLITE_ASYNC = textwrap.dedent("""\
+    # main.py  –  FastAPI + FastAuth + Tortoise ORM (async)
     from fastapi import Depends, FastAPI
     from fastauth import FastAuth
-    from fastauth.exceptions import PermissionDeniedError
     from database import init_db
     from models import User
 
@@ -203,7 +103,7 @@ _MAIN_PY_TORTOISE = textwrap.dedent("""\
 
     auth = FastAuth(
         user_model=User,
-        jwt_secret="change-me-min-32-chars-secret-key!!",
+        jwt_secret="super-secret-key-change-it",
     )
     app.include_router(auth.router)
 
@@ -215,8 +115,56 @@ _MAIN_PY_TORTOISE = textwrap.dedent("""\
         return {"id": user.id, "username": user.username, "email": user.email}
 """)
 
-_MAIN_PY_SQLALCHEMY = textwrap.dedent("""\
-    # main.py  –  FastAPI + FastAuth + SQLAlchemy
+# sqlalchemy --async  →  SQLAlchemy 2.x + aiosqlite
+_DB_SQLALCHEMY_ASYNC = textwrap.dedent("""\
+    # database.py  –  SQLAlchemy 2.x async + SQLite
+    import os
+    from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+    from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./app.db")
+    engine = create_async_engine(DATABASE_URL, echo=False)
+    AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+
+    class Base(DeclarativeBase):
+        pass
+
+
+    async def get_db():
+        async with AsyncSessionLocal() as session:
+            yield session
+
+
+    async def create_tables() -> None:
+        from models import User  # noqa: F401
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+""")
+
+_MODELS_SQLALCHEMY = textwrap.dedent("""\
+    # models.py  –  SQLAlchemy 2.x User model
+    from sqlalchemy import Boolean, DateTime, Integer, String, JSON, func
+    from sqlalchemy.orm import Mapped, mapped_column
+    from database import Base
+
+
+    class User(Base):
+        __tablename__ = "users"
+
+        id          : Mapped[int]  = mapped_column(Integer, primary_key=True, index=True)
+        username    : Mapped[str]  = mapped_column(String(100), unique=True, index=True)
+        email       : Mapped[str]  = mapped_column(String(254), unique=True, index=True)
+        password    : Mapped[str]  = mapped_column(String(200))
+        is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
+        is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
+        roles       : Mapped[list] = mapped_column(JSON, default=list)
+        permissions : Mapped[list] = mapped_column(JSON, default=list)
+        created_at               = mapped_column(DateTime(timezone=True), server_default=func.now())
+""")
+
+_MAIN_SQLALCHEMY_ASYNC = textwrap.dedent("""\
+    # main.py  –  FastAPI + FastAuth + SQLAlchemy (async)
     from contextlib import asynccontextmanager
     from fastapi import Depends, FastAPI
     from fastauth import FastAuth
@@ -234,7 +182,7 @@ _MAIN_PY_SQLALCHEMY = textwrap.dedent("""\
 
     auth = FastAuth(
         user_model=User,
-        jwt_secret="change-me-min-32-chars-secret-key!!",
+        jwt_secret="super-secret-key-change-it",
         get_db=get_db,
     )
     app.include_router(auth.router)
@@ -245,6 +193,162 @@ _MAIN_PY_SQLALCHEMY = textwrap.dedent("""\
     @app.get("/profile")
     async def profile(user: User = Depends(get_current_user)):
         return {"id": user.id, "username": user.username, "email": user.email}
+""")
+
+# postgresql --async  →  SQLAlchemy 2.x + asyncpg
+_DB_POSTGRESQL_ASYNC = textwrap.dedent("""\
+    # database.py  –  SQLAlchemy 2.x async + PostgreSQL
+    import os
+    from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+    from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+    DATABASE_URL = os.getenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://user:password@localhost/dbname",
+    )
+    engine = create_async_engine(DATABASE_URL, echo=False, pool_size=10, max_overflow=20)
+    AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+
+    class Base(DeclarativeBase):
+        pass
+
+
+    async def get_db():
+        async with AsyncSessionLocal() as session:
+            yield session
+
+
+    async def create_tables() -> None:
+        from models import User  # noqa: F401
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+""")
+
+
+# ── SYNC templates ────────────────────────────────────────────────────────────
+
+# sqlite --sync  →  SQLAlchemy sync + sqlite3
+_DB_SQLITE_SYNC = textwrap.dedent("""\
+    # database.py  –  SQLAlchemy sync + SQLite
+    # NOTE: sync sessions block the event loop.
+    # Use run_in_executor or switch to --async for production.
+    import os
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
+    engine = create_engine(DATABASE_URL, echo=False, connect_args={"check_same_thread": False})
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+    class Base(DeclarativeBase):
+        pass
+
+
+    def get_db():
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+
+    def create_tables() -> None:
+        from models import User  # noqa: F401
+        Base.metadata.create_all(bind=engine)
+""")
+
+_MODELS_SQLALCHEMY_SYNC = textwrap.dedent("""\
+    # models.py  –  SQLAlchemy User model (sync)
+    from sqlalchemy import Boolean, DateTime, Integer, String, JSON, func
+    from sqlalchemy.orm import Mapped, mapped_column
+    from database import Base
+
+
+    class User(Base):
+        __tablename__ = "users"
+
+        id          : Mapped[int]  = mapped_column(Integer, primary_key=True, index=True)
+        username    : Mapped[str]  = mapped_column(String(100), unique=True, index=True)
+        email       : Mapped[str]  = mapped_column(String(254), unique=True, index=True)
+        password    : Mapped[str]  = mapped_column(String(200))
+        is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
+        is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
+        roles       : Mapped[list] = mapped_column(JSON, default=list)
+        permissions : Mapped[list] = mapped_column(JSON, default=list)
+        created_at               = mapped_column(DateTime(timezone=True), server_default=func.now())
+""")
+
+_MAIN_SYNC = textwrap.dedent("""\
+    # main.py  –  FastAPI + FastAuth + SQLAlchemy (sync)
+    # NOTE: sync DB calls block the event loop.
+    # Wrap with run_in_executor or switch to --async for production.
+    from contextlib import asynccontextmanager
+    from fastapi import Depends, FastAPI
+    from fastauth import FastAuth
+    from database import create_tables, get_db
+    from models import User
+
+
+    @asynccontextmanager
+    async def lifespan(app):
+        create_tables()
+        yield
+
+
+    app = FastAPI(title="My App", lifespan=lifespan)
+
+    auth = FastAuth(
+        user_model=User,
+        jwt_secret="super-secret-key-change-it",
+        get_db=get_db,
+    )
+    app.include_router(auth.router)
+
+    get_current_user = auth.get_current_user()
+
+
+    @app.get("/profile")
+    async def profile(user: User = Depends(get_current_user)):
+        return {"id": user.id, "username": user.username, "email": user.email}
+""")
+
+# sqlalchemy --sync  →  SQLAlchemy sync + sqlite3  (same as sqlite --sync)
+_DB_SQLALCHEMY_SYNC = _DB_SQLITE_SYNC
+
+# postgresql --sync  →  SQLAlchemy sync + psycopg2
+_DB_POSTGRESQL_SYNC = textwrap.dedent("""\
+    # database.py  –  SQLAlchemy sync + PostgreSQL (psycopg2)
+    # NOTE: sync sessions block the event loop.
+    # Use run_in_executor or switch to --async for production.
+    import os
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+    DATABASE_URL = os.getenv(
+        "DATABASE_URL",
+        "postgresql+psycopg2://user:password@localhost/dbname",
+    )
+    engine = create_engine(DATABASE_URL, echo=False, pool_size=10, max_overflow=20)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+    class Base(DeclarativeBase):
+        pass
+
+
+    def get_db():
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+
+    def create_tables() -> None:
+        from models import User  # noqa: F401
+        Base.metadata.create_all(bind=engine)
 """)
 
 
@@ -268,9 +372,22 @@ def main() -> None:
 
     if args[0] == "--default-setup":
         if len(args) < 2:
-            print("Usage: fastauth --default-setup sqlite|sqlalchemy|postgresql")
+            print("Usage: fastauth --default-setup sqlite|sqlalchemy|postgresql [--async|--sync]")
             sys.exit(1)
-        _default_setup(args[1].lower())
+
+        backend = args[1].lower()
+
+        # Parse mode flag — default to async
+        mode = "async"
+        if len(args) >= 3:
+            flag = args[2].lstrip("-").lower()
+            if flag in ("async", "sync"):
+                mode = flag
+            else:
+                print(f"Unknown flag '{args[2]}'. Use --async or --sync.")
+                sys.exit(1)
+
+        _default_setup(backend, mode)
         return
 
     print(f"Unknown command: {args[0]}")
@@ -283,65 +400,91 @@ def _print_help() -> None:
         fastauth-framework CLI
 
         Commands:
-          fastauth init                          Scaffold .env.example, auth_config.py, main.py
-          fastauth --default-setup sqlite        Generate database.py + models.py (Tortoise + SQLite)
-          fastauth --default-setup sqlalchemy    Generate database.py + models.py (SQLAlchemy + SQLite)
-          fastauth --default-setup postgresql    Generate database.py + models.py (SQLAlchemy + PostgreSQL)
-          fastauth version                       Print version
+          fastauth init                                   Scaffold .env.example + auth_config.py
+          fastauth --default-setup sqlite   [--async]    Tortoise ORM + SQLite     (default: --async)
+          fastauth --default-setup sqlite   --sync       SQLAlchemy sync + SQLite
+          fastauth --default-setup sqlalchemy [--async]  SQLAlchemy async + SQLite (default: --async)
+          fastauth --default-setup sqlalchemy --sync     SQLAlchemy sync  + SQLite
+          fastauth --default-setup postgresql [--async]  SQLAlchemy async + PostgreSQL
+          fastauth --default-setup postgresql --sync     SQLAlchemy sync  + PostgreSQL (psycopg2)
+          fastauth version                               Print installed version
     """))
 
 
 def _init() -> None:
     cwd = os.getcwd()
-    files = {
-        ".env.example": _ENV_EXAMPLE,
-        "auth_config.py": _AUTH_CONFIG_PY,
-    }
-    for filename, content in files.items():
-        _write_if_missing(cwd, filename, content)
+    _write_if_missing(cwd, ".env.example", _ENV_EXAMPLE)
+    _write_if_missing(cwd, "auth_config.py", _AUTH_CONFIG_PY)
     print("\nNext steps:")
     print("  1. cp .env.example .env  and fill in your secrets")
-    print("  2. Run: fastauth --default-setup sqlite  (or sqlalchemy / postgresql)")
-    print("  3. Define your FastAPI app and call auth.router")
+    print("  2. fastauth --default-setup sqlite --async")
+    print("  3. uvicorn main:app --reload")
 
 
-def _default_setup(backend: str) -> None:
+def _default_setup(backend: str, mode: str) -> None:
     cwd = os.getcwd()
 
     if backend == "sqlite":
-        files = {
-            "database.py": _DB_TORTOISE_SQLITE,
-            "models.py": _MODELS_TORTOISE,
-            "main.py": _MAIN_PY_TORTOISE,
-        }
-        pip_hint = 'pip install "fastauth-framework[tortoise]" uvicorn[standard]'
+        if mode == "async":
+            files = {
+                "database.py": _DB_SQLITE_ASYNC,
+                "models.py":   _MODELS_TORTOISE,
+                "main.py":     _MAIN_SQLITE_ASYNC,
+            }
+            pip_hint = 'pip install "fastauth-framework[tortoise]" uvicorn[standard]'
+        else:
+            files = {
+                "database.py": _DB_SQLITE_SYNC,
+                "models.py":   _MODELS_SQLALCHEMY_SYNC,
+                "main.py":     _MAIN_SYNC,
+            }
+            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" uvicorn[standard]'
 
     elif backend == "sqlalchemy":
-        files = {
-            "database.py": _DB_SQLALCHEMY_SQLITE,
-            "models.py": _MODELS_SQLALCHEMY,
-            "main.py": _MAIN_PY_SQLALCHEMY,
-        }
-        pip_hint = 'pip install "fastauth-framework[sqlalchemy]" aiosqlite uvicorn[standard]'
+        if mode == "async":
+            files = {
+                "database.py": _DB_SQLALCHEMY_ASYNC,
+                "models.py":   _MODELS_SQLALCHEMY,
+                "main.py":     _MAIN_SQLALCHEMY_ASYNC,
+            }
+            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" aiosqlite uvicorn[standard]'
+        else:
+            files = {
+                "database.py": _DB_SQLALCHEMY_SYNC,
+                "models.py":   _MODELS_SQLALCHEMY_SYNC,
+                "main.py":     _MAIN_SYNC,
+            }
+            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" uvicorn[standard]'
 
     elif backend == "postgresql":
-        files = {
-            "database.py": _DB_SQLALCHEMY_POSTGRES,
-            "models.py": _MODELS_SQLALCHEMY,
-            "main.py": _MAIN_PY_SQLALCHEMY,
-        }
-        pip_hint = 'pip install "fastauth-framework[sqlalchemy]" asyncpg uvicorn[standard]'
+        if mode == "async":
+            files = {
+                "database.py": _DB_POSTGRESQL_ASYNC,
+                "models.py":   _MODELS_SQLALCHEMY,
+                "main.py":     _MAIN_SQLALCHEMY_ASYNC,
+            }
+            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" asyncpg uvicorn[standard]'
+        else:
+            files = {
+                "database.py": _DB_POSTGRESQL_SYNC,
+                "models.py":   _MODELS_SQLALCHEMY_SYNC,
+                "main.py":     _MAIN_SYNC,
+            }
+            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" psycopg2-binary uvicorn[standard]'
 
     else:
         print(f"Unknown backend '{backend}'. Choose: sqlite | sqlalchemy | postgresql")
         sys.exit(1)
 
+    label = f"{backend} --{mode}"
     for filename, content in files.items():
         _write_if_missing(cwd, filename, content)
 
-    print(f"\nSetup complete for '{backend}'.")
-    print(f"Install deps:  {pip_hint}")
-    print("Run server:    uvicorn main:app --reload")
+    print(f"\nSetup complete: {label}")
+    print(f"Install deps : {pip_hint}")
+    print("Run server   : uvicorn main:app --reload")
+    if mode == "sync":
+        print("NOTE         : sync DB calls block the event loop — use --async for production.")
 
 
 def _write_if_missing(cwd: str, filename: str, content: str) -> None:

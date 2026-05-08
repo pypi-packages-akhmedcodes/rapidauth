@@ -46,10 +46,23 @@ pip install "fastauth-framework[all]"
 The fastest way to get started:
 
 ```bash
-fastauth --default-setup sqlite       # Tortoise ORM + SQLite  → database.py + models.py + main.py
-fastauth --default-setup sqlalchemy   # SQLAlchemy + SQLite
-fastauth --default-setup postgresql   # SQLAlchemy + PostgreSQL
+# SQLite
+fastauth --default-setup sqlite              # Tortoise ORM + SQLite (async, default)
+fastauth --default-setup sqlite --async      # Tortoise ORM + SQLite (async)
+fastauth --default-setup sqlite --sync       # SQLAlchemy sync + SQLite
+
+# SQLAlchemy
+fastauth --default-setup sqlalchemy          # SQLAlchemy + SQLite (async, default)
+fastauth --default-setup sqlalchemy --async  # SQLAlchemy async + SQLite
+fastauth --default-setup sqlalchemy --sync   # SQLAlchemy sync  + SQLite
+
+# PostgreSQL
+fastauth --default-setup postgresql          # SQLAlchemy + PostgreSQL (async, default)
+fastauth --default-setup postgresql --async  # SQLAlchemy async + PostgreSQL (asyncpg)
+fastauth --default-setup postgresql --sync   # SQLAlchemy sync  + PostgreSQL (psycopg2)
 ```
+
+Each command generates: `database.py` + `models.py` + `main.py`
 
 ---
 
@@ -300,12 +313,28 @@ Same pattern for `github`, `discord`.
 ## CLI
 
 ```bash
-fastauth --default-setup sqlite       # generate database.py + models.py + main.py (Tortoise ORM)
-fastauth --default-setup sqlalchemy   # generate files for SQLAlchemy + SQLite
-fastauth --default-setup postgresql   # generate files for SQLAlchemy + PostgreSQL
-fastauth init                         # scaffold .env.example + auth_config.py
-fastauth version                      # print installed version
+# SQLite
+fastauth --default-setup sqlite              # Tortoise ORM async (default)
+fastauth --default-setup sqlite --async      # Tortoise ORM + aiosqlite
+fastauth --default-setup sqlite --sync       # SQLAlchemy sync + sqlite3
+
+# SQLAlchemy + SQLite
+fastauth --default-setup sqlalchemy          # async (default)
+fastauth --default-setup sqlalchemy --async  # SQLAlchemy async + aiosqlite
+fastauth --default-setup sqlalchemy --sync   # SQLAlchemy sync  + sqlite3
+
+# PostgreSQL
+fastauth --default-setup postgresql          # async (default)
+fastauth --default-setup postgresql --async  # SQLAlchemy async + asyncpg
+fastauth --default-setup postgresql --sync   # SQLAlchemy sync  + psycopg2
+
+# Other
+fastauth init                                # scaffold .env.example + auth_config.py
+fastauth version                             # print installed version
 ```
+
+> Default mode is `--async`. Use `--sync` only for simple scripts or prototypes —
+> sync DB calls block the FastAPI event loop.
 
 ---
 

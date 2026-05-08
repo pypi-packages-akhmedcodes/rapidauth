@@ -1050,21 +1050,81 @@ async def dashboard(user = Depends(auth.get_current_user())):
   <div class="container">
     <div class="section-label">CLI</div>
     <h2 class="section-title">fastauth command line</h2>
-    <p class="section-desc">Scaffold a new project or check your version in seconds.</p>
+    <p class="section-desc">
+      Scaffold a complete project in seconds. Every setup generates
+      <code>database.py</code> + <code>models.py</code> + <code>main.py</code>.
+      Default mode is <code>--async</code>.
+    </p>
 
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;margin-bottom:1.2rem">
+
+      <!-- SQLite -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-bottom:.8rem">
+          <i class="fi fi-sr-database"></i> SQLite
+        </div>
+        <div class="cli-list" style="gap:.5rem">
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup sqlite</span>
+            <span class="cli-desc">Tortoise ORM + aiosqlite <span style="color:var(--green);font-size:.75rem">(async, default)</span></span>
+          </div>
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup sqlite --async</span>
+            <span class="cli-desc">Tortoise ORM + aiosqlite</span>
+          </div>
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup sqlite --sync</span>
+            <span class="cli-desc">SQLAlchemy sync + sqlite3</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SQLAlchemy -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--yellow);margin-bottom:.8rem">
+          <i class="fi fi-sr-database"></i> SQLAlchemy
+        </div>
+        <div class="cli-list" style="gap:.5rem">
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup sqlalchemy</span>
+            <span class="cli-desc">SQLAlchemy async + aiosqlite <span style="color:var(--green);font-size:.75rem">(async, default)</span></span>
+          </div>
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup sqlalchemy --async</span>
+            <span class="cli-desc">SQLAlchemy async + aiosqlite</span>
+          </div>
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup sqlalchemy --sync</span>
+            <span class="cli-desc">SQLAlchemy sync + sqlite3</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PostgreSQL -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--primary);margin-bottom:.8rem">
+          <i class="fi fi-sr-database"></i> PostgreSQL
+        </div>
+        <div class="cli-list" style="gap:.5rem">
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup postgresql</span>
+            <span class="cli-desc">SQLAlchemy async + asyncpg <span style="color:var(--green);font-size:.75rem">(async, default)</span></span>
+          </div>
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup postgresql --async</span>
+            <span class="cli-desc">SQLAlchemy async + asyncpg</span>
+          </div>
+          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
+            <span class="cli-cmd">fastauth --default-setup postgresql --sync</span>
+            <span class="cli-desc">SQLAlchemy sync + psycopg2</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Other commands -->
     <div class="cli-list">
-      <div class="cli-item">
-        <span class="cli-cmd">fastauth --default-setup sqlite</span>
-        <span class="cli-desc">Generate <code>database.py</code> + <code>models.py</code> + <code>main.py</code> for Tortoise ORM + SQLite</span>
-      </div>
-      <div class="cli-item">
-        <span class="cli-cmd">fastauth --default-setup sqlalchemy</span>
-        <span class="cli-desc">Generate files for SQLAlchemy async + SQLite</span>
-      </div>
-      <div class="cli-item">
-        <span class="cli-cmd">fastauth --default-setup postgresql</span>
-        <span class="cli-desc">Generate files for SQLAlchemy async + PostgreSQL</span>
-      </div>
       <div class="cli-item">
         <span class="cli-cmd">fastauth init</span>
         <span class="cli-desc">Scaffold <code>.env.example</code> and <code>auth_config.py</code></span>
@@ -1074,6 +1134,12 @@ async def dashboard(user = Depends(auth.get_current_user())):
         <span class="cli-desc">Print installed fastauth-framework version</span>
       </div>
     </div>
+
+    <p style="margin-top:1rem;font-size:.83rem;color:var(--text-faint)">
+      <i class="fi fi-sr-info"></i>
+      <strong style="color:var(--yellow)">--sync</strong> mode generates synchronous DB code.
+      Sync calls block the FastAPI event loop — use <strong style="color:var(--green)">--async</strong> for production.
+    </p>
   </div>
 </section>
 
