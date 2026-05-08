@@ -50,10 +50,15 @@ def build_router(
     router = APIRouter(prefix=settings.router_prefix, tags=settings.router_tags)
 
     # ── Dependency: extra kwargs (e.g., db session) ──────────────────────────
-    async def get_extra() -> Dict[str, Any]:
-        if extra_kwargs_factory is None:
+    # extra_kwargs_factory is a FastAPI dependency (may be a generator / async
+    # generator for SQLAlchemy sessions).  We must route it through Depends()
+    # so FastAPI handles the full generator lifecycle — never call it directly.
+    if extra_kwargs_factory is not None:
+        async def get_extra(db=Depends(extra_kwargs_factory)) -> Dict[str, Any]:
+            return {"session": db}
+    else:
+        async def get_extra() -> Dict[str, Any]:  # type: ignore[misc]
             return {}
-        return await extra_kwargs_factory() if callable(extra_kwargs_factory) else {}
 
     # ── Dependency: get current user from Bearer token ────────────────────────
     async def get_current_user(

@@ -201,6 +201,7 @@ class FastAuth:
         )
 
         self._base_url = base_url
+        self._get_db = get_db  # stored so get_current_user() can inject it
 
     # ── Public API ────────────────────────────────────────────────────────────
 
@@ -226,18 +227,36 @@ class FastAuth:
         """
         jwt_handler = self._jwt
         manager = self._manager
+        get_db = self._get_db  # may be None (Tortoise) or a generator dep (SQLAlchemy)
 
-        async def _dep(
-            creds: Optional[HTTPAuthorizationCredentials] = Depends(_bearer),
-        ) -> Any:
-            token = creds.credentials if creds else None
-            if token is None:
-                raise TokenInvalidError()
-            payload = jwt_handler.decode_access(token)
-            user = await manager.get_by_id(payload["sub"])
-            if user is None:
-                raise UserNotFoundError()
-            return user
+        if get_db is not None:
+            # SQLAlchemy / SQLModel: inject session via Depends so FastAPI
+            # handles the generator lifecycle correctly (no direct await).
+            async def _dep(
+                creds: Optional[HTTPAuthorizationCredentials] = Depends(_bearer),
+                db=Depends(get_db),
+            ) -> Any:
+                token = creds.credentials if creds else None
+                if token is None:
+                    raise TokenInvalidError()
+                payload = jwt_handler.decode_access(token)
+                user = await manager.get_by_id(payload["sub"], session=db)
+                if user is None:
+                    raise UserNotFoundError()
+                return user
+        else:
+            # Tortoise ORM / generic: no session needed.
+            async def _dep(  # type: ignore[misc]
+                creds: Optional[HTTPAuthorizationCredentials] = Depends(_bearer),
+            ) -> Any:
+                token = creds.credentials if creds else None
+                if token is None:
+                    raise TokenInvalidError()
+                payload = jwt_handler.decode_access(token)
+                user = await manager.get_by_id(payload["sub"])
+                if user is None:
+                    raise UserNotFoundError()
+                return user
 
         return _dep
 
