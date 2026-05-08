@@ -427,6 +427,7 @@
     <a href="#endpoints">API</a>
     <a href="#cli">CLI</a>
     <a href="#security">Security</a>
+    <a href="#email">Email</a>
     <a href="#config">Config</a>
   </div>
   <div class="nav-cta">
@@ -444,7 +445,7 @@
   <div class="hero-glow"></div>
 
   <div class="hero-badge">
-    <i class="fi fi-sr-star"></i> fastauth-framework 0.2.3 — Now on PyPI
+    <i class="fi fi-sr-star"></i> fastauth-framework 0.2.6 — Now on PyPI
   </div>
 
   <h1 class="hero-title">
@@ -1097,6 +1098,221 @@ async def dashboard(user = Depends(auth.get_current_user())):
 
 <div class="divider"></div>
 
+<!-- ── Email Setup ──────────────────────────────────────────────────────────── -->
+<section id="email">
+  <div class="container">
+    <div class="section-label">Email Setup</div>
+    <h2 class="section-title">Password reset &amp; email verification</h2>
+    <p class="section-desc">
+      Without email config the endpoints still work — but <strong>no email is sent</strong>.
+      Add the <code>email</code> dict and <code>base_url</code> to enable real delivery.
+    </p>
+
+    <!-- Quick config -->
+    <div style="margin-bottom:2.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
+        <i class="fi fi-sr-rocket-lunch" style="color:var(--primary)"></i> Minimal config
+      </div>
+      <div class="code-wrap">
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+        <pre><code class="language-python">auth = FastAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+
+    email={
+        "host":       "smtp.gmail.com",
+        "port":       587,
+        "username":   "you@gmail.com",
+        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password (16 chars)
+        "from_email": "you@gmail.com",
+        # optional:
+        "use_tls":    True,   # default True
+        "use_ssl":    False,  # default False (use True only for port 465)
+    },
+
+    base_url="https://myapp.com",         # used to build reset / verify links
+    email_verification_required=False,    # True → block login until email verified
+)</code></pre>
+      </div>
+    </div>
+
+    <!-- Gmail guide -->
+    <div style="margin-bottom:2.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
+        <i class="fi fi-brands-google" style="color:var(--red)"></i> Gmail — App Password (required)
+      </div>
+      <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem;font-size:.88rem;color:var(--text-muted)">
+        <i class="fi fi-sr-info" style="color:var(--yellow)"></i>
+        Gmail blocks plain account passwords for SMTP. You must use an <strong style="color:var(--yellow)">App Password</strong>.
+      </div>
+      <div class="cli-list" style="gap:.6rem">
+        <div class="cli-item" style="align-items:flex-start;gap:1rem">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">1</div>
+          <span class="cli-desc">Go to <strong style="color:var(--text)">myaccount.google.com</strong> → <strong style="color:var(--text)">Security</strong></span>
+        </div>
+        <div class="cli-item" style="align-items:flex-start;gap:1rem">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">2</div>
+          <span class="cli-desc">Enable <strong style="color:var(--text)">2-Step Verification</strong> (required before App Passwords appear)</span>
+        </div>
+        <div class="cli-item" style="align-items:flex-start;gap:1rem">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">3</div>
+          <span class="cli-desc">Go to <strong style="color:var(--text)">Security</strong> → search <strong style="color:var(--text)">"App passwords"</strong></span>
+        </div>
+        <div class="cli-item" style="align-items:flex-start;gap:1rem">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">4</div>
+          <span class="cli-desc">App: <strong style="color:var(--text)">Mail</strong> / Device: <strong style="color:var(--text)">Other</strong> → name it <code>fastauth</code> → click <strong style="color:var(--text)">Generate</strong></span>
+        </div>
+        <div class="cli-item" style="align-items:flex-start;gap:1rem">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">5</div>
+          <span class="cli-desc">Copy the <strong style="color:var(--green)">16-character password</strong> (spaces are OK) → paste as <code>"password"</code> in your config</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMTP providers table -->
+    <div style="margin-bottom:2.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
+        <i class="fi fi-sr-envelope" style="color:var(--cyan)"></i> SMTP providers
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Provider</th><th>host</th><th>port</th><th>Note</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Gmail</td><td class="ep">smtp.gmail.com</td><td class="ep">587</td><td>App Password required</td></tr>
+            <tr><td>Outlook / Hotmail</td><td class="ep">smtp.office365.com</td><td class="ep">587</td><td>Regular password</td></tr>
+            <tr><td>Yahoo Mail</td><td class="ep">smtp.mail.yahoo.com</td><td class="ep">587</td><td>App Password required</td></tr>
+            <tr><td>Yandex</td><td class="ep">smtp.yandex.com</td><td class="ep">587</td><td>—</td></tr>
+            <tr><td>Mailgun</td><td class="ep">smtp.mailgun.org</td><td class="ep">587</td><td>SMTP credentials from dashboard</td></tr>
+            <tr><td>SendGrid</td><td class="ep">smtp.sendgrid.net</td><td class="ep">587</td><td>username=<code>apikey</code>, password=API key</td></tr>
+            <tr><td>Amazon SES</td><td class="ep">email-smtp.&lt;region&gt;.amazonaws.com</td><td class="ep">587</td><td>SMTP credentials from AWS Console</td></tr>
+            <tr><td>Custom VPS</td><td class="ep">your-domain.com</td><td class="ep">25 / 587 / 465</td><td>port 465 → <code>use_ssl: True</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Flow diagrams -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:1.2rem;margin-bottom:2.5rem">
+
+      <!-- Reset flow -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem">
+        <div style="font-weight:700;font-size:.95rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <i class="fi fi-sr-key" style="color:var(--yellow)"></i> Password reset flow
+        </div>
+        <div class="cli-list" style="gap:.5rem">
+          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
+            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
+            <div style="font-size:.83rem">
+              <code>/auth/reset-password</code> — <span style="color:var(--text-muted)">send email address</span><br>
+              <span style="color:var(--text-faint);font-size:.78rem">→ FastAuth creates token (1 hour expiry), sends email</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;padding-left:1rem;color:var(--text-faint);font-size:.8rem">
+            <i class="fi fi-sr-arrow-down"></i>&nbsp; user clicks link in email
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
+            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
+            <div style="font-size:.83rem">
+              <code>/auth/reset-password/confirm</code><br>
+              <code style="color:var(--text-muted);font-size:.78rem">{"token": "...", "new_password": "..."}</code><br>
+              <span style="color:var(--text-faint);font-size:.78rem">→ password updated, token invalidated</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:.8rem;font-size:.78rem;color:var(--text-faint)">
+          <i class="fi fi-sr-shield-check" style="color:var(--green)"></i>
+          Always returns 200 even if email not found (anti-enumeration)
+        </div>
+      </div>
+
+      <!-- Verify flow -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem">
+        <div style="font-weight:700;font-size:.95rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+          <i class="fi fi-sr-envelope-check" style="color:var(--cyan)"></i> Email verification flow
+        </div>
+        <div class="cli-list" style="gap:.5rem">
+          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
+            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
+            <div style="font-size:.83rem">
+              <code>/auth/register</code><br>
+              <span style="color:var(--text-faint);font-size:.78rem">→ account created, verification email sent</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;padding-left:1rem;color:var(--text-faint);font-size:.8rem">
+            <i class="fi fi-sr-arrow-down"></i>&nbsp; user clicks link in email (24h expiry)
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
+            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
+            <div style="font-size:.83rem">
+              <code>/auth/verify-email</code> — <code style="color:var(--text-muted);font-size:.78rem">{"token": "..."}</code><br>
+              <span style="color:var(--text-faint);font-size:.78rem">→ email verified, login unblocked</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
+            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
+            <div style="font-size:.83rem">
+              <code>/auth/resend-verification</code> <span style="color:var(--primary);font-size:.75rem">🔒 Bearer</span><br>
+              <span style="color:var(--text-faint);font-size:.78rem">→ re-send verification email</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:.8rem;font-size:.78rem;color:var(--text-faint)">
+          <i class="fi fi-sr-info" style="color:var(--yellow)"></i>
+          Set <code>email_verification_required=True</code> to block login until verified
+        </div>
+      </div>
+    </div>
+
+    <!-- Email link format -->
+    <div style="margin-bottom:2.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
+        <i class="fi fi-sr-link" style="color:var(--primary)"></i> Email link format
+      </div>
+      <div class="code-wrap">
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+        <pre><code class="language-bash"># Password reset link (sent in email):
+{base_url}/auth/reset-password/confirm?token={token}
+# Example:
+https://myapp.com/auth/reset-password/confirm?token=abc123...
+
+# Email verification link (sent in email):
+{base_url}/auth/verify-email?token={token}
+# Example:
+https://myapp.com/auth/verify-email?token=xyz789...</code></pre>
+      </div>
+      <p style="margin-top:.75rem;font-size:.83rem;color:var(--text-muted)">
+        Your frontend reads <code>?token=</code> from the URL and calls the confirm endpoint.
+      </p>
+    </div>
+
+    <!-- Dev testing without SMTP -->
+    <div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
+        <i class="fi fi-sr-code-simple" style="color:var(--green)"></i> Testing without real SMTP
+      </div>
+      <div style="background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:var(--radius);padding:.9rem 1.2rem;margin-bottom:.9rem;font-size:.83rem;color:var(--text-muted)">
+        <i class="fi fi-sr-info" style="color:var(--green)"></i>
+        Add a dev-only endpoint to return the token directly. <strong style="color:var(--red)">Remove before production!</strong>
+      </div>
+      <div class="code-wrap">
+        <button class="code-copy" onclick="copyCode(this)">copy</button>
+        <pre><code class="language-python"># main.py — DEV ONLY, remove in production
+@app.post("/dev/reset-token")
+async def dev_get_reset_token(email: str):
+    token = await auth._manager.create_reset_token(email)
+    return {"token": token}
+
+# Usage: POST /dev/reset-token?email=user@example.com
+# Then:  POST /auth/reset-password/confirm  {"token": "...", "new_password": "..."}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- ── CLI ─────────────────────────────────────────────────────────────────── -->
 <section id="cli">
   <div class="container">
@@ -1336,7 +1552,7 @@ async def dashboard(user = Depends(auth.get_current_user())):
   <p class="footer-author">
     Built with ❤️ by
     <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a>
-    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.3
+    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.6
   </p>
 </footer>
 

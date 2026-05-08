@@ -304,6 +304,93 @@ async def home(request: Request):
 
 ---
 
+## Email Setup (Password Reset & Verification)
+
+Without email config the endpoints still work, but **no email is sent**.  
+To enable real email delivery, pass the `email` dict and set `base_url`.
+
+### Minimal config
+
+```python
+auth = FastAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+
+    email={
+        "host":       "smtp.gmail.com",
+        "port":       587,
+        "username":   "you@gmail.com",
+        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
+        "from_email": "you@gmail.com",
+    },
+
+    base_url="https://myapp.com",              # used in reset / verify links
+    email_verification_required=False,         # set True to block login until verified
+)
+```
+
+### Gmail — App Password (step by step)
+
+> Gmail blocks plain passwords for SMTP. You need an **App Password**.
+
+1. Go to **myaccount.google.com** → **Security**
+2. Enable **2-Step Verification** (required)
+3. Go to **Security** → **App passwords**
+4. Select app: **Mail** / device: **Other** → name it `fastauth`
+5. Copy the generated 16-character password → paste as `"password"` above
+
+### Other SMTP providers
+
+| Provider | host | port | note |
+|---|---|---|---|
+| Gmail | `smtp.gmail.com` | 587 | App Password required |
+| Outlook / Hotmail | `smtp.office365.com` | 587 | regular password |
+| Yahoo Mail | `smtp.mail.yahoo.com` | 587 | App Password required |
+| Yandex | `smtp.yandex.com` | 587 | — |
+| Mailgun | `smtp.mailgun.org` | 587 | SMTP credentials from dashboard |
+| SendGrid | `smtp.sendgrid.net` | 587 | username=`apikey`, password=API key |
+| Amazon SES | `email-smtp.<region>.amazonaws.com` | 587 | SMTP credentials from AWS Console |
+| Custom VPS | your server hostname | 25 / 587 / 465 | — |
+
+### Full password reset flow
+
+```
+1. User calls  POST /auth/reset-password       {"email": "user@example.com"}
+   → FastAuth creates a one-time token (expires in 1 hour)
+   → Sends an email with link: https://myapp.com/auth/reset-password/confirm?token=<token>
+   → Always returns 200 (no email enumeration)
+
+2. User clicks the link, your frontend reads the token from URL
+   → Calls  POST /auth/reset-password/confirm  {"token": "...", "new_password": "NewPass1!"}
+   → FastAuth verifies token, updates password, token is invalidated
+```
+
+### Email verification flow
+
+```
+1. User registers → FastAuth sends verification email (if email_verification_required=True)
+   → Link: https://myapp.com/auth/verify-email?token=<token>
+   → Token expires in 24 hours
+
+2. User clicks link → POST /auth/verify-email  {"token": "..."}
+   → Email marked as verified, login now allowed
+
+3. Re-send:  POST /auth/resend-verification  (requires Bearer token)
+```
+
+### Testing without real SMTP
+
+While developing, get the reset token directly from the manager:
+
+```python
+@app.post("/dev/reset-token")          # remove in production!
+async def dev_reset_token(email: str):
+    token = await auth._manager.create_reset_token(email)
+    return {"token": token}            # use this in /auth/reset-password/confirm
+```
+
+---
+
 ## Social Auth
 
 Adds OAuth2 routes automatically:
