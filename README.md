@@ -2,10 +2,11 @@
 
 **Professional plug-and-play authentication framework for FastAPI.**
 
-[![PyPI version](https://badge.fury.io/py/fastauth-framework.svg)](https://pypi.org/project/fastauth-framework/)
-[![Python](https://img.shields.io/pypi/pyversions/fastauth-framework)](https://pypi.org/project/fastauth-framework/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Author](https://img.shields.io/badge/author-akhmedcodes-blue)](https://beacons.ai/akhmedcodes)
+[![PyPI version](https://img.shields.io/pypi/v/fastauth-framework?color=6366f1&label=PyPI&style=flat-square)](https://pypi.org/project/fastauth-framework/)
+[![Python](https://img.shields.io/pypi/pyversions/fastauth-framework?color=22d3ee&style=flat-square)](https://pypi.org/project/fastauth-framework/)
+[![Downloads](https://img.shields.io/pypi/dm/fastauth-framework?color=34d399&style=flat-square)](https://pypi.org/project/fastauth-framework/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-fbbf24?style=flat-square)](LICENSE)
+[![Author](https://img.shields.io/badge/author-akhmedcodes-6366f1?style=flat-square)](https://beacons.ai/akhmedcodes)
 
 ---
 
@@ -33,6 +34,21 @@ pip install "fastauth-framework[tortoise]"
 
 # With SQLAlchemy / SQLModel:
 pip install "fastauth-framework[sqlalchemy]"
+
+# Everything:
+pip install "fastauth-framework[all]"
+```
+
+---
+
+## Quick Start — CLI scaffold
+
+The fastest way to get started:
+
+```bash
+fastauth --default-setup sqlite       # Tortoise ORM + SQLite  → database.py + models.py + main.py
+fastauth --default-setup sqlalchemy   # SQLAlchemy + SQLite
+fastauth --default-setup postgresql   # SQLAlchemy + PostgreSQL
 ```
 
 ---
@@ -63,20 +79,57 @@ async def profile(user=Depends(auth.get_current_user())):
     return {"username": user.username}
 ```
 
-**That's it.** You now have:
+**Auto-registered endpoints:**
 
-| Endpoint | Method |
-|---|---|
-| `/auth/register` | POST |
-| `/auth/login` | POST |
-| `/auth/me` | GET |
-| `/auth/refresh` | POST |
-| `/auth/logout` | POST |
-| `/auth/change-password` | POST |
-| `/auth/reset-password` | POST |
-| `/auth/reset-password/confirm` | POST |
-| `/auth/verify-email` | POST |
-| `/auth/revoke-all` | POST |
+| Endpoint | Method | Auth |
+|---|---|---|
+| `/auth/register` | POST | — |
+| `/auth/login` | POST | — |
+| `/auth/me` | GET | Bearer |
+| `/auth/refresh` | POST | Refresh token |
+| `/auth/logout` | POST | Bearer |
+| `/auth/change-password` | POST | Bearer |
+| `/auth/reset-password` | POST | — |
+| `/auth/reset-password/confirm` | POST | — |
+| `/auth/verify-email` | POST | — |
+| `/auth/revoke-all` | POST | Bearer |
+
+---
+
+## Tortoise ORM Example
+
+```python
+from fastapi import FastAPI, Depends
+from tortoise import fields
+from tortoise.contrib.fastapi import register_tortoise
+from tortoise.models import Model
+from fastauth import FastAuth
+
+class User(Model):
+    id          = fields.IntField(pk=True)
+    username    = fields.CharField(max_length=100, unique=True)
+    email       = fields.CharField(max_length=254, unique=True)
+    password    = fields.CharField(max_length=200)
+    is_active   = fields.BooleanField(default=True)
+    is_verified = fields.BooleanField(default=True)
+    roles       = fields.JSONField(default=list)
+
+    class Meta:
+        table = "users"
+
+app  = FastAPI()
+auth = FastAuth(user_model=User, jwt_secret="super-secret-key-32chars!!")
+app.include_router(auth.router)
+
+register_tortoise(app, db_url="sqlite://./app.db",
+                  modules={"models": ["__main__"]}, generate_schemas=True)
+
+get_current_user = auth.get_current_user()
+
+@app.get("/profile")
+async def profile(user: User = Depends(get_current_user)):
+    return {"id": user.id, "username": user.username}
+```
 
 ---
 
@@ -173,7 +226,7 @@ AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=F
 
 async def get_db():
     async with AsyncSessionLocal() as session:
-        yield session
+        yield session  # generator — FastAPI handles the lifecycle
 
 auth = FastAuth(
     user_model=User,
@@ -247,8 +300,11 @@ Same pattern for `github`, `discord`.
 ## CLI
 
 ```bash
-fastauth init        # scaffold .env.example + config + main.py
-fastauth version     # print version
+fastauth --default-setup sqlite       # generate database.py + models.py + main.py (Tortoise ORM)
+fastauth --default-setup sqlalchemy   # generate files for SQLAlchemy + SQLite
+fastauth --default-setup postgresql   # generate files for SQLAlchemy + PostgreSQL
+fastauth init                         # scaffold .env.example + auth_config.py
+fastauth version                      # print installed version
 ```
 
 ---
