@@ -307,15 +307,21 @@ async def home(request: Request):
 ## Email Setup (Password Reset & Verification)
 
 Without email config the endpoints still work, but **no email is sent**.  
-To enable real email delivery, pass the `email` dict and set `base_url`.
+To enable real delivery, pass the `email` dict, set `base_url` / `frontend_url`, and choose `verify_type`.
 
-### Minimal config
+### `verify_type` — backend vs frontend
+
+| `verify_type` | Email link points to | `GET /auth/verify-email?token=…` |
+|---|---|---|
+| `'backend'` (default) | `{base_url}/auth/verify-email?token=…` | Verifies token, shows **HTML success page** |
+| `'frontend'` | `{frontend_url}/auth/verify-email?token=…` | **Redirects** to frontend; frontend calls `POST /auth/verify-email` |
+
+### Backend mode (default) — full stack or API-only
 
 ```python
 auth = FastAuth(
     user_model=User,
     jwt_secret="your-secret",
-
     email={
         "host":       "smtp.gmail.com",
         "port":       587,
@@ -323,10 +329,70 @@ auth = FastAuth(
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
     },
-
-    base_url="https://myapp.com",              # used in reset / verify links
-    email_verification_required=False,         # set True to block login until verified
+    base_url="http://localhost:8000",          # backend URL (verify link points here)
+    verify_type="backend",                     # default
+    email_verification_required=True,
 )
+# Email link → GET http://localhost:8000/auth/verify-email?token=...
+# → FastAuth verifies token, shows HTML "Email Verified!" page
+```
+
+### Frontend mode — SPA (React, Vue, Next.js…)
+
+```python
+auth = FastAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+    email={
+        "host":       "smtp.gmail.com",
+        "port":       587,
+        "username":   "you@gmail.com",
+        "password":   "xxxx xxxx xxxx xxxx",
+        "from_email": "you@gmail.com",
+    },
+    base_url="https://api.domain.uz",          # your backend
+    frontend_url="https://domain.uz",          # your SPA
+    verify_type="frontend",
+    email_verification_required=True,
+)
+# Email link → GET https://domain.uz/auth/verify-email?token=...
+# → your frontend reads ?token= from URL
+# → calls POST https://api.domain.uz/auth/verify-email  {"token": "..."}
+```
+
+### Frontend flow (what your SPA does)
+
+```javascript
+// 1. User lands on /auth/verify-email?token=...
+const token = new URLSearchParams(window.location.search).get("token");
+
+// 2. Call backend to verify
+const res = await fetch("/auth/verify-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+});
+
+// 3. Show result
+const data = await res.json();
+console.log(data.message);  // "Email verified successfully"
+```
+
+### Password reset — frontend mode
+
+For password reset in frontend mode, the link points to:  
+`{frontend_url}/auth/reset-password?token=...`
+
+```javascript
+// 1. User lands on /auth/reset-password?token=...
+const token = new URLSearchParams(window.location.search).get("token");
+
+// 2. User enters new password, call backend
+await fetch("/auth/reset-password/confirm", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, new_password: "NewPass123!" }),
+});
 ```
 
 ### Gmail — App Password (step by step)

@@ -76,6 +76,19 @@ class FastAuthSettings(BaseModel):
     email_verification_required: bool = False
     enable_refresh_rotation: bool = True
 
+    # ── URL / redirect config ─────────────────────────────────────────────────
+    # base_url   : URL of THIS backend  (e.g. "http://localhost:8000")
+    # frontend_url: URL of the SPA/frontend (e.g. "https://domain.uz")
+    # verify_type: controls where email verification / reset links point
+    #   'backend'  → link = {base_url}/auth/verify-email?token=...
+    #                GET /auth/verify-email verifies token and shows HTML page
+    #   'frontend' → link = {frontend_url}/auth/verify-email?token=...
+    #                GET /auth/verify-email redirects to that frontend URL
+    #                frontend reads ?token= and calls POST /auth/verify-email
+    base_url: str = "http://localhost:8000"
+    frontend_url: Optional[str] = None
+    verify_type: Literal["backend", "frontend"] = "backend"
+
     # ── Router ───────────────────────────────────────────────────────────────
     router_prefix: str = "/auth"
     router_tags: List[str] = Field(default_factory=lambda: ["Authentication"])

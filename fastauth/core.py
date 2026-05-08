@@ -83,8 +83,14 @@ class FastAuth:
         router_tags: Optional[List[str]] = None,
         # ── Database (for SQLAlchemy) ─────────────────────────────────────────
         get_db: Optional[Callable] = None,
-        # ── Base URL for email links ──────────────────────────────────────────
+        # ── URL config ────────────────────────────────────────────────────────
+        # base_url    : URL of this backend API (for backend verify links)
+        # frontend_url: URL of your SPA/frontend (for frontend verify links)
+        # verify_type : 'backend' → GET /auth/verify-email verifies directly
+        #               'frontend' → GET /auth/verify-email redirects to frontend
         base_url: str = "http://localhost:8000",
+        frontend_url: Optional[str] = None,
+        verify_type: str = "backend",
         # ── Custom token store (e.g., Redis) ──────────────────────────────────
         token_store: Optional[Any] = None,
     ) -> None:
@@ -118,6 +124,9 @@ class FastAuth:
             rate_limit=RateLimitConfig(**(rate_limit or {})),
             email_verification_required=email_verification_required,
             enable_refresh_rotation=enable_refresh_rotation,
+            base_url=base_url,
+            frontend_url=frontend_url,
+            verify_type=verify_type,
             router_prefix=router_prefix,
             router_tags=router_tags or ["Authentication"],
         )
@@ -196,7 +205,6 @@ class FastAuth:
             rate_limiter=self._rate_limiter,
             email_sender=self._email,
             oauth_providers=self._oauth,
-            base_url=base_url,
             extra_kwargs_factory=get_db,
         )
 

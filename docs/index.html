@@ -445,7 +445,7 @@
   <div class="hero-glow"></div>
 
   <div class="hero-badge">
-    <i class="fi fi-sr-star"></i> fastauth-framework 0.2.6 — Now on PyPI
+    <i class="fi fi-sr-star"></i> fastauth-framework 0.2.7 — Now on PyPI
   </div>
 
   <h1 class="hero-title">
@@ -1105,17 +1105,51 @@ async def dashboard(user = Depends(auth.get_current_user())):
     <h2 class="section-title">Password reset &amp; email verification</h2>
     <p class="section-desc">
       Without email config the endpoints still work — but <strong>no email is sent</strong>.
-      Add the <code>email</code> dict and <code>base_url</code> to enable real delivery.
+      Add the <code>email</code> dict, set <code>base_url</code> / <code>frontend_url</code>,
+      and choose <code>verify_type</code>.
     </p>
 
-    <!-- Quick config -->
+    <!-- verify_type table -->
     <div style="margin-bottom:2.5rem">
       <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-sr-rocket-lunch" style="color:var(--primary)"></i> Minimal config
+        <i class="fi fi-sr-settings" style="color:var(--primary)"></i> <code>verify_type</code> — backend vs frontend
       </div>
-      <div class="code-wrap">
-        <button class="code-copy" onclick="copyCode(this)">copy</button>
-        <pre><code class="language-python">auth = FastAuth(
+      <div class="table-wrap" style="margin-bottom:1rem">
+        <table>
+          <thead>
+            <tr><th>verify_type</th><th>Email link points to</th><th>GET /auth/verify-email?token=…</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code style="color:var(--green)">'backend'</code> <span style="font-size:.72rem;color:var(--text-faint)">(default)</span></td>
+              <td class="ep">{base_url}/auth/verify-email?token=…</td>
+              <td>Verifies token, shows <strong style="color:var(--green)">HTML success page</strong></td>
+            </tr>
+            <tr>
+              <td><code style="color:var(--cyan)">'frontend'</code></td>
+              <td class="ep">{frontend_url}/auth/verify-email?token=…</td>
+              <td><strong style="color:var(--cyan)">302 redirect</strong> to frontend; frontend calls POST /auth/verify-email</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Config tabs: backend / frontend -->
+    <div style="margin-bottom:2.5rem">
+      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
+        <i class="fi fi-sr-rocket-lunch" style="color:var(--primary)"></i> Config
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchEmailTab(this,'email-backend')">Backend mode</div>
+        <div class="tab" onclick="switchEmailTab(this,'email-frontend')">Frontend mode (SPA)</div>
+        <div class="tab" onclick="switchEmailTab(this,'email-js')">Frontend JS snippet</div>
+      </div>
+
+      <div id="sub-email-backend">
+        <div class="code-wrap">
+          <button class="code-copy" onclick="copyCode(this)">copy</button>
+          <pre><code class="language-python">auth = FastAuth(
     user_model=User,
     jwt_secret="your-secret",
 
@@ -1123,16 +1157,74 @@ async def dashboard(user = Depends(auth.get_current_user())):
         "host":       "smtp.gmail.com",
         "port":       587,
         "username":   "you@gmail.com",
-        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password (16 chars)
+        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
-        # optional:
-        "use_tls":    True,   # default True
-        "use_ssl":    False,  # default False (use True only for port 465)
     },
 
-    base_url="https://myapp.com",         # used to build reset / verify links
-    email_verification_required=False,    # True → block login until email verified
-)</code></pre>
+    base_url="http://localhost:8000",     # backend URL (verify link points here)
+    verify_type="backend",               # default — GET /auth/verify-email verifies directly
+    email_verification_required=True,
+)
+# Email link → GET http://localhost:8000/auth/verify-email?token=...
+# FastAuth verifies token and shows HTML "Email Verified!" page ✅</code></pre>
+        </div>
+      </div>
+
+      <div id="sub-email-frontend" style="display:none">
+        <div class="code-wrap">
+          <button class="code-copy" onclick="copyCode(this)">copy</button>
+          <pre><code class="language-python">auth = FastAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+
+    email={
+        "host":       "smtp.gmail.com",
+        "port":       587,
+        "username":   "you@gmail.com",
+        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
+        "from_email": "you@gmail.com",
+    },
+
+    base_url="https://api.domain.uz",    # your FastAPI backend
+    frontend_url="https://domain.uz",    # your SPA / frontend
+    verify_type="frontend",
+    email_verification_required=True,
+)
+# Email link → GET https://domain.uz/auth/verify-email?token=...
+#              (redirected by FastAuth backend)
+# Frontend reads ?token= and calls POST /auth/verify-email {"token": "..."}</code></pre>
+        </div>
+      </div>
+
+      <div id="sub-email-js" style="display:none">
+        <div class="code-wrap">
+          <button class="code-copy" onclick="copyCode(this)">copy</button>
+          <pre><code class="language-python"># ── Email verification (frontend JS) ──────────────────────
+# User lands on https://domain.uz/auth/verify-email?token=...
+
+const token = new URLSearchParams(window.location.search).get("token");
+
+const res = await fetch("https://api.domain.uz/auth/verify-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+});
+const data = await res.json();
+// data.message === "Email verified successfully"
+
+# ── Password reset (frontend JS) ───────────────────────────
+# User lands on https://domain.uz/auth/reset-password?token=...
+
+const token = new URLSearchParams(window.location.search).get("token");
+
+const res = await fetch("https://api.domain.uz/auth/reset-password/confirm", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, new_password: "NewPass123!" }),
+});
+const data = await res.json();
+// data.message === "Password reset successfully"</code></pre>
+        </div>
       </div>
     </div>
 
@@ -1552,7 +1644,7 @@ async def dev_get_reset_token(email: str):
   <p class="footer-author">
     Built with ❤️ by
     <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a>
-    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.6
+    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.7
   </p>
 </footer>
 
@@ -1577,6 +1669,21 @@ async def dev_get_reset_token(email: str):
   });
 
   // Tab switching
+  function switchEmailTab(el, name) {
+    const section = el.closest('section');
+    section.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    ['sub-email-backend','sub-email-frontend','sub-email-js'].forEach(id => {
+      const el2 = document.getElementById(id);
+      if (el2) el2.style.display = 'none';
+    });
+    const target = document.getElementById('sub-' + name);
+    if (target) {
+      target.style.display = 'block';
+      if (window.hljs) target.querySelectorAll('code').forEach(b => { if (!b.dataset.highlighted) hljs.highlightElement(b); });
+    }
+  }
+
   function switchSubTab(el, name) {
     // async/sync sub-tabs inside the SQLAlchemy tab
     const parent = el.closest('.tab-content');

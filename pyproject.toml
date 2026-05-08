@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fastauth-framework"
-version = "0.2.6"
+version = "0.2.7"
 description = "Professional plug-and-play authentication framework for FastAPI"
 readme = "README.md"
 license = "MIT"
