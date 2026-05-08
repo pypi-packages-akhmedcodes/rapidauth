@@ -3,659 +3,411 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ── Primary SEO ─────────────────────────────────────────────────────── -->
   <title>FastAuth — Professional Authentication Framework for FastAPI</title>
-  <meta name="description"
-    content="FastAuth is a plug-and-play authentication framework for FastAPI. JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification, rate limiting — all in one pip install." />
-  <meta name="keywords"
-    content="fastauth, fastapi authentication, fastapi jwt, fastapi oauth2, python auth, fastapi security, fastapi login, fastapi register, fastapi rbac, fastapi refresh token" />
+  <meta name="description" content="FastAuth is a plug-and-play authentication framework for FastAPI. JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification, rate limiting." />
+  <meta name="keywords" content="fastauth, fastapi authentication, fastapi jwt, fastapi oauth2, python auth, fastapi security, fastapi login, fastapi rbac" />
   <meta name="author" content="akhmedcodes" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pypi-packages-akhmedcodes.github.io/fastauth-framework/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pypi-packages-akhmedcodes.github.io/fastauth-framework/" />
+  <meta property="og:title" content="FastAuth — Professional Authentication Framework for FastAPI" />
+  <meta property="og:description" content="Plug-and-play JWT, OAuth2, bcrypt, RBAC for FastAPI. One line. Full auth system." />
+  <meta property="og:site_name" content="FastAuth" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FastAuth — Auth Framework for FastAPI" />
+  <meta name="twitter:description" content="JWT, OAuth2, RBAC, bcrypt. pip install fastauth-framework" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FastAuth","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","description":"Professional plug-and-play authentication framework for FastAPI.","url":"https://pypi.org/project/fastauth-framework/","author":{"@type":"Person","name":"akhmedcodes","url":"https://beacons.ai/akhmedcodes"},"license":"https://opensource.org/licenses/MIT","programmingLanguage":"Python","codeRepository":"https://github.com/pypi-packages-akhmedcodes/fastauth-framework"}</script>
 
-  <!-- ── Open Graph (Facebook / LinkedIn) ──────────────────────────────── -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://pypi-packages-akhmedcodes.github.io/fastauth-framework/" />
-  <meta property="og:title"       content="FastAuth — Professional Authentication Framework for FastAPI" />
-  <meta property="og:description" content="Plug-and-play JWT, OAuth2, bcrypt, RBAC and more for FastAPI. One line. Full auth system." />
-  <meta property="og:image"       content="https://pypi-packages-akhmedcodes.github.io/fastauth-framework/og-image.png" />
-  <meta property="og:site_name"   content="FastAuth" />
-
-  <!-- ── Twitter Card ──────────────────────────────────────────────────── -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="FastAuth — Auth Framework for FastAPI" />
-  <meta name="twitter:description" content="JWT, OAuth2, RBAC, bcrypt, rate limiting. pip install fastauth-framework" />
-  <meta name="twitter:image"       content="https://pypi-packages-akhmedcodes.github.io/fastauth-framework/og-image.png" />
-  <meta name="twitter:creator"     content="@akhmedcodes" />
-
-  <!-- ── Favicon ───────────────────────────────────────────────────────── -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
-
-  <!-- ── Fonts ─────────────────────────────────────────────────────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- ── Flaticon Uicons ───────────────────────────────────────────────── -->
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css" />
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-brands/css/uicons-brands.css" />
-
-  <!-- ── Highlight.js ──────────────────────────────────────────────────── -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js" defer></script>
-
-  <!-- ── Structured Data (JSON-LD) ─────────────────────────────────────── -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "FastAuth",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Linux, macOS, Windows",
-    "description": "Professional plug-and-play authentication framework for FastAPI.",
-    "url": "https://pypi.org/project/fastauth-framework/",
-    "author": { "@type": "Person", "name": "akhmedcodes", "url": "https://beacons.ai/akhmedcodes" },
-    "license": "https://opensource.org/licenses/MIT",
-    "programmingLanguage": "Python",
-    "codeRepository": "https://github.com/pypi-packages-akhmedcodes/fastauth-framework"
-  }
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js" defer></script>
 
   <style>
-    /* ── Reset & Base ────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:          #0a0e1a;
-      --bg2:         #0f1525;
-      --bg3:         #161d30;
-      --border:      rgba(255,255,255,.07);
-      --primary:     #6366f1;
-      --primary-dk:  #4f46e5;
-      --cyan:        #22d3ee;
-      --green:       #34d399;
-      --yellow:      #fbbf24;
-      --red:         #f87171;
-      --text:        #e2e8f0;
-      --text-muted:  #94a3b8;
-      --text-faint:  #475569;
-      --radius:      14px;
-      --radius-sm:   8px;
-      --shadow:      0 4px 32px rgba(0,0,0,.4);
-      --glow:        0 0 40px rgba(99,102,241,.18);
+      --bg:#080c17; --bg2:#0d1220; --bg3:#131929; --bg4:#1a2133;
+      --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
+      --ind:#6366f1; --ind-dk:#4f46e5; --ind-lt:#818cf8;
+      --cyan:#22d3ee; --green:#34d399; --yellow:#fbbf24; --red:#f87171;
+      --text:#e2e8f0; --muted:#94a3b8; --faint:#475569;
+      --r:12px; --rsm:7px;
     }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-    a { color: var(--primary); text-decoration: none; transition: color .2s; }
-    a:hover { color: var(--cyan); }
-    code, pre { font-family: 'JetBrains Mono', monospace; }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; font-size:15px; }
+    a { color:var(--ind); text-decoration:none; transition:color .2s; }
+    a:hover { color:var(--cyan); }
+    code, pre { font-family:'JetBrains Mono',monospace; }
+    strong { font-weight:600; }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--ind-dk); border-radius:3px; }
 
-    /* ── Scrollbar ───────────────────────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--primary-dk); border-radius: 3px; }
+    .grad { background:linear-gradient(135deg,var(--ind-lt),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .tag { display:inline-block; padding:.13rem .5rem; border-radius:99px; font-size:.7rem; font-weight:700; }
+    .tg  { background:rgba(52,211,153,.1);  color:var(--green); }
+    .ty  { background:rgba(251,191,36,.1);  color:var(--yellow); }
+    .ti  { background:rgba(99,102,241,.12); color:var(--ind-lt); }
+    .tc  { background:rgba(34,211,238,.1);  color:var(--cyan); }
 
-    /* ── Navbar ──────────────────────────────────────────────────────────── */
-    #navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: .9rem 2rem;
-      background: rgba(10,14,26,.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      transition: box-shadow .3s;
+    /* NAV */
+    #nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.85rem 2.5rem;
+      background:rgba(8,12,23,.88); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border); transition:box-shadow .3s;
     }
-    #navbar.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,.5); }
-    .nav-logo {
-      font-size: 1.2rem; font-weight: 800; letter-spacing: -.5px;
-      background: linear-gradient(135deg, var(--primary), var(--cyan));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      display: flex; align-items: center; gap: .5rem;
+    #nav.scrolled { box-shadow:0 2px 28px rgba(0,0,0,.55); }
+    .brand {
+      font-size:1.1rem; font-weight:800; letter-spacing:-.4px;
+      display:flex; align-items:center; gap:.45rem;
+      background:linear-gradient(135deg,var(--ind-lt),var(--cyan));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .nav-logo span { font-size: 1.4rem; }
-    .nav-links { display: flex; align-items: center; gap: 1.6rem; }
-    .nav-links a {
-      color: var(--text-muted); font-size: .9rem; font-weight: 500;
-      transition: color .2s;
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-cta { display: flex; gap: .7rem; }
+    .nl { display:flex; gap:1.7rem; align-items:center; }
+    .nl a { font-size:.875rem; font-weight:500; color:var(--muted); }
+    .nl a:hover { color:var(--text); }
+    .na { display:flex; gap:.55rem; }
     .btn {
-      display: inline-flex; align-items: center; gap: .45rem;
-      padding: .5rem 1.1rem; border-radius: var(--radius-sm);
-      font-size: .85rem; font-weight: 600; cursor: pointer;
-      transition: all .2s; border: none;
+      display:inline-flex; align-items:center; gap:.38rem;
+      padding:.44rem 1rem; border-radius:var(--rsm);
+      font-size:.8rem; font-weight:600; cursor:pointer;
+      transition:all .18s; border:none; font-family:inherit;
     }
-    .btn-primary {
-      background: var(--primary); color: #fff;
-    }
-    .btn-primary:hover { background: var(--primary-dk); color: #fff; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,.4); }
-    .btn-ghost {
-      background: var(--bg3); color: var(--text-muted);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover { color: var(--text); border-color: var(--primary); }
+    .bp { background:var(--ind); color:#fff; }
+    .bp:hover { background:var(--ind-dk); color:#fff; transform:translateY(-1px); box-shadow:0 4px 16px rgba(99,102,241,.38); }
+    .bo { background:transparent; color:var(--muted); border:1px solid var(--border2); }
+    .bo:hover { color:var(--text); border-color:var(--ind); }
 
-    /* ── Hero ────────────────────────────────────────────────────────────── */
+    /* HERO */
     #hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center;
-      padding: 7rem 2rem 5rem;
-      position: relative; overflow: hidden;
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; padding:7rem 1.5rem 5rem;
+      position:relative; overflow:hidden;
     }
-    .hero-glow {
-      position: absolute; top: 20%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px; height: 700px;
-      background: radial-gradient(ellipse, rgba(99,102,241,.18) 0%, transparent 70%);
-      pointer-events: none;
+    .hglow {
+      position:absolute; top:30%; left:50%; transform:translate(-50%,-50%);
+      width:800px; height:480px;
+      background:radial-gradient(ellipse,rgba(99,102,241,.13) 0%,transparent 70%);
+      pointer-events:none;
     }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .35rem .9rem; border-radius: 99px;
-      background: rgba(99,102,241,.12);
-      border: 1px solid rgba(99,102,241,.3);
-      font-size: .8rem; font-weight: 600; color: var(--primary);
-      margin-bottom: 1.5rem; letter-spacing: .3px;
+    .hbadge {
+      display:inline-flex; align-items:center; gap:.4rem;
+      padding:.28rem .82rem; border-radius:99px;
+      background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.26);
+      font-size:.75rem; font-weight:700; color:var(--ind-lt);
+      margin-bottom:1.6rem; letter-spacing:.3px; text-transform:uppercase;
     }
-    h1.hero-title {
-      font-size: clamp(2.8rem, 7vw, 5.5rem);
-      font-weight: 900; line-height: 1.08; letter-spacing: -2px;
-      margin-bottom: 1.2rem;
+    h1 { font-size:clamp(2.6rem,7vw,5rem); font-weight:900; line-height:1.06; letter-spacing:-2px; margin-bottom:1.2rem; }
+    .hsub { font-size:clamp(.92rem,2vw,1.1rem); color:var(--muted); max-width:560px; margin:0 auto 2.4rem; }
+    .hinstall {
+      display:inline-flex; align-items:center; gap:.8rem;
+      background:var(--bg3); border:1px solid var(--border2);
+      padding:.68rem 1.4rem; border-radius:var(--r);
+      font-family:'JetBrains Mono',monospace; font-size:.88rem;
+      color:var(--green); margin-bottom:2.2rem; cursor:pointer;
+      transition:border-color .2s;
     }
-    .gradient-text {
-      background: linear-gradient(135deg, #818cf8, var(--cyan));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero-sub {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      color: var(--text-muted); max-width: 620px;
-      margin: 0 auto 2.5rem; font-weight: 400;
-    }
-    .hero-install {
-      display: inline-flex; align-items: center; gap: .75rem;
-      background: var(--bg3); border: 1px solid var(--border);
-      padding: .75rem 1.4rem; border-radius: var(--radius);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .95rem; color: var(--green);
-      margin-bottom: 2.2rem; cursor: pointer;
-      transition: border-color .2s;
-    }
-    .hero-install:hover { border-color: var(--primary); }
-    .hero-install .copy-btn {
-      font-size: .75rem; color: var(--text-faint);
-      transition: color .2s; cursor: pointer; background: none; border: none;
-      font-family: 'Inter', sans-serif;
-    }
-    .hero-install .copy-btn:hover { color: var(--primary); }
-    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem; }
-    .hero-badges { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
-    .hero-badges img { height: 22px; border-radius: 4px; }
+    .hinstall:hover { border-color:var(--ind); }
+    .chint { font-size:.7rem; color:var(--faint); font-family:'Inter',sans-serif; }
+    .hcta { display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; margin-bottom:3.5rem; }
+    .hcta .btn { padding:.68rem 1.6rem; font-size:.875rem; }
+    .hbadges { display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; }
+    .hbadges img { height:20px; }
 
-    /* ── Section Base ────────────────────────────────────────────────────── */
-    section { padding: 5rem 2rem; }
-    .container { max-width: 1100px; margin: 0 auto; }
-    .section-label {
-      font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--primary);
-      margin-bottom: .75rem;
-    }
-    h2.section-title {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem;
-    }
-    .section-desc {
-      color: var(--text-muted); font-size: 1.05rem;
-      max-width: 600px; margin-bottom: 3rem;
-    }
+    /* SECTION */
+    section { padding:5rem 1.5rem; }
+    .w { max-width:1080px; margin:0 auto; }
+    .sl { font-size:.71rem; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; color:var(--ind); margin-bottom:.6rem; }
+    h2 { font-size:clamp(1.6rem,3.5vw,2.5rem); font-weight:800; letter-spacing:-.7px; margin-bottom:.9rem; line-height:1.2; }
+    .sd { color:var(--muted); font-size:.975rem; max-width:560px; margin-bottom:2.7rem; }
+    hr.dv { border:none; border-top:1px solid var(--border); margin:0; }
 
-    /* ── Features grid ───────────────────────────────────────────────────── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.2rem;
+    /* CARDS */
+    .grid { display:grid; gap:1rem; }
+    .g2 { grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); }
+    .g3 { grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); }
+    .card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r); padding:1.4rem;
+      transition:border-color .2s,transform .18s,box-shadow .18s;
     }
-    .feature-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.6rem;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
+    .card:hover { border-color:rgba(99,102,241,.32); transform:translateY(-2px); box-shadow:0 0 24px rgba(99,102,241,.1); }
+    .cicon {
+      width:38px; height:38px;
+      background:rgba(99,102,241,.1); border-radius:9px;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--ind); font-size:.95rem; margin-bottom:.85rem;
     }
-    .feature-card:hover {
-      border-color: rgba(99,102,241,.4);
-      transform: translateY(-3px);
-      box-shadow: var(--glow);
-    }
-    .feature-icon {
-      width: 44px; height: 44px;
-      background: rgba(99,102,241,.12); border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; color: var(--primary); margin-bottom: 1rem;
-    }
-    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
-    .feature-card p { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+    .card h3 { font-size:.92rem; font-weight:700; margin-bottom:.32rem; }
+    .card p { font-size:.82rem; color:var(--muted); line-height:1.58; }
 
-    /* ── Code blocks ─────────────────────────────────────────────────────── */
-    .code-section { background: var(--bg2); }
-    .tabs {
-      display: flex; gap: .2rem; margin-bottom: -1px;
-      flex-wrap: wrap;
-    }
+    /* CODE */
+    .cbg { background:var(--bg2); }
+    .tr { display:flex; gap:.18rem; flex-wrap:wrap; margin-bottom:-1px; }
     .tab {
-      padding: .55rem 1.1rem; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-      font-size: .82rem; font-weight: 600; cursor: pointer;
-      background: var(--bg3); color: var(--text-muted);
-      border: 1px solid var(--border); border-bottom: none;
-      transition: all .2s;
+      padding:.48rem .95rem; border-radius:var(--rsm) var(--rsm) 0 0;
+      font-size:.78rem; font-weight:600; cursor:pointer;
+      background:var(--bg3); color:var(--muted);
+      border:1px solid var(--border); border-bottom:none;
+      transition:all .15s; font-family:inherit;
     }
-    .tab.active { background: var(--bg); color: var(--primary); border-color: rgba(99,102,241,.35); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .code-wrap {
-      background: #0d1117; border: 1px solid var(--border);
-      border-radius: 0 var(--radius) var(--radius) var(--radius);
-      overflow: hidden; position: relative;
+    .tab.on { background:var(--bg); color:var(--ind); border-color:rgba(99,102,241,.28); }
+    .tp { display:none; }
+    .tp.on { display:block; }
+    .cb {
+      background:#0d1117; border:1px solid var(--border);
+      border-radius:0 var(--r) var(--r) var(--r);
+      position:relative; overflow:hidden;
     }
-    .code-wrap pre {
-      margin: 0 !important; padding: 1.4rem 1.6rem !important;
-      font-size: .83rem !important; line-height: 1.65 !important;
-      overflow-x: auto;
+    .cb.full { border-radius:var(--r); }
+    .cb pre { margin:0!important; padding:1.25rem 1.45rem!important; font-size:.79rem!important; line-height:1.68!important; overflow-x:auto; }
+    .cpbtn {
+      position:absolute; top:.62rem; right:.62rem;
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--rsm); padding:.22rem .58rem;
+      font-size:.68rem; color:var(--muted); cursor:pointer;
+      transition:all .15s; font-family:inherit;
     }
-    .code-copy {
-      position: absolute; top: .7rem; right: .7rem;
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: .3rem .6rem;
-      font-size: .72rem; color: var(--text-muted); cursor: pointer;
-      transition: all .2s; font-family: 'Inter', sans-serif;
-    }
-    .code-copy:hover { color: var(--primary); border-color: var(--primary); }
+    .cpbtn:hover { color:var(--ind); border-color:var(--ind); }
 
-    /* ── Install section ─────────────────────────────────────────────────── */
-    .install-cards {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
+    /* STEPS */
+    .snum {
+      width:27px; height:27px; border-radius:50%;
+      background:var(--ind); color:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.75rem; font-weight:800; flex-shrink:0;
     }
-    .install-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.4rem 1.6rem;
-    }
-    .install-card h4 {
-      font-size: .9rem; font-weight: 700; margin-bottom: .8rem;
-      display: flex; align-items: center; gap: .5rem;
-    }
-    .install-card .badge {
-      font-size: .65rem; padding: .15rem .5rem;
-      border-radius: 99px; font-weight: 600;
-    }
-    .badge-rec { background: rgba(52,211,153,.12); color: var(--green); }
-    .badge-sql { background: rgba(251,191,36,.12); color: var(--yellow); }
-    .install-card code {
-      display: block; background: var(--bg3);
-      padding: .7rem 1rem; border-radius: var(--radius-sm);
-      font-size: .8rem; color: var(--green); border: 1px solid var(--border);
-    }
+    .srow { display:flex; align-items:center; gap:.7rem; margin-bottom:.85rem; }
+    .srow h4 { font-size:.93rem; font-weight:700; }
+    .smb { margin-bottom:2rem; }
 
-    /* ── Endpoints table ─────────────────────────────────────────────────── */
-    .table-wrap { overflow-x: auto; }
-    table {
-      width: 100%; border-collapse: collapse; font-size: .88rem;
+    /* TABLE */
+    .tw { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:.84rem; }
+    thead th {
+      background:var(--bg3); color:var(--muted);
+      font-weight:600; font-size:.74rem; letter-spacing:.5px;
+      padding:.7rem 1rem; text-align:left;
+      border-bottom:1px solid var(--border);
     }
-    th {
-      background: var(--bg3); color: var(--text-muted);
-      font-weight: 600; font-size: .78rem; letter-spacing: .5px;
-      text-align: left; padding: .75rem 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-    td {
-      padding: .75rem 1rem;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-      vertical-align: top;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(255,255,255,.02); }
-    .method {
-      display: inline-block; padding: .15rem .5rem; border-radius: 4px;
-      font-size: .72rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;
-    }
-    .method-post { background: rgba(52,211,153,.12); color: var(--green); }
-    .method-get  { background: rgba(34,211,238,.12); color: var(--cyan);  }
-    .ep { font-family: 'JetBrains Mono', monospace; font-size: .83rem; color: var(--text); }
+    tbody td { padding:.68rem 1rem; border-bottom:1px solid rgba(255,255,255,.033); vertical-align:top; }
+    tbody tr:last-child td { border-bottom:none; }
+    tbody tr:hover td { background:rgba(255,255,255,.018); }
+    .mth { display:inline-block; padding:.12rem .48rem; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700; }
+    .post { background:rgba(52,211,153,.1); color:var(--green); }
+    .get  { background:rgba(34,211,238,.1); color:var(--cyan); }
+    .ep   { font-family:'JetBrains Mono',monospace; font-size:.79rem; }
+    .kw   { font-family:'JetBrains Mono',monospace; font-size:.79rem; color:var(--ind-lt); }
+    .tp2  { font-family:'JetBrains Mono',monospace; font-size:.77rem; color:var(--yellow); }
+    .df   { font-family:'JetBrains Mono',monospace; font-size:.77rem; color:var(--muted); }
 
-    /* ── Security ────────────────────────────────────────────────────────── */
-    .security-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1rem;
-    }
-    .security-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.3rem 1.5rem;
-      display: flex; gap: 1rem; align-items: flex-start;
-      transition: border-color .2s;
-    }
-    .security-card:hover { border-color: rgba(52,211,153,.3); }
-    .security-card .s-icon {
-      width: 36px; height: 36px; flex-shrink: 0;
-      background: rgba(52,211,153,.1); border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; color: var(--green);
-    }
-    .security-card h4 { font-size: .9rem; font-weight: 700; margin-bottom: .25rem; }
-    .security-card p { font-size: .82rem; color: var(--text-muted); line-height: 1.5; }
+    /* INSTALL */
+    .ig { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:.95rem; }
+    .ic { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.1rem 1.3rem; }
+    .ic h4 { font-size:.855rem; font-weight:700; margin-bottom:.65rem; display:flex; align-items:center; gap:.48rem; }
+    .ic code { display:block; background:var(--bg3); padding:.55rem .88rem; border-radius:var(--rsm); font-size:.76rem; color:var(--green); }
 
-    /* ── CLI ─────────────────────────────────────────────────────────────── */
-    .cli-list { display: flex; flex-direction: column; gap: .8rem; }
-    .cli-item {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1rem 1.4rem;
-      display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
-    }
-    .cli-cmd {
-      font-family: 'JetBrains Mono', monospace; font-size: .85rem;
-      color: var(--cyan); flex: 0 0 auto;
-    }
-    .cli-desc { font-size: .88rem; color: var(--text-muted); }
+    /* CLI */
+    .clg { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; margin-bottom:1rem; }
+    .clcard { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.1rem 1.3rem; }
+    .cllabel { font-size:.7rem; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:.75rem; }
+    .clrow { display:flex; flex-direction:column; gap:.15rem; padding:.5rem .75rem; background:var(--bg3); border-radius:var(--rsm); margin-bottom:.45rem; }
+    .clrow:last-child { margin-bottom:0; }
+    .clcmd { font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--cyan); }
+    .cldesc { font-size:.77rem; color:var(--muted); }
+    .cldef { font-size:.7rem; color:var(--green); font-weight:600; }
+    .clother { display:flex; flex-direction:column; gap:.48rem; }
+    .clrow2 { display:flex; align-items:center; gap:1rem; padding:.65rem 1.05rem; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); }
 
-    /* ── Config table ────────────────────────────────────────────────────── */
-    .config-key { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--primary); }
-    .config-type { font-family: 'JetBrains Mono', monospace; font-size: .78rem; color: var(--yellow); }
-    .config-default { font-family: 'JetBrains Mono', monospace; font-size: .78rem; color: var(--text-muted); }
+    /* SECURITY */
+    .sg { display:grid; grid-template-columns:repeat(auto-fill,minmax(245px,1fr)); gap:.95rem; }
+    .sc { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.15rem 1.35rem; display:flex; gap:.85rem; align-items:flex-start; transition:border-color .2s; }
+    .sc:hover { border-color:rgba(52,211,153,.22); }
+    .scicon { width:33px; height:33px; flex-shrink:0; background:rgba(52,211,153,.08); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.88rem; color:var(--green); }
+    .sc h4 { font-size:.855rem; font-weight:700; margin-bottom:.2rem; }
+    .sc p { font-size:.79rem; color:var(--muted); line-height:1.53; }
 
-    /* ── Footer ──────────────────────────────────────────────────────────── */
-    footer {
-      background: var(--bg2); border-top: 1px solid var(--border);
-      padding: 3rem 2rem 2rem;
-      text-align: center;
-    }
-    .footer-logo {
-      font-size: 1.5rem; font-weight: 900;
-      background: linear-gradient(135deg, var(--primary), var(--cyan));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: .5rem;
-    }
-    .footer-tagline { color: var(--text-muted); font-size: .9rem; margin-bottom: 1.5rem; }
-    .footer-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
-    .footer-links a { color: var(--text-muted); font-size: .88rem; font-weight: 500; }
-    .footer-links a:hover { color: var(--primary); }
-    .footer-author {
-      font-size: .82rem; color: var(--text-faint);
-    }
-    .footer-author a { color: var(--primary); font-weight: 600; }
+    /* EMAIL */
+    .fc { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.35rem; }
+    .fc h4 { font-size:.88rem; font-weight:700; margin-bottom:.95rem; display:flex; align-items:center; gap:.45rem; }
+    .fstep { display:flex; gap:.7rem; align-items:flex-start; padding:.55rem .75rem; background:var(--bg3); border-radius:var(--rsm); margin-bottom:.45rem; }
+    .fstep:last-child { margin-bottom:0; }
+    .farrow { padding:.18rem .7rem; color:var(--faint); font-size:.78rem; }
+    .fep { font-family:'JetBrains Mono',monospace; font-size:.78rem; }
+    .fnote { font-size:.75rem; color:var(--muted); }
+    .notice { padding:.8rem 1.05rem; border-radius:var(--rsm); font-size:.83rem; display:flex; align-items:flex-start; gap:.55rem; margin-bottom:.9rem; }
+    .ny { background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.17); color:var(--muted); }
+    .ng { background:rgba(52,211,153,.06);  border:1px solid rgba(52,211,153,.17); color:var(--muted); }
+    .nr { background:rgba(248,113,113,.06); border:1px solid rgba(248,113,113,.17); color:var(--muted); }
 
-    /* ── Divider ─────────────────────────────────────────────────────────── */
-    .divider { height: 1px; background: var(--border); margin: 0; }
+    /* FOOTER */
+    footer { background:var(--bg2); border-top:1px solid var(--border); padding:2.8rem 1.5rem 2.2rem; text-align:center; }
+    .flogo { font-size:1.3rem; font-weight:900; background:linear-gradient(135deg,var(--ind-lt),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:.4rem; }
+    .ftag { color:var(--muted); font-size:.875rem; margin-bottom:1.4rem; }
+    .flinks { display:flex; gap:1.3rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.7rem; }
+    .flinks a { color:var(--muted); font-size:.84rem; font-weight:500; display:flex; align-items:center; gap:.38rem; }
+    .flinks a:hover { color:var(--ind); }
+    .fcopy { font-size:.77rem; color:var(--faint); }
+    .fcopy a { color:var(--ind); font-weight:600; }
 
-    /* ── Back-to-top ─────────────────────────────────────────────────────── */
-    #top-btn {
-      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 99;
-      width: 42px; height: 42px; border-radius: 50%;
-      background: var(--primary); color: #fff; border: none;
-      font-size: 1.1rem; cursor: pointer; opacity: 0;
-      transition: opacity .3s, transform .2s;
-      display: flex; align-items: center; justify-content: center;
-    }
-    #top-btn.show { opacity: 1; }
-    #top-btn:hover { transform: translateY(-2px); }
+    /* TOP BTN */
+    #top { position:fixed; bottom:1.3rem; right:1.3rem; z-index:99; width:38px; height:38px; border-radius:50%; background:var(--ind); color:#fff; border:none; cursor:pointer; opacity:0; transition:opacity .25s,transform .18s; display:flex; align-items:center; justify-content:center; font-size:.88rem; }
+    #top.show { opacity:1; }
+    #top:hover { transform:translateY(-2px); }
 
-    /* ── Responsive ──────────────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      #navbar { padding: .75rem 1.2rem; }
-      section { padding: 3.5rem 1.2rem; }
-      .hero-btns { flex-direction: column; align-items: center; }
+    @media (max-width:760px) {
+      .nl { display:none; }
+      #nav { padding:.72rem 1.1rem; }
+      section { padding:3.2rem 1.1rem; }
+      .hcta { flex-direction:column; align-items:center; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Navbar ──────────────────────────────────────────────────────────────── -->
-<nav id="navbar">
-  <a class="nav-logo" href="#hero">
-    <span>🔐</span> FastAuth
-  </a>
-  <div class="nav-links">
+<!-- NAV -->
+<nav id="nav">
+  <a class="brand" href="#hero"><i class="fa-solid fa-lock"></i> FastAuth</a>
+  <div class="nl">
     <a href="#features">Features</a>
     <a href="#quickstart">Quick Start</a>
     <a href="#endpoints">API</a>
-    <a href="#cli">CLI</a>
-    <a href="#security">Security</a>
     <a href="#email">Email</a>
+    <a href="#security">Security</a>
+    <a href="#cli">CLI</a>
     <a href="#config">Config</a>
   </div>
-  <div class="nav-cta">
-    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank" class="btn btn-ghost">
-      <i class="fi fi-brands-github" style="font-size:.95rem"></i> GitHub
-    </a>
-    <a href="https://pypi.org/project/fastauth-framework/" target="_blank" class="btn btn-primary">
-      <i class="fi fi-sr-box-open" style="font-size:.9rem"></i> PyPI
-    </a>
+  <div class="na">
+    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
+    <a href="https://pypi.org/project/fastauth-framework/" target="_blank" class="btn bp"><i class="fa-solid fa-box"></i> PyPI</a>
   </div>
 </nav>
 
-<!-- ── Hero ────────────────────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section id="hero">
-  <div class="hero-glow"></div>
-
-  <div class="hero-badge">
-    <i class="fi fi-sr-star"></i> fastauth-framework 0.2.7 — Now on PyPI
-  </div>
-
-  <h1 class="hero-title">
-    Auth for FastAPI.<br>
-    <span class="gradient-text">Done in one line.</span>
-  </h1>
-
-  <p class="hero-sub">
-    FastAuth gives you JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC,
-    email verification and rate limiting — all wired together and ready to
-    use the moment you call <code style="color:var(--cyan)">app.include_router(auth.router)</code>.
+  <div class="hglow"></div>
+  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.7</div>
+  <h1>Authentication for FastAPI.<br><span class="grad">Done in one line.</span></h1>
+  <p class="hsub">
+    JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification and rate limiting —
+    all wired together and ready the moment you call
+    <code style="color:var(--cyan);font-size:.9em">app.include_router(auth.router)</code>.
   </p>
-
-  <div class="hero-install" onclick="copyInstall(this)">
-    <i class="fi fi-sr-box-open" style="color:var(--primary);font-size:1rem"></i>
+  <div class="hinstall" onclick="copyInstall(this)">
+    <i class="fa-solid fa-terminal" style="color:var(--ind)"></i>
     <span>pip install fastauth-framework</span>
-    <button class="copy-btn" aria-label="Copy">copy</button>
+    <span class="chint">click to copy</span>
   </div>
-
-  <div class="hero-btns">
-    <a href="#quickstart" class="btn btn-primary" style="padding:.75rem 1.8rem;font-size:.95rem">
-      <i class="fi fi-sr-rocket-lunch"></i> Get Started
-    </a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank"
-       class="btn btn-ghost" style="padding:.75rem 1.8rem;font-size:.95rem">
-      <i class="fi fi-brands-github"></i> View on GitHub
-    </a>
-    <a href="https://beacons.ai/akhmedcodes" target="_blank"
-       class="btn btn-ghost" style="padding:.75rem 1.8rem;font-size:.95rem">
-      <i class="fi fi-sr-user"></i> Author
-    </a>
+  <div class="hcta">
+    <a href="#quickstart" class="btn bp"><i class="fa-solid fa-rocket"></i> Get Started</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
+    <a href="https://beacons.ai/akhmedcodes" target="_blank" class="btn bo"><i class="fa-solid fa-user"></i> Author</a>
   </div>
-
-  <div class="hero-badges">
-    <img src="https://img.shields.io/pypi/v/fastauth-framework?color=6366f1&label=PyPI&style=flat-square" alt="PyPI version" />
-    <img src="https://img.shields.io/pypi/pyversions/fastauth-framework?color=22d3ee&style=flat-square" alt="Python versions" />
-    <img src="https://img.shields.io/github/stars/pypi-packages-akhmedcodes/fastauth-framework?color=fbbf24&style=flat-square" alt="Stars" />
-    <img src="https://img.shields.io/badge/license-MIT-34d399?style=flat-square" alt="License" />
-    <img src="https://img.shields.io/pypi/dm/fastauth-framework?color=f87171&style=flat-square&label=downloads" alt="Downloads" />
+  <div class="hbadges">
+    <img src="https://img.shields.io/pypi/v/fastauth-framework?color=6366f1&label=PyPI&style=flat-square" alt="version" />
+    <img src="https://img.shields.io/pypi/pyversions/fastauth-framework?color=22d3ee&style=flat-square" alt="python" />
+    <img src="https://img.shields.io/github/stars/pypi-packages-akhmedcodes/fastauth-framework?color=fbbf24&style=flat-square" alt="stars" />
+    <img src="https://img.shields.io/badge/license-MIT-34d399?style=flat-square" alt="license" />
+    <img src="https://img.shields.io/pypi/dm/fastauth-framework?color=f87171&style=flat-square&label=downloads" alt="downloads" />
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
-
-<!-- ── Features ────────────────────────────────────────────────────────────── -->
+<!-- FEATURES -->
 <section id="features">
-  <div class="container">
-    <div class="section-label">Why FastAuth</div>
-    <h2 class="section-title">Everything auth. Zero boilerplate.</h2>
-    <p class="section-desc">
-      Stop rewriting auth logic on every project. FastAuth handles the full
-      authentication stack so you can focus on your product.
-    </p>
-
-    <div class="features-grid">
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-plug-connection"></i></div>
-        <h3>Plug &amp; Play</h3>
-        <p>One <code>include_router</code> call wires up register, login, logout, refresh, reset-password and more — automatically.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-shield-check"></i></div>
-        <h3>JWT + Refresh Tokens</h3>
-        <p>Configurable access/refresh expiry, per-token <code>jti</code> blacklisting, automatic rotation on refresh.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-lock"></i></div>
-        <h3>bcrypt &amp; argon2</h3>
-        <p>Best-in-class password hashing. Timing-safe verify. Automatic rehash detection when cost factor changes.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-brands-google"></i></div>
-        <h3>Social OAuth2</h3>
-        <p>Google, GitHub, Discord. Auto-create users from OAuth profiles. Just pass your client_id &amp; client_secret.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-users"></i></div>
-        <h3>RBAC — Roles &amp; Permissions</h3>
-        <p>Built-in role and permission system. Gate any route with <code>require_role("admin")</code> in one line.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-envelope"></i></div>
-        <h3>Email Verification</h3>
-        <p>Auto-send verification emails on register. Resend endpoint included. SMTP config in one dict.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-key"></i></div>
-        <h3>Password Reset</h3>
-        <p>Full flow: request → token → confirm. Tokens expire in 1 hour. Anti-enumeration by design.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-ban"></i></div>
-        <h3>Rate Limiting</h3>
-        <p>Sliding-window brute-force protection on login. Configurable max attempts and lockout window.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-database"></i></div>
-        <h3>Multi-ORM Support</h3>
-        <p>Auto-detects Tortoise ORM and SQLAlchemy 2.x. Custom field mapping for any model schema.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-cookie"></i></div>
-        <h3>Cookie / Body / Both</h3>
-        <p>Deliver refresh tokens in the response body, httpOnly cookie, or both. One config line.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-code-simple"></i></div>
-        <h3>Custom User Models</h3>
-        <p>Bring your own model. Map any field names with <code>username_field</code>, <code>email_field</code>, etc.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fi fi-sr-terminal"></i></div>
-        <h3>CLI Scaffolding</h3>
-        <p><code>fastauth --default-setup sqlite|sqlalchemy|postgresql</code> generates database.py + models.py instantly.</p>
-      </div>
-
+  <div class="w">
+    <div class="sl">Why FastAuth</div>
+    <h2>Everything auth. Zero boilerplate.</h2>
+    <p class="sd">Stop rewriting auth logic on every project. FastAuth handles the complete authentication stack so you can focus on your product.</p>
+    <div class="grid g3">
+      <div class="card"><div class="cicon"><i class="fa-solid fa-plug"></i></div><h3>Plug &amp; Play</h3><p>One <code>include_router</code> call registers all auth endpoints automatically.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-key"></i></div><h3>JWT + Refresh Tokens</h3><p>Per-token <code>jti</code> blacklisting, automatic rotation on refresh, configurable expiry.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-lock"></i></div><h3>bcrypt &amp; argon2</h3><p>Best-in-class password hashing. Timing-safe verify. Automatic rehash detection.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-brands fa-google"></i></div><h3>Social OAuth2</h3><p>Google, GitHub, Discord. Auto-create users from OAuth profiles. One config dict.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-users"></i></div><h3>RBAC</h3><p>Built-in role and permission system. Gate any route with one dependency call.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-envelope"></i></div><h3>Email Verification</h3><p>Auto-send on register. Backend or frontend mode. Full flow included.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-rotate"></i></div><h3>Password Reset</h3><p>Token-based flow. 1-hour expiry. Anti-enumeration by design.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-ban"></i></div><h3>Rate Limiting</h3><p>Sliding-window brute-force protection on login. Configurable attempts and window.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-database"></i></div><h3>Multi-ORM</h3><p>Tortoise ORM, SQLAlchemy async and sync. Auto-detected at runtime.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-cookie"></i></div><h3>Cookie / Body / Both</h3><p>Refresh tokens in body, httpOnly cookie, or both. One config value.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-code"></i></div><h3>Custom User Models</h3><p>Bring your own model. Map any field names via <code>username_field</code>, etc.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-terminal"></i></div><h3>CLI Scaffolding</h3><p><code>fastauth --default-setup sqlite --async</code> generates the full boilerplate.</p></div>
     </div>
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
+<!-- INSTALL -->
+<section id="install">
+  <div class="w">
+    <div class="sl">Installation</div>
+    <h2>Choose your ORM</h2>
+    <p class="sd">FastAuth auto-detects Tortoise ORM and SQLAlchemy from your model class.</p>
+    <div class="ig">
+      <div class="ic"><h4><i class="fa-solid fa-box" style="color:var(--ind)"></i> Base only</h4><code>pip install fastauth-framework</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--green)"></i> Tortoise ORM <span class="tag tg">recommended</span></h4><code>pip install "fastauth-framework[tortoise]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x <span class="tag ty">async</span></h4><code>pip install "fastauth-framework[sqlalchemy]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--cyan)"></i> SQLModel</h4><code>pip install "fastauth-framework[sqlmodel]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-star" style="color:var(--yellow)"></i> All extras</h4><code>pip install "fastauth-framework[all]"</code></div>
+    </div>
+  </div>
+</section>
+<hr class="dv" />
 
-<!-- ── Quick Start ──────────────────────────────────────────────────────────── -->
-<section id="quickstart" class="code-section">
-  <div class="container">
-    <div class="section-label">Quick Start</div>
-    <h2 class="section-title">Up and running in minutes</h2>
-    <p class="section-desc">
-      From zero to a fully working auth system — faster than writing a single
-      hashing function yourself.
-    </p>
+<!-- QUICK START -->
+<section id="quickstart" class="cbg">
+  <div class="w">
+    <div class="sl">Quick Start</div>
+    <h2>Up and running in minutes</h2>
+    <p class="sd">From zero to a complete auth system — faster than writing a single hashing function.</p>
 
-    <!-- Step 1 -->
-    <div style="margin-bottom:2.5rem">
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0">1</div>
-        <span style="font-weight:700;font-size:1rem">Install</span>
-      </div>
-      <div class="code-wrap">
-        <button class="code-copy" onclick="copyCode(this)">copy</button>
-        <pre><code class="language-bash">pip install "fastauth-framework[tortoise]"  # Tortoise ORM + SQLite
-# or
-pip install "fastauth-framework[sqlalchemy]"  # SQLAlchemy async</code></pre>
-      </div>
+    <div class="smb">
+      <div class="srow"><div class="snum">1</div><h4>Install</h4></div>
+      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-bash">pip install "fastauth-framework[tortoise]"    # Tortoise ORM + SQLite
+pip install "fastauth-framework[sqlalchemy]"  # SQLAlchemy async</code></pre></div>
     </div>
 
-    <!-- Step 2 -->
-    <div style="margin-bottom:2.5rem">
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0">2</div>
-        <span style="font-weight:700;font-size:1rem">Scaffold your files (optional)</span>
-      </div>
-      <div class="code-wrap">
-        <button class="code-copy" onclick="copyCode(this)">copy</button>
-        <pre><code class="language-bash">fastauth --default-setup sqlite      # → database.py + models.py + main.py
-fastauth --default-setup sqlalchemy  # SQLAlchemy + SQLite
-fastauth --default-setup postgresql  # SQLAlchemy + PostgreSQL</code></pre>
-      </div>
+    <div class="smb">
+      <div class="srow"><div class="snum">2</div><h4>Scaffold (optional)</h4></div>
+      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-bash">fastauth --default-setup sqlite     --async   # Tortoise ORM + SQLite
+fastauth --default-setup sqlalchemy --async   # SQLAlchemy async + SQLite
+fastauth --default-setup postgresql --async   # SQLAlchemy async + PostgreSQL
+# Generates: database.py + models.py + main.py</code></pre></div>
     </div>
 
-    <!-- Step 3 — Tabs -->
-    <div style="margin-bottom:2.5rem">
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0">3</div>
-        <span style="font-weight:700;font-size:1rem">Wire it up</span>
+    <div class="smb">
+      <div class="srow"><div class="snum">3</div><h4>Wire it up</h4></div>
+      <div class="tr">
+        <button class="tab on" onclick="st(this,'t-min')">Minimal</button>
+        <button class="tab" onclick="st(this,'t-tort')">Tortoise ORM</button>
+        <button class="tab" onclick="st(this,'t-async')">SQLAlchemy async</button>
+        <button class="tab" onclick="st(this,'t-sync')">SQLAlchemy sync</button>
+        <button class="tab" onclick="st(this,'t-adv')">Advanced</button>
       </div>
-
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab(this,'minimal')">Minimal</div>
-        <div class="tab" onclick="switchTab(this,'tortoise')">Tortoise ORM</div>
-        <div class="tab" onclick="switchTab(this,'sqlalchemy')">SQLAlchemy</div>
-        <div class="tab" onclick="switchTab(this,'advanced')">Advanced</div>
-      </div>
-
-      <div id="tab-minimal" class="tab-content active">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python">from fastapi import FastAPI, Depends
+      <div id="t-min" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import FastAPI, Depends
 from fastauth import FastAuth
 from your_models import User
 
 app  = FastAPI()
 auth = FastAuth(user_model=User, jwt_secret="your-secret-min-32-chars")
-
-app.include_router(auth.router)  # mounts all /auth/* routes
+app.include_router(auth.router)
 
 get_current_user = auth.get_current_user()
 
 @app.get("/profile")
 async def profile(user = Depends(get_current_user)):
-    return {"username": user.username, "email": user.email}</code></pre>
-        </div>
-      </div>
+    return {"username": user.username, "email": user.email}</code></pre></div></div>
 
-      <div id="tab-tortoise" class="tab-content">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python">from fastapi import FastAPI, Depends
+      <div id="t-tort" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import FastAPI, Depends
 from tortoise import fields
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.models import Model
@@ -669,14 +421,12 @@ class User(Model):
     is_active   = fields.BooleanField(default=True)
     is_verified = fields.BooleanField(default=True)
     roles       = fields.JSONField(default=list)
-
     class Meta:
         table = "users"
 
 app  = FastAPI()
 auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it")
 app.include_router(auth.router)
-
 register_tortoise(app, db_url="sqlite://./app.db",
                   modules={"models": ["__main__"]}, generate_schemas=True)
 
@@ -684,27 +434,9 @@ get_current_user = auth.get_current_user()
 
 @app.get("/profile")
 async def profile(user: User = Depends(get_current_user)):
-    return {"id": user.id, "username": user.username}</code></pre>
-        </div>
-      </div>
+    return {"id": user.id, "username": user.username}</code></pre></div></div>
 
-      <div id="tab-sqlalchemy" class="tab-content">
-        <!-- sub-tabs: async / sync -->
-        <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
-          <button class="tab active" style="border-radius:var(--radius-sm)"
-            onclick="switchSubTab(this,'sql-async')">
-            <i class="fi fi-sr-bolt"></i> --async
-          </button>
-          <button class="tab" style="border-radius:var(--radius-sm)"
-            onclick="switchSubTab(this,'sql-sync')">
-            <i class="fi fi-sr-layers"></i> --sync
-          </button>
-        </div>
-
-        <div id="sub-sql-async">
-          <div class="code-wrap">
-            <button class="code-copy" onclick="copyCode(this)">copy</button>
-            <pre><code class="language-python">from contextlib import asynccontextmanager
+      <div id="t-async" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
@@ -728,7 +460,7 @@ class User(Base):
 
 async def get_db():
     async with AsyncSessionLocal() as session:
-        yield session  # ← generator, FastAPI handles lifecycle
+        yield session  # generator — FastAPI handles lifecycle
 
 @asynccontextmanager
 async def lifespan(app):
@@ -738,20 +470,15 @@ async def lifespan(app):
 
 app  = FastAPI(lifespan=lifespan)
 auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
-app.include_router(auth.router)</code></pre>
-          </div>
-        </div>
+app.include_router(auth.router)</code></pre></div></div>
 
-        <div id="sub-sql-sync" style="display:none">
-          <div class="code-wrap">
-            <button class="code-copy" onclick="copyCode(this)">copy</button>
-            <pre><code class="language-python">from contextlib import asynccontextmanager
+      <div id="t-sync" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine, Boolean, Integer, String, JSON
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from fastauth import FastAuth
 
-# NOTE: sync sessions block the event loop — use async for production
+# NOTE: sync sessions block the event loop — prefer async for production
 engine = create_engine("sqlite:///./app.db", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -767,7 +494,7 @@ class User(Base):
     is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
     roles       : Mapped[list] = mapped_column(JSON, default=list)
 
-def get_db():          # ← sync generator, no async/await
+def get_db():
     db = SessionLocal()
     try:
         yield db
@@ -780,82 +507,55 @@ async def lifespan(app):
     yield
 
 app  = FastAPI(lifespan=lifespan)
-# FastAuth auto-detects sync vs async session at runtime ✓
+# FastAuth auto-detects sync vs async session at runtime
 auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
-app.include_router(auth.router)</code></pre>
-          </div>
-        </div>
-      </div>
+app.include_router(auth.router)</code></pre></div></div>
 
-      <div id="tab-advanced" class="tab-content">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python">auth = FastAuth(
+      <div id="t-adv" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
     user_model=User,
 
-    # custom field names (if your model uses different names)
+    # Custom field names (if your model uses different names)
     username_field="login",
     email_field="mail",
     password_field="passwd",
 
-    # JWT
     jwt={
-        "secret":         "your-secret-key-min-32-chars!!",
+        "secret":         "your-secret-key-min-32-chars",
         "algorithm":      "HS256",
         "access_expire":  900,      # 15 min
         "refresh_expire": 604800,   # 7 days
     },
 
-    # refresh token delivery: "body" | "cookie" | "both"
-    refresh_token_mode="cookie",
-
-    # cookie flags
+    refresh_token_mode="cookie",    # "body" | "cookie" | "both"
     cookie={"httponly": True, "secure": True, "samesite": "lax"},
+    password_hasher="argon2",       # "bcrypt" (default) | "argon2"
 
-    # password hashing: "bcrypt" (default) | "argon2"
-    password_hasher="argon2",
-
-    # SMTP email (verification + password reset)
     email={
         "host":       "smtp.gmail.com",
         "port":       587,
         "username":   "you@gmail.com",
-        "password":   "app-password",
+        "password":   "app-password-16-chars",
         "from_email": "you@gmail.com",
     },
 
-    # require email verification before login
+    base_url="https://api.myapp.com",
+    frontend_url="https://myapp.com",
+    verify_type="frontend",            # "backend" | "frontend"
     email_verification_required=True,
 
-    # social OAuth2
     social_auth={
         "google": {
             "client_id":     "...",
             "client_secret": "...",
-            "redirect_uri":  "https://myapp.com/auth/google/callback",
-        },
-        "github": {
-            "client_id":     "...",
-            "client_secret": "...",
-            "redirect_uri":  "https://myapp.com/auth/github/callback",
+            "redirect_uri":  "https://api.myapp.com/auth/google/callback",
         },
     },
-
-    base_url="https://myapp.com",
-)</code></pre>
-        </div>
-      </div>
+)</code></pre></div></div>
     </div>
 
-    <!-- Step 4 — RBAC -->
     <div>
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0">4</div>
-        <span style="font-weight:700;font-size:1rem">Protect routes with roles</span>
-      </div>
-      <div class="code-wrap">
-        <button class="code-copy" onclick="copyCode(this)">copy</button>
-        <pre><code class="language-python">from fastapi import Depends
+      <div class="srow"><div class="snum">4</div><h4>Protect routes with roles</h4></div>
+      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import Depends
 from fastauth.exceptions import PermissionDeniedError
 
 def require_role(*roles):
@@ -868,291 +568,76 @@ def require_role(*roles):
 
 @app.get("/admin")
 async def admin_panel(user = Depends(require_role("admin"))):
-    return {"message": f"Hello, admin {user.username}"}
+    return {"message": f"Hello, {user.username}"}
 
 @app.get("/dashboard")
 async def dashboard(user = Depends(auth.get_current_user())):
-    return {"welcome": user.username}</code></pre>
-      </div>
+    return {"welcome": user.username}</code></pre></div>
     </div>
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
-
-<!-- ── Install ──────────────────────────────────────────────────────────────── -->
-<section id="install">
-  <div class="container">
-    <div class="section-label">Installation</div>
-    <h2 class="section-title">Choose your ORM</h2>
-    <p class="section-desc">FastAuth auto-detects your ORM. Pick the extras that match your stack.</p>
-
-    <div class="install-cards">
-      <div class="install-card">
-        <h4><i class="fi fi-sr-box-open" style="color:var(--primary)"></i> Base only
-          <span class="badge badge-rec">any ORM</span>
-        </h4>
-        <code>pip install fastauth-framework</code>
-      </div>
-      <div class="install-card">
-        <h4><i class="fi fi-sr-database" style="color:var(--green)"></i> Tortoise ORM
-          <span class="badge badge-rec">recommended</span>
-        </h4>
-        <code>pip install "fastauth-framework[tortoise]"</code>
-      </div>
-      <div class="install-card">
-        <h4><i class="fi fi-sr-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x
-          <span class="badge badge-sql">async</span>
-        </h4>
-        <code>pip install "fastauth-framework[sqlalchemy]"</code>
-      </div>
-      <div class="install-card">
-        <h4><i class="fi fi-sr-database" style="color:var(--cyan)"></i> SQLModel
-          <span class="badge badge-sql">async</span>
-        </h4>
-        <code>pip install "fastauth-framework[sqlmodel]"</code>
-      </div>
-      <div class="install-card">
-        <h4><i class="fi fi-sr-star" style="color:var(--yellow)"></i> All extras</h4>
-        <code>pip install "fastauth-framework[all]"</code>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ── Endpoints ───────────────────────────────────────────────────────────── -->
+<!-- ENDPOINTS -->
 <section id="endpoints">
-  <div class="container">
-    <div class="section-label">API Reference</div>
-    <h2 class="section-title">Auto-registered endpoints</h2>
-    <p class="section-desc">
-      All endpoints are mounted under <code>/auth</code> (configurable via <code>router_prefix</code>).
-    </p>
-
-    <div class="table-wrap">
+  <div class="w">
+    <div class="sl">API Reference</div>
+    <h2>Auto-registered endpoints</h2>
+    <p class="sd">All endpoints are mounted under <code>/auth</code> (configurable via <code>router_prefix</code>).</p>
+    <div class="tw">
       <table>
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Endpoint</th>
-            <th>Auth required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
         <tbody>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/register</td>
-            <td>—</td>
-            <td>Create new account, returns token pair</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/login</td>
-            <td>—</td>
-            <td>Login with username or email + password</td>
-          </tr>
-          <tr>
-            <td><span class="method method-get">GET</span></td>
-            <td class="ep">/auth/me</td>
-            <td>Bearer</td>
-            <td>Return current authenticated user</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/refresh</td>
-            <td>Refresh token</td>
-            <td>Issue new access+refresh pair, rotate old token</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/logout</td>
-            <td>Bearer</td>
-            <td>Blacklist current access token</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/change-password</td>
-            <td>Bearer</td>
-            <td>Change password (requires old password)</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/reset-password</td>
-            <td>—</td>
-            <td>Request password reset email</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/reset-password/confirm</td>
-            <td>—</td>
-            <td>Confirm reset with token + new password</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/verify-email</td>
-            <td>—</td>
-            <td>Verify email address with token</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/resend-verification</td>
-            <td>Bearer</td>
-            <td>Re-send verification email</td>
-          </tr>
-          <tr>
-            <td><span class="method method-post">POST</span></td>
-            <td class="ep">/auth/revoke-all</td>
-            <td>Bearer</td>
-            <td>Revoke all refresh tokens for this user</td>
-          </tr>
-          <tr>
-            <td><span class="method method-get">GET</span></td>
-            <td class="ep">/auth/{provider}/login</td>
-            <td>—</td>
-            <td>Redirect to OAuth2 provider (google/github/discord)</td>
-          </tr>
-          <tr>
-            <td><span class="method method-get">GET</span></td>
-            <td class="ep">/auth/{provider}/callback</td>
-            <td>—</td>
-            <td>Handle OAuth2 callback, return token pair</td>
-          </tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/register</td><td>—</td><td>Create account, return token pair</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/login</td><td>—</td><td>Login with username or email + password</td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/me</td><td>Bearer</td><td>Return current authenticated user</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/refresh</td><td>Refresh token</td><td>Issue new token pair, rotate old refresh token</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/logout</td><td>Bearer</td><td>Blacklist current access token</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/change-password</td><td>Bearer</td><td>Change password (requires old password)</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password</td><td>—</td><td>Request password reset email</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Confirm reset with token + new password</td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>backend: verify + HTML page &nbsp;|&nbsp; frontend: 302 redirect</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>Programmatic verify (frontend calls after redirect)</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/resend-verification</td><td>Bearer</td><td>Re-send verification email</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/revoke-all</td><td>Bearer</td><td>Revoke all refresh tokens for this user</td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/login</td><td>—</td><td>Redirect to OAuth2 provider (google / github / discord)</td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/callback</td><td>—</td><td>Handle OAuth2 callback, return token pair</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
-
-<!-- ── Security ────────────────────────────────────────────────────────────── -->
-<section id="security">
-  <div class="container">
-    <div class="section-label">Security</div>
-    <h2 class="section-title">Secure by default</h2>
-    <p class="section-desc">Every security decision is made for you — using industry-standard defaults.</p>
-
-    <div class="security-grid">
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-lock"></i></div>
-        <div>
-          <h4>bcrypt / argon2</h4>
-          <p>Adaptive cost hashing with timing-safe <code>checkpw</code>. Automatic rehash on upgrade.</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-shield-check"></i></div>
-        <div>
-          <h4>JWT jti blacklist</h4>
-          <p>Every token has a unique ID. Logout blacklists it immediately. Pluggable store (Redis, DB).</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-refresh"></i></div>
-        <div>
-          <h4>Refresh token rotation</h4>
-          <p>Old refresh token is revoked the moment a new one is issued. Stolen tokens expire fast.</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-time-fast"></i></div>
-        <div>
-          <h4>Brute-force protection</h4>
-          <p>Sliding-window rate limiter: 5 failed attempts triggers a 5-minute IP lockout.</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-eye-crossed"></i></div>
-        <div>
-          <h4>Email enumeration guard</h4>
-          <p>Password reset always returns HTTP 200 regardless of whether the email exists.</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-hourglass-end"></i></div>
-        <div>
-          <h4>Timing attack mitigation</h4>
-          <p>Dummy hash verify runs on unknown usernames to prevent response-time leaks.</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-cookie"></i></div>
-        <div>
-          <h4>Secure cookie flags</h4>
-          <p><code>httpOnly</code>, <code>secure</code>, <code>sameSite</code> configurable. Defaults to safest values for production.</p>
-        </div>
-      </div>
-      <div class="security-card">
-        <div class="s-icon"><i class="fi fi-sr-clock"></i></div>
-        <div>
-          <h4>Token expiry</h4>
-          <p>Access tokens: 15 min. Refresh tokens: 7 days. Both fully configurable.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ── Email Setup ──────────────────────────────────────────────────────────── -->
+<!-- EMAIL -->
 <section id="email">
-  <div class="container">
-    <div class="section-label">Email Setup</div>
-    <h2 class="section-title">Password reset &amp; email verification</h2>
-    <p class="section-desc">
-      Without email config the endpoints still work — but <strong>no email is sent</strong>.
-      Add the <code>email</code> dict, set <code>base_url</code> / <code>frontend_url</code>,
-      and choose <code>verify_type</code>.
-    </p>
+  <div class="w">
+    <div class="sl">Email Setup</div>
+    <h2>Password reset &amp; email verification</h2>
+    <p class="sd">Without email config the endpoints still work but no email is sent. Add the <code>email</code> dict and configure <code>verify_type</code>.</p>
 
-    <!-- verify_type table -->
-    <div style="margin-bottom:2.5rem">
-      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-sr-settings" style="color:var(--primary)"></i> <code>verify_type</code> — backend vs frontend
-      </div>
-      <div class="table-wrap" style="margin-bottom:1rem">
+    <div style="margin-bottom:2rem">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-arrow-right-arrow-left" style="color:var(--ind);margin-right:.4rem"></i><code>verify_type</code></h3>
+      <div class="tw">
         <table>
-          <thead>
-            <tr><th>verify_type</th><th>Email link points to</th><th>GET /auth/verify-email?token=…</th></tr>
-          </thead>
+          <thead><tr><th>verify_type</th><th>Email link</th><th>GET /auth/verify-email</th></tr></thead>
           <tbody>
-            <tr>
-              <td><code style="color:var(--green)">'backend'</code> <span style="font-size:.72rem;color:var(--text-faint)">(default)</span></td>
-              <td class="ep">{base_url}/auth/verify-email?token=…</td>
-              <td>Verifies token, shows <strong style="color:var(--green)">HTML success page</strong></td>
-            </tr>
-            <tr>
-              <td><code style="color:var(--cyan)">'frontend'</code></td>
-              <td class="ep">{frontend_url}/auth/verify-email?token=…</td>
-              <td><strong style="color:var(--cyan)">302 redirect</strong> to frontend; frontend calls POST /auth/verify-email</td>
-            </tr>
+            <tr><td><code style="color:var(--green)">'backend'</code> <span class="tag tg">default</span></td><td class="ep">{base_url}/auth/verify-email?token=...</td><td>Verifies token, returns HTML success page</td></tr>
+            <tr><td><code style="color:var(--cyan)">'frontend'</code></td><td class="ep">{frontend_url}/auth/verify-email?token=...</td><td>302 redirect to frontend; frontend calls POST /auth/verify-email</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Config tabs: backend / frontend -->
-    <div style="margin-bottom:2.5rem">
-      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-sr-rocket-lunch" style="color:var(--primary)"></i> Config
+    <div style="margin-bottom:2rem">
+      <div class="tr">
+        <button class="tab on" onclick="et(this,'e-back')">Backend mode</button>
+        <button class="tab" onclick="et(this,'e-front')">Frontend mode</button>
+        <button class="tab" onclick="et(this,'e-js')">Frontend JS</button>
       </div>
-      <div class="tabs">
-        <div class="tab active" onclick="switchEmailTab(this,'email-backend')">Backend mode</div>
-        <div class="tab" onclick="switchEmailTab(this,'email-frontend')">Frontend mode (SPA)</div>
-        <div class="tab" onclick="switchEmailTab(this,'email-js')">Frontend JS snippet</div>
-      </div>
-
-      <div id="sub-email-backend">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python">auth = FastAuth(
+      <div id="e-back" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
     user_model=User,
     jwt_secret="your-secret",
-
     email={
         "host":       "smtp.gmail.com",
         "port":       587,
@@ -1160,23 +645,17 @@ async def dashboard(user = Depends(auth.get_current_user())):
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
     },
-
-    base_url="http://localhost:8000",     # backend URL (verify link points here)
-    verify_type="backend",               # default — GET /auth/verify-email verifies directly
+    base_url="http://localhost:8000",  # backend URL
+    verify_type="backend",             # default
     email_verification_required=True,
 )
-# Email link → GET http://localhost:8000/auth/verify-email?token=...
-# FastAuth verifies token and shows HTML "Email Verified!" page ✅</code></pre>
-        </div>
-      </div>
+# Email link: GET http://localhost:8000/auth/verify-email?token=...
+# FastAuth verifies token and returns HTML "Email Verified!" page.</code></pre></div></div>
 
-      <div id="sub-email-frontend" style="display:none">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python">auth = FastAuth(
+      <div id="e-front" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
     user_model=User,
     jwt_secret="your-secret",
-
+    get_db=get_db,
     email={
         "host":       "smtp.gmail.com",
         "port":       587,
@@ -1184,26 +663,17 @@ async def dashboard(user = Depends(auth.get_current_user())):
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
     },
-
     base_url="https://api.domain.uz",    # your FastAPI backend
-    frontend_url="https://domain.uz",    # your SPA / frontend
+    frontend_url="https://domain.uz",    # your SPA
     verify_type="frontend",
     email_verification_required=True,
 )
-# Email link → GET https://domain.uz/auth/verify-email?token=...
-#              (redirected by FastAuth backend)
-# Frontend reads ?token= and calls POST /auth/verify-email {"token": "..."}</code></pre>
-        </div>
-      </div>
+# Email link: GET https://domain.uz/auth/verify-email?token=...
+# Backend GET /auth/verify-email -> 302 redirect to frontend
+# Frontend reads ?token= and calls POST /auth/verify-email</code></pre></div></div>
 
-      <div id="sub-email-js" style="display:none">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python"># ── Email verification (frontend JS) ──────────────────────
-# User lands on https://domain.uz/auth/verify-email?token=...
-
+      <div id="e-js" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-javascript">// Email verification — user lands on /auth/verify-email?token=...
 const token = new URLSearchParams(window.location.search).get("token");
-
 const res = await fetch("https://api.domain.uz/auth/verify-email", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -1212,539 +682,229 @@ const res = await fetch("https://api.domain.uz/auth/verify-email", {
 const data = await res.json();
 // data.message === "Email verified successfully"
 
-# ── Password reset (frontend JS) ───────────────────────────
-# User lands on https://domain.uz/auth/reset-password?token=...
-
+// Password reset — user lands on /auth/reset-password?token=...
 const token = new URLSearchParams(window.location.search).get("token");
-
 const res = await fetch("https://api.domain.uz/auth/reset-password/confirm", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, new_password: "NewPass123!" }),
 });
 const data = await res.json();
-// data.message === "Password reset successfully"</code></pre>
-        </div>
+// data.message === "Password reset successfully"</code></pre></div></div>
+    </div>
+
+    <div style="margin-bottom:2rem">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-brands fa-google" style="color:var(--red);margin-right:.4rem"></i>Gmail App Password</h3>
+      <div class="notice ny"><i class="fa-solid fa-triangle-exclamation" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i>Gmail blocks plain account passwords for SMTP. You must generate an App Password.</div>
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">1</div><span style="font-size:.865rem">Go to <strong>myaccount.google.com</strong> &rarr; <strong>Security</strong></span></div>
+        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">2</div><span style="font-size:.865rem">Enable <strong>2-Step Verification</strong> (required)</span></div>
+        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">3</div><span style="font-size:.865rem">Search <strong>App passwords</strong> in Security settings</span></div>
+        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">4</div><span style="font-size:.865rem">App: <strong>Mail</strong> / Device: <strong>Other</strong> &rarr; name it <code>fastauth</code> &rarr; Generate</span></div>
+        <div class="clrow2" style="border-color:rgba(52,211,153,.22)"><div class="snum" style="width:24px;height:24px;font-size:.7rem;background:var(--green)">5</div><span style="font-size:.865rem">Copy the <strong style="color:var(--green)">16-character password</strong> &rarr; paste as <code>"password"</code> in your config</span></div>
       </div>
     </div>
 
-    <!-- Gmail guide -->
-    <div style="margin-bottom:2.5rem">
-      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-brands-google" style="color:var(--red)"></i> Gmail — App Password (required)
-      </div>
-      <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem;font-size:.88rem;color:var(--text-muted)">
-        <i class="fi fi-sr-info" style="color:var(--yellow)"></i>
-        Gmail blocks plain account passwords for SMTP. You must use an <strong style="color:var(--yellow)">App Password</strong>.
-      </div>
-      <div class="cli-list" style="gap:.6rem">
-        <div class="cli-item" style="align-items:flex-start;gap:1rem">
-          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">1</div>
-          <span class="cli-desc">Go to <strong style="color:var(--text)">myaccount.google.com</strong> → <strong style="color:var(--text)">Security</strong></span>
-        </div>
-        <div class="cli-item" style="align-items:flex-start;gap:1rem">
-          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">2</div>
-          <span class="cli-desc">Enable <strong style="color:var(--text)">2-Step Verification</strong> (required before App Passwords appear)</span>
-        </div>
-        <div class="cli-item" style="align-items:flex-start;gap:1rem">
-          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">3</div>
-          <span class="cli-desc">Go to <strong style="color:var(--text)">Security</strong> → search <strong style="color:var(--text)">"App passwords"</strong></span>
-        </div>
-        <div class="cli-item" style="align-items:flex-start;gap:1rem">
-          <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">4</div>
-          <span class="cli-desc">App: <strong style="color:var(--text)">Mail</strong> / Device: <strong style="color:var(--text)">Other</strong> → name it <code>fastauth</code> → click <strong style="color:var(--text)">Generate</strong></span>
-        </div>
-        <div class="cli-item" style="align-items:flex-start;gap:1rem">
-          <div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">5</div>
-          <span class="cli-desc">Copy the <strong style="color:var(--green)">16-character password</strong> (spaces are OK) → paste as <code>"password"</code> in your config</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- SMTP providers table -->
-    <div style="margin-bottom:2.5rem">
-      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-sr-envelope" style="color:var(--cyan)"></i> SMTP providers
-      </div>
-      <div class="table-wrap">
+    <div style="margin-bottom:2rem">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-server" style="color:var(--cyan);margin-right:.4rem"></i>SMTP providers</h3>
+      <div class="tw">
         <table>
-          <thead>
-            <tr><th>Provider</th><th>host</th><th>port</th><th>Note</th></tr>
-          </thead>
+          <thead><tr><th>Provider</th><th>host</th><th>port</th><th>Note</th></tr></thead>
           <tbody>
             <tr><td>Gmail</td><td class="ep">smtp.gmail.com</td><td class="ep">587</td><td>App Password required</td></tr>
-            <tr><td>Outlook / Hotmail</td><td class="ep">smtp.office365.com</td><td class="ep">587</td><td>Regular password</td></tr>
-            <tr><td>Yahoo Mail</td><td class="ep">smtp.mail.yahoo.com</td><td class="ep">587</td><td>App Password required</td></tr>
+            <tr><td>Outlook / Hotmail</td><td class="ep">smtp.office365.com</td><td class="ep">587</td><td>Regular account password</td></tr>
+            <tr><td>Yahoo</td><td class="ep">smtp.mail.yahoo.com</td><td class="ep">587</td><td>App Password required</td></tr>
             <tr><td>Yandex</td><td class="ep">smtp.yandex.com</td><td class="ep">587</td><td>—</td></tr>
             <tr><td>Mailgun</td><td class="ep">smtp.mailgun.org</td><td class="ep">587</td><td>SMTP credentials from dashboard</td></tr>
             <tr><td>SendGrid</td><td class="ep">smtp.sendgrid.net</td><td class="ep">587</td><td>username=<code>apikey</code>, password=API key</td></tr>
             <tr><td>Amazon SES</td><td class="ep">email-smtp.&lt;region&gt;.amazonaws.com</td><td class="ep">587</td><td>SMTP credentials from AWS Console</td></tr>
-            <tr><td>Custom VPS</td><td class="ep">your-domain.com</td><td class="ep">25 / 587 / 465</td><td>port 465 → <code>use_ssl: True</code></td></tr>
+            <tr><td>Custom VPS</td><td class="ep">your-domain.com</td><td class="ep">25/587/465</td><td>port 465 &rarr; <code>use_ssl: True</code></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Flow diagrams -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:1.2rem;margin-bottom:2.5rem">
-
-      <!-- Reset flow -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem">
-        <div style="font-weight:700;font-size:.95rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
-          <i class="fi fi-sr-key" style="color:var(--yellow)"></i> Password reset flow
-        </div>
-        <div class="cli-list" style="gap:.5rem">
-          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
-            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
-            <div style="font-size:.83rem">
-              <code>/auth/reset-password</code> — <span style="color:var(--text-muted)">send email address</span><br>
-              <span style="color:var(--text-faint);font-size:.78rem">→ FastAuth creates token (1 hour expiry), sends email</span>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;padding-left:1rem;color:var(--text-faint);font-size:.8rem">
-            <i class="fi fi-sr-arrow-down"></i>&nbsp; user clicks link in email
-          </div>
-          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
-            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
-            <div style="font-size:.83rem">
-              <code>/auth/reset-password/confirm</code><br>
-              <code style="color:var(--text-muted);font-size:.78rem">{"token": "...", "new_password": "..."}</code><br>
-              <span style="color:var(--text-faint);font-size:.78rem">→ password updated, token invalidated</span>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:.8rem;font-size:.78rem;color:var(--text-faint)">
-          <i class="fi fi-sr-shield-check" style="color:var(--green)"></i>
-          Always returns 200 even if email not found (anti-enumeration)
-        </div>
-      </div>
-
-      <!-- Verify flow -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem">
-        <div style="font-weight:700;font-size:.95rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
-          <i class="fi fi-sr-envelope-check" style="color:var(--cyan)"></i> Email verification flow
-        </div>
-        <div class="cli-list" style="gap:.5rem">
-          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
-            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
-            <div style="font-size:.83rem">
-              <code>/auth/register</code><br>
-              <span style="color:var(--text-faint);font-size:.78rem">→ account created, verification email sent</span>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;padding-left:1rem;color:var(--text-faint);font-size:.8rem">
-            <i class="fi fi-sr-arrow-down"></i>&nbsp; user clicks link in email (24h expiry)
-          </div>
-          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
-            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
-            <div style="font-size:.83rem">
-              <code>/auth/verify-email</code> — <code style="color:var(--text-muted);font-size:.78rem">{"token": "..."}</code><br>
-              <span style="color:var(--text-faint);font-size:.78rem">→ email verified, login unblocked</span>
-            </div>
-          </div>
-          <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--radius-sm)">
-            <span style="color:var(--green);font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem">POST</span>
-            <div style="font-size:.83rem">
-              <code>/auth/resend-verification</code> <span style="color:var(--primary);font-size:.75rem">🔒 Bearer</span><br>
-              <span style="color:var(--text-faint);font-size:.78rem">→ re-send verification email</span>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:.8rem;font-size:.78rem;color:var(--text-faint)">
-          <i class="fi fi-sr-info" style="color:var(--yellow)"></i>
-          Set <code>email_verification_required=True</code> to block login until verified
-        </div>
-      </div>
-    </div>
-
-    <!-- Email link format -->
-    <div style="margin-bottom:2.5rem">
-      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-sr-link" style="color:var(--primary)"></i> Email link format
-      </div>
-      <div class="code-wrap">
-        <button class="code-copy" onclick="copyCode(this)">copy</button>
-        <pre><code class="language-bash"># Password reset link (sent in email):
-{base_url}/auth/reset-password/confirm?token={token}
-# Example:
-https://myapp.com/auth/reset-password/confirm?token=abc123...
-
-# Email verification link (sent in email):
-{base_url}/auth/verify-email?token={token}
-# Example:
-https://myapp.com/auth/verify-email?token=xyz789...</code></pre>
-      </div>
-      <p style="margin-top:.75rem;font-size:.83rem;color:var(--text-muted)">
-        Your frontend reads <code>?token=</code> from the URL and calls the confirm endpoint.
-      </p>
-    </div>
-
-    <!-- Dev testing without SMTP -->
-    <div>
-      <div style="font-weight:700;font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem">
-        <i class="fi fi-sr-code-simple" style="color:var(--green)"></i> Testing without real SMTP
-      </div>
-      <div style="background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:var(--radius);padding:.9rem 1.2rem;margin-bottom:.9rem;font-size:.83rem;color:var(--text-muted)">
-        <i class="fi fi-sr-info" style="color:var(--green)"></i>
-        Add a dev-only endpoint to return the token directly. <strong style="color:var(--red)">Remove before production!</strong>
-      </div>
-      <div class="code-wrap">
-        <button class="code-copy" onclick="copyCode(this)">copy</button>
-        <pre><code class="language-python"># main.py — DEV ONLY, remove in production
-@app.post("/dev/reset-token")
-async def dev_get_reset_token(email: str):
+    <div style="margin-bottom:2rem">
+      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-flask" style="color:var(--green);margin-right:.4rem"></i>Testing without real SMTP</h3>
+      <div class="notice nr"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red);flex-shrink:0;margin-top:.1rem"></i>Dev-only endpoint — remove before production.</div>
+      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">@app.post("/dev/reset-token")   # REMOVE IN PRODUCTION
+async def dev_reset_token(email: str):
     token = await auth._manager.create_reset_token(email)
     return {"token": token}
 
 # Usage: POST /dev/reset-token?email=user@example.com
-# Then:  POST /auth/reset-password/confirm  {"token": "...", "new_password": "..."}</code></pre>
+# Then:  POST /auth/reset-password/confirm {"token":"...","new_password":"..."}</code></pre></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="fc">
+        <h4><i class="fa-solid fa-key" style="color:var(--yellow)"></i> Password reset flow</h4>
+        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password</div><div class="fnote">Creates token (1h expiry), sends email if configured</div></div></div>
+        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks link in email</div>
+        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password/confirm</div><div class="fnote"><code>{"token": "...", "new_password": "..."}</code></div></div></div>
+        <div style="margin-top:.75rem;font-size:.77rem;color:var(--faint)"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> Always returns 200 even if email not found (anti-enumeration)</div>
+      </div>
+      <div class="fc">
+        <h4><i class="fa-solid fa-envelope-circle-check" style="color:var(--cyan)"></i> Email verification flow</h4>
+        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/register</div><div class="fnote">Account created, verification email sent</div></div></div>
+        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks link in email (24h expiry)</div>
+        <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/verify-email?token=...</div><div class="fnote">backend: verify + HTML &nbsp;|&nbsp; frontend: 302 redirect</div></div></div>
+        <div class="fstep" style="margin-top:.45rem"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/resend-verification</div><div class="fnote">Re-send (requires Bearer token)</div></div></div>
       </div>
     </div>
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
+<!-- SECURITY -->
+<section id="security">
+  <div class="w">
+    <div class="sl">Security</div>
+    <h2>Secure by default</h2>
+    <p class="sd">Every security decision is made for you using industry-standard defaults.</p>
+    <div class="sg">
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-lock"></i></div><div><h4>bcrypt / argon2</h4><p>Adaptive cost hashing with timing-safe <code>checkpw</code>. Auto rehash on upgrade.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-shield-halved"></i></div><div><h4>JWT jti blacklist</h4><p>Every token has a unique ID. Logout blacklists it instantly. Pluggable store.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-rotate"></i></div><div><h4>Refresh rotation</h4><p>Old refresh token is revoked the moment a new pair is issued.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-gauge-high"></i></div><div><h4>Brute-force protection</h4><p>Sliding-window: 5 failed attempts triggers a 5-minute IP lockout.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-eye-slash"></i></div><div><h4>Email enumeration guard</h4><p>Password reset always returns 200 regardless of whether the email exists.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-hourglass-half"></i></div><div><h4>Timing attack mitigation</h4><p>Dummy hash verify runs on unknown usernames to prevent response-time leaks.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-cookie-bite"></i></div><div><h4>Secure cookie flags</h4><p><code>httpOnly</code>, <code>secure</code>, <code>sameSite</code> configurable. Safe defaults included.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-clock"></i></div><div><h4>Token expiry</h4><p>Access: 15 min. Refresh: 7 days. Both fully configurable per project.</p></div></div>
+    </div>
+  </div>
+</section>
+<hr class="dv" />
 
-<!-- ── CLI ─────────────────────────────────────────────────────────────────── -->
+<!-- CLI -->
 <section id="cli">
-  <div class="container">
-    <div class="section-label">CLI</div>
-    <h2 class="section-title">fastauth command line</h2>
-    <p class="section-desc">
-      Scaffold a complete project in seconds. Every setup generates
-      <code>database.py</code> + <code>models.py</code> + <code>main.py</code>.
-      Default mode is <code>--async</code>.
-    </p>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;margin-bottom:1.2rem">
-
-      <!-- SQLite -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem">
-        <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);margin-bottom:.8rem">
-          <i class="fi fi-sr-database"></i> SQLite
-        </div>
-        <div class="cli-list" style="gap:.5rem">
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup sqlite</span>
-            <span class="cli-desc">Tortoise ORM + aiosqlite <span style="color:var(--green);font-size:.75rem">(async, default)</span></span>
-          </div>
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup sqlite --async</span>
-            <span class="cli-desc">Tortoise ORM + aiosqlite</span>
-          </div>
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup sqlite --sync</span>
-            <span class="cli-desc">SQLAlchemy sync + sqlite3</span>
-          </div>
-        </div>
+  <div class="w">
+    <div class="sl">CLI</div>
+    <h2>fastauth command line</h2>
+    <p class="sd">Scaffold a complete project in seconds. Every <code>--default-setup</code> generates <code>database.py</code> + <code>models.py</code> + <code>main.py</code>. Default mode is <code>--async</code>.</p>
+    <div class="clg">
+      <div class="clcard">
+        <div class="cllabel" style="color:var(--cyan)"><i class="fa-solid fa-database"></i> SQLite</div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup sqlite</span><span class="cldesc">Tortoise ORM + aiosqlite <span class="cldef">async, default</span></span></div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup sqlite --async</span><span class="cldesc">Tortoise ORM + aiosqlite</span></div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup sqlite --sync</span><span class="cldesc">SQLAlchemy sync + sqlite3</span></div>
       </div>
-
-      <!-- SQLAlchemy -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem">
-        <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--yellow);margin-bottom:.8rem">
-          <i class="fi fi-sr-database"></i> SQLAlchemy
-        </div>
-        <div class="cli-list" style="gap:.5rem">
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup sqlalchemy</span>
-            <span class="cli-desc">SQLAlchemy async + aiosqlite <span style="color:var(--green);font-size:.75rem">(async, default)</span></span>
-          </div>
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup sqlalchemy --async</span>
-            <span class="cli-desc">SQLAlchemy async + aiosqlite</span>
-          </div>
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup sqlalchemy --sync</span>
-            <span class="cli-desc">SQLAlchemy sync + sqlite3</span>
-          </div>
-        </div>
+      <div class="clcard">
+        <div class="cllabel" style="color:var(--yellow)"><i class="fa-solid fa-database"></i> SQLAlchemy</div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup sqlalchemy</span><span class="cldesc">SQLAlchemy async + aiosqlite <span class="cldef">async, default</span></span></div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup sqlalchemy --async</span><span class="cldesc">SQLAlchemy async + aiosqlite</span></div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup sqlalchemy --sync</span><span class="cldesc">SQLAlchemy sync + sqlite3</span></div>
       </div>
-
-      <!-- PostgreSQL -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.3rem">
-        <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--primary);margin-bottom:.8rem">
-          <i class="fi fi-sr-database"></i> PostgreSQL
-        </div>
-        <div class="cli-list" style="gap:.5rem">
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup postgresql</span>
-            <span class="cli-desc">SQLAlchemy async + asyncpg <span style="color:var(--green);font-size:.75rem">(async, default)</span></span>
-          </div>
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup postgresql --async</span>
-            <span class="cli-desc">SQLAlchemy async + asyncpg</span>
-          </div>
-          <div class="cli-item" style="flex-direction:column;align-items:flex-start;gap:.2rem;padding:.7rem 1rem">
-            <span class="cli-cmd">fastauth --default-setup postgresql --sync</span>
-            <span class="cli-desc">SQLAlchemy sync + psycopg2</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Other commands -->
-    <div class="cli-list">
-      <div class="cli-item">
-        <span class="cli-cmd">fastauth init</span>
-        <span class="cli-desc">Scaffold <code>.env.example</code> and <code>auth_config.py</code></span>
-      </div>
-      <div class="cli-item">
-        <span class="cli-cmd">fastauth version</span>
-        <span class="cli-desc">Print installed fastauth-framework version</span>
+      <div class="clcard">
+        <div class="cllabel" style="color:var(--ind-lt)"><i class="fa-solid fa-database"></i> PostgreSQL</div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup postgresql</span><span class="cldesc">SQLAlchemy async + asyncpg <span class="cldef">async, default</span></span></div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup postgresql --async</span><span class="cldesc">SQLAlchemy async + asyncpg</span></div>
+        <div class="clrow"><span class="clcmd">fastauth --default-setup postgresql --sync</span><span class="cldesc">SQLAlchemy sync + psycopg2</span></div>
       </div>
     </div>
-
-    <p style="margin-top:1rem;font-size:.83rem;color:var(--text-faint)">
-      <i class="fi fi-sr-info"></i>
-      <strong style="color:var(--yellow)">--sync</strong> mode generates synchronous DB code.
-      Sync calls block the FastAPI event loop — use <strong style="color:var(--green)">--async</strong> for production.
-    </p>
+    <div class="clother">
+      <div class="clrow2"><span class="clcmd">fastauth init</span><span class="cldesc">Scaffold <code>.env.example</code> and <code>auth_config.py</code></span></div>
+      <div class="clrow2"><span class="clcmd">fastauth version</span><span class="cldesc">Print installed fastauth-framework version</span></div>
+    </div>
+    <div class="notice ny" style="margin-top:1rem"><i class="fa-solid fa-circle-info" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i><code>--sync</code> mode generates synchronous DB code. Sync calls block the FastAPI event loop — use <code>--async</code> for production.</div>
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
-
-<!-- ── Config Reference ─────────────────────────────────────────────────────── -->
+<!-- CONFIG -->
 <section id="config">
-  <div class="container">
-    <div class="section-label">Configuration</div>
-    <h2 class="section-title">FastAuth() parameters</h2>
-    <p class="section-desc">All parameters are optional except <code>user_model</code> and <code>jwt_secret</code>.</p>
-
-    <div class="table-wrap">
+  <div class="w">
+    <div class="sl">Configuration</div>
+    <h2>FastAuth() parameters</h2>
+    <p class="sd">All parameters are optional except <code>user_model</code> and <code>jwt_secret</code>.</p>
+    <div class="tw">
       <table>
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
         <tbody>
-          <tr>
-            <td class="config-key">user_model</td>
-            <td class="config-type">type</td>
-            <td class="config-default">required</td>
-            <td>Your ORM User model class</td>
-          </tr>
-          <tr>
-            <td class="config-key">jwt_secret</td>
-            <td class="config-type">str</td>
-            <td class="config-default">required</td>
-            <td>Secret key for signing JWTs (min 16 chars)</td>
-          </tr>
-          <tr>
-            <td class="config-key">jwt</td>
-            <td class="config-type">dict</td>
-            <td class="config-default">None</td>
-            <td>Full JWT config: <code>secret</code>, <code>algorithm</code>, <code>access_expire</code>, <code>refresh_expire</code></td>
-          </tr>
-          <tr>
-            <td class="config-key">username_field</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"username"</td>
-            <td>Field name for username in your model</td>
-          </tr>
-          <tr>
-            <td class="config-key">email_field</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"email"</td>
-            <td>Field name for email in your model</td>
-          </tr>
-          <tr>
-            <td class="config-key">password_field</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"password"</td>
-            <td>Field name for hashed password in your model</td>
-          </tr>
-          <tr>
-            <td class="config-key">password_hasher</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"bcrypt"</td>
-            <td><code>"bcrypt"</code> or <code>"argon2"</code></td>
-          </tr>
-          <tr>
-            <td class="config-key">refresh_token_mode</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"body"</td>
-            <td><code>"body"</code> | <code>"cookie"</code> | <code>"both"</code></td>
-          </tr>
-          <tr>
-            <td class="config-key">cookie</td>
-            <td class="config-type">dict</td>
-            <td class="config-default">{}</td>
-            <td><code>httponly</code>, <code>secure</code>, <code>samesite</code>, <code>domain</code></td>
-          </tr>
-          <tr>
-            <td class="config-key">email</td>
-            <td class="config-type">dict</td>
-            <td class="config-default">None</td>
-            <td>SMTP config: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from_email</code></td>
-          </tr>
-          <tr>
-            <td class="config-key">social_auth</td>
-            <td class="config-type">dict</td>
-            <td class="config-default">None</td>
-            <td>OAuth providers: <code>google</code>, <code>github</code>, <code>discord</code></td>
-          </tr>
-          <tr>
-            <td class="config-key">email_verification_required</td>
-            <td class="config-type">bool</td>
-            <td class="config-default">False</td>
-            <td>Block login until email is verified</td>
-          </tr>
-          <tr>
-            <td class="config-key">get_db</td>
-            <td class="config-type">callable</td>
-            <td class="config-default">None</td>
-            <td>FastAPI dependency yielding an async DB session (SQLAlchemy)</td>
-          </tr>
-          <tr>
-            <td class="config-key">router_prefix</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"/auth"</td>
-            <td>URL prefix for all auth endpoints</td>
-          </tr>
-          <tr>
-            <td class="config-key">base_url</td>
-            <td class="config-type">str</td>
-            <td class="config-default">"http://localhost:8000"</td>
-            <td>Base URL used in email verification / reset links</td>
-          </tr>
+          <tr><td class="kw">user_model</td><td class="tp2">type</td><td class="df">required</td><td>Your ORM User model class</td></tr>
+          <tr><td class="kw">jwt_secret</td><td class="tp2">str</td><td class="df">required</td><td>Secret key for signing JWTs (min 16 chars)</td></tr>
+          <tr><td class="kw">jwt</td><td class="tp2">dict</td><td class="df">None</td><td><code>secret</code>, <code>algorithm</code>, <code>access_expire</code>, <code>refresh_expire</code></td></tr>
+          <tr><td class="kw">username_field</td><td class="tp2">str</td><td class="df">"username"</td><td>Field name for username in your model</td></tr>
+          <tr><td class="kw">email_field</td><td class="tp2">str</td><td class="df">"email"</td><td>Field name for email in your model</td></tr>
+          <tr><td class="kw">password_field</td><td class="tp2">str</td><td class="df">"password"</td><td>Field name for hashed password in your model</td></tr>
+          <tr><td class="kw">password_hasher</td><td class="tp2">str</td><td class="df">"bcrypt"</td><td><code>"bcrypt"</code> or <code>"argon2"</code></td></tr>
+          <tr><td class="kw">refresh_token_mode</td><td class="tp2">str</td><td class="df">"body"</td><td><code>"body"</code> | <code>"cookie"</code> | <code>"both"</code></td></tr>
+          <tr><td class="kw">cookie</td><td class="tp2">dict</td><td class="df">{}</td><td><code>httponly</code>, <code>secure</code>, <code>samesite</code>, <code>domain</code></td></tr>
+          <tr><td class="kw">email</td><td class="tp2">dict</td><td class="df">None</td><td>SMTP: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from_email</code></td></tr>
+          <tr><td class="kw">base_url</td><td class="tp2">str</td><td class="df">"http://localhost:8000"</td><td>Backend URL used for verify/reset links in backend mode</td></tr>
+          <tr><td class="kw">frontend_url</td><td class="tp2">str</td><td class="df">None</td><td>Frontend SPA URL; used when <code>verify_type="frontend"</code></td></tr>
+          <tr><td class="kw">verify_type</td><td class="tp2">str</td><td class="df">"backend"</td><td><code>"backend"</code> verify directly | <code>"frontend"</code> redirect to SPA</td></tr>
+          <tr><td class="kw">email_verification_required</td><td class="tp2">bool</td><td class="df">False</td><td>Block login until email is verified</td></tr>
+          <tr><td class="kw">social_auth</td><td class="tp2">dict</td><td class="df">None</td><td>OAuth providers: <code>google</code>, <code>github</code>, <code>discord</code></td></tr>
+          <tr><td class="kw">get_db</td><td class="tp2">callable</td><td class="df">None</td><td>FastAPI dependency yielding DB session (SQLAlchemy async or sync)</td></tr>
+          <tr><td class="kw">router_prefix</td><td class="tp2">str</td><td class="df">"/auth"</td><td>URL prefix for all auth endpoints</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
+<hr class="dv" />
 
-<div class="divider"></div>
-
-<!-- ── Footer ──────────────────────────────────────────────────────────────── -->
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">🔐 FastAuth</div>
-  <p class="footer-tagline">Professional authentication framework for FastAPI</p>
-
-  <div class="footer-links">
-    <a href="https://pypi.org/project/fastauth-framework/" target="_blank">
-      <i class="fi fi-sr-box-open"></i> PyPI
-    </a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank">
-      <i class="fi fi-brands-github"></i> GitHub
-    </a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues" target="_blank">
-      <i class="fi fi-sr-bug"></i> Issues
-    </a>
-    <a href="https://beacons.ai/akhmedcodes" target="_blank">
-      <i class="fi fi-sr-user"></i> Author
-    </a>
+  <div class="flogo"><i class="fa-solid fa-lock"></i> FastAuth</div>
+  <p class="ftag">Professional authentication framework for FastAPI</p>
+  <div class="flinks">
+    <a href="https://pypi.org/project/fastauth-framework/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
+    <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
   </div>
-
-  <p class="footer-author">
-    Built with ❤️ by
-    <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a>
-    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.7
-  </p>
+  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.7</p>
 </footer>
 
-<!-- ── Back to top ─────────────────────────────────────────────────────────── -->
-<button id="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
-  <i class="fi fi-sr-angle-up"></i>
+<button id="top" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <i class="fa-solid fa-angle-up"></i>
 </button>
 
-<!-- ── Scripts ─────────────────────────────────────────────────────────────── -->
 <script>
-  // highlight.js init
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.hljs) hljs.highlightAll();
-  });
+  document.addEventListener('DOMContentLoaded', () => { if (window.hljs) hljs.highlightAll(); });
 
-  // Navbar scroll effect
-  const navbar = document.getElementById('navbar');
-  const topBtn = document.getElementById('top-btn');
   window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 20);
-    topBtn.classList.toggle('show', window.scrollY > 400);
+    document.getElementById('nav').classList.toggle('scrolled', scrollY > 20);
+    document.getElementById('top').classList.toggle('show', scrollY > 400);
   });
 
-  // Tab switching
-  function switchEmailTab(el, name) {
-    const section = el.closest('section');
-    section.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    ['sub-email-backend','sub-email-frontend','sub-email-js'].forEach(id => {
-      const el2 = document.getElementById(id);
-      if (el2) el2.style.display = 'none';
+  const QS_IDS = ['t-min','t-tort','t-async','t-sync','t-adv'];
+  const EM_IDS = ['e-back','e-front','e-js'];
+
+  function st(btn, id) { switchTabs(btn, id, QS_IDS); }
+  function et(btn, id) { switchTabs(btn, id, EM_IDS); }
+
+  function switchTabs(btn, id, ids) {
+    btn.closest('.tr').querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+    btn.classList.add('on');
+    ids.forEach(i => {
+      const el = document.getElementById(i);
+      if (el) { el.classList.remove('on'); el.style.display = ''; }
     });
-    const target = document.getElementById('sub-' + name);
+    const target = document.getElementById(id);
     if (target) {
-      target.style.display = 'block';
-      if (window.hljs) target.querySelectorAll('code').forEach(b => { if (!b.dataset.highlighted) hljs.highlightElement(b); });
+      target.classList.add('on');
+      if (window.hljs) target.querySelectorAll('code:not([data-highlighted])').forEach(b => hljs.highlightElement(b));
     }
   }
 
-  function switchSubTab(el, name) {
-    // async/sync sub-tabs inside the SQLAlchemy tab
-    const parent = el.closest('.tab-content');
-    parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    parent.querySelectorAll('[id^="sub-sql-"]').forEach(d => d.style.display = 'none');
-    const target = document.getElementById('sub-' + name);
-    if (target) {
-      target.style.display = 'block';
-      if (window.hljs) target.querySelectorAll('code').forEach(b => { if (!b.dataset.highlighted) hljs.highlightElement(b); });
-    }
-  }
-
-  function switchTab(el, name) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('tab-' + name).classList.add('active');
-    // Re-highlight new content
-    if (window.hljs) {
-      document.querySelectorAll('#tab-' + name + ' code').forEach(block => {
-        if (!block.dataset.highlighted) hljs.highlightElement(block);
-      });
-    }
-  }
-
-  // Copy install command (hero)
   function copyInstall(el) {
     navigator.clipboard.writeText('pip install fastauth-framework').then(() => {
-      const btn = el.querySelector('.copy-btn');
-      btn.textContent = 'copied!';
-      btn.style.color = 'var(--green)';
-      setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 1800);
+      const h = el.querySelector('.chint');
+      h.textContent = 'copied!'; h.style.color = 'var(--green)';
+      setTimeout(() => { h.textContent = 'click to copy'; h.style.color = ''; }, 1800);
     });
   }
 
-  // Copy code block
-  function copyCode(btn) {
-    const code = btn.closest('.code-wrap').querySelector('code');
+  function cp(btn) {
+    const code = btn.closest('.cb').querySelector('code');
     navigator.clipboard.writeText(code.innerText).then(() => {
-      btn.textContent = 'copied!';
-      btn.style.color = 'var(--green)';
+      btn.textContent = 'copied!'; btn.style.color = 'var(--green)';
       setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 1800);
     });
   }
-
-  // Smooth active nav highlight
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        navLinks.forEach(l => {
-          l.style.color = l.getAttribute('href') === '#' + e.target.id
-            ? 'var(--text)' : '';
-        });
-      }
-    });
-  }, { rootMargin: '-40% 0px -50% 0px' });
-  sections.forEach(s => observer.observe(s));
 </script>
-
 </body>
 </html>
