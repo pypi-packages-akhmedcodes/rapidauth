@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+wheels/
+share/python-wheels/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# Secrets / credentials  ← NEVER commit these
+.env
+.env.*
+!.env.example
+*.secret
+secrets.py
+auth_config.py
+
+# Databases (SQLite dev files)
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+nosetests.xml
+coverage.xml
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# Logs
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Distribution artifacts
+MANIFEST
