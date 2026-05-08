@@ -444,7 +444,7 @@
   <div class="hero-glow"></div>
 
   <div class="hero-badge">
-    <i class="fi fi-sr-star"></i> v0.2.1 — Now on PyPI
+    <i class="fi fi-sr-star"></i> fastauth-framework 0.2.3 — Now on PyPI
   </div>
 
   <h1 class="hero-title">
@@ -673,7 +673,7 @@ class User(Model):
         table = "users"
 
 app  = FastAPI()
-auth = FastAuth(user_model=User, jwt_secret="super-secret-key-32chars!!")
+auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it")
 app.include_router(auth.router)
 
 register_tortoise(app, db_url="sqlite://./app.db",
@@ -723,7 +723,7 @@ async def lifespan(app):
     yield
 
 app  = FastAPI(lifespan=lifespan)
-auth = FastAuth(user_model=User, jwt_secret="super-secret!!", get_db=get_db)
+auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
 app.include_router(auth.router)
 
 get_current_user = auth.get_current_user()
@@ -1218,7 +1218,7 @@ async def dashboard(user = Depends(auth.get_current_user())):
   <p class="footer-author">
     Built with ❤️ by
     <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a>
-    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.1
+    &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v0.2.3
   </p>
 </footer>
 
