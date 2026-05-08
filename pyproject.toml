@@ -4,12 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fastauth-framework"
-version = "0.2.0"
+version = "0.2.1"
 description = "Professional plug-and-play authentication framework for FastAPI"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 keywords = ["fastapi", "auth", "jwt", "oauth", "authentication", "security"]
+authors = [
+    {name = "akhmedcodes", email = "axmadjonqaxxorovc@gmail.com"},
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Framework :: FastAPI",
@@ -49,6 +52,12 @@ dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
 ]
+
+[project.urls]
+Homepage       = "https://github.com/pypi-packages-akhmedcodes/fastauth"
+Repository     = "https://github.com/pypi-packages-akhmedcodes/fastauth"
+"Bug Tracker"  = "https://github.com/pypi-packages-akhmedcodes/fastauth/issues"
+Author         = "https://beacons.ai/akhmedcodes"
 
 [project.scripts]
 fastauth = "fastauth.cli:main"

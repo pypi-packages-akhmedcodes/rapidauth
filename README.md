@@ -2,9 +2,10 @@
 
 **Professional plug-and-play authentication framework for FastAPI.**
 
-[![PyPI version](https://badge.fury.io/py/fastauth.svg)](https://badge.fury.io/py/fastauth)
-[![Python](https://img.shields.io/pypi/pyversions/fastauth)](https://pypi.org/project/fastauth/)
+[![PyPI version](https://badge.fury.io/py/fastauth-framework.svg)](https://pypi.org/project/fastauth-framework/)
+[![Python](https://img.shields.io/pypi/pyversions/fastauth-framework)](https://pypi.org/project/fastauth-framework/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Author](https://img.shields.io/badge/author-akhmedcodes-blue)](https://beacons.ai/akhmedcodes)
 
 ---
 
@@ -259,6 +260,12 @@ fastauth version     # print version
 
 ---
 
+## Author
+
+**akhmedcodes** — [beacons.ai/akhmedcodes](https://beacons.ai/akhmedcodes)
+
+---
+
 ## License
 
-MIT © FastAuth Contributors
+MIT © akhmedcodes
