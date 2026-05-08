@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fastauth-framework"
-version = "0.2.2"
+version = "0.2.3"
 description = "Professional plug-and-play authentication framework for FastAPI"
 readme = "README.md"
 license = "MIT"
@@ -54,9 +54,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage       = "https://github.com/pypi-packages-akhmedcodes/fastauth"
-Repository     = "https://github.com/pypi-packages-akhmedcodes/fastauth"
-"Bug Tracker"  = "https://github.com/pypi-packages-akhmedcodes/fastauth/issues"
+Homepage       = "https://github.com/pypi-packages-akhmedcodes/fastauth-framework"
+Repository     = "https://github.com/pypi-packages-akhmedcodes/fastauth-framework"
+"Bug Tracker"  = "https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues"
 Author         = "https://beacons.ai/akhmedcodes"
 
 [project.scripts]
