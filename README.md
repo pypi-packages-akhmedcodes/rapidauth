@@ -26,13 +26,13 @@ app.include_router(auth.router)
 ## Install
 
 ```bash
-pip install fastauth
+pip install fastauth-framework
 
 # With Tortoise ORM (recommended for async):
-pip install "fastauth[tortoise]"
+pip install "fastauth-framework[tortoise]"
 
 # With SQLAlchemy / SQLModel:
-pip install "fastauth[sqlalchemy]"
+pip install "fastauth-framework[sqlalchemy]"
 ```
 
 ---
