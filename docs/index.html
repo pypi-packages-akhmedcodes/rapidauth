@@ -688,9 +688,22 @@ async def profile(user: User = Depends(get_current_user)):
       </div>
 
       <div id="tab-sqlalchemy" class="tab-content">
-        <div class="code-wrap">
-          <button class="code-copy" onclick="copyCode(this)">copy</button>
-          <pre><code class="language-python">from contextlib import asynccontextmanager
+        <!-- sub-tabs: async / sync -->
+        <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+          <button class="tab active" style="border-radius:var(--radius-sm)"
+            onclick="switchSubTab(this,'sql-async')">
+            <i class="fi fi-sr-bolt"></i> --async
+          </button>
+          <button class="tab" style="border-radius:var(--radius-sm)"
+            onclick="switchSubTab(this,'sql-sync')">
+            <i class="fi fi-sr-layers"></i> --sync
+          </button>
+        </div>
+
+        <div id="sub-sql-async">
+          <div class="code-wrap">
+            <button class="code-copy" onclick="copyCode(this)">copy</button>
+            <pre><code class="language-python">from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
@@ -724,13 +737,52 @@ async def lifespan(app):
 
 app  = FastAPI(lifespan=lifespan)
 auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
-app.include_router(auth.router)
+app.include_router(auth.router)</code></pre>
+          </div>
+        </div>
 
-get_current_user = auth.get_current_user()
+        <div id="sub-sql-sync" style="display:none">
+          <div class="code-wrap">
+            <button class="code-copy" onclick="copyCode(this)">copy</button>
+            <pre><code class="language-python">from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends
+from sqlalchemy import create_engine, Boolean, Integer, String, JSON
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+from fastauth import FastAuth
 
-@app.get("/profile")
-async def profile(user: User = Depends(get_current_user)):
-    return {"username": user.username}</code></pre>
+# NOTE: sync sessions block the event loop — use async for production
+engine = create_engine("sqlite:///./app.db", connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+class Base(DeclarativeBase): pass
+
+class User(Base):
+    __tablename__ = "users"
+    id          : Mapped[int]  = mapped_column(Integer, primary_key=True)
+    username    : Mapped[str]  = mapped_column(String(100), unique=True)
+    email       : Mapped[str]  = mapped_column(String(254), unique=True)
+    password    : Mapped[str]  = mapped_column(String(200))
+    is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
+    is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
+    roles       : Mapped[list] = mapped_column(JSON, default=list)
+
+def get_db():          # ← sync generator, no async/await
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@asynccontextmanager
+async def lifespan(app):
+    Base.metadata.create_all(bind=engine)
+    yield
+
+app  = FastAPI(lifespan=lifespan)
+# FastAuth auto-detects sync vs async session at runtime ✓
+auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
+app.include_router(auth.router)</code></pre>
+          </div>
         </div>
       </div>
 
@@ -1309,6 +1361,19 @@ async def dashboard(user = Depends(auth.get_current_user())):
   });
 
   // Tab switching
+  function switchSubTab(el, name) {
+    // async/sync sub-tabs inside the SQLAlchemy tab
+    const parent = el.closest('.tab-content');
+    parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    parent.querySelectorAll('[id^="sub-sql-"]').forEach(d => d.style.display = 'none');
+    const target = document.getElementById('sub-' + name);
+    if (target) {
+      target.style.display = 'block';
+      if (window.hljs) target.querySelectorAll('code').forEach(b => { if (!b.dataset.highlighted) hljs.highlightElement(b); });
+    }
+  }
+
   function switchTab(el, name) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));

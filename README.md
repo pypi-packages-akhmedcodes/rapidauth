@@ -230,6 +230,10 @@ async def admin(user=Depends(require_role("admin"))):
 
 ## SQLAlchemy / SQLModel
 
+FastAuth auto-detects whether your session is **async** or **sync** at runtime.
+
+### Async (recommended)
+
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -239,14 +243,31 @@ AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=F
 
 async def get_db():
     async with AsyncSessionLocal() as session:
-        yield session  # generator — FastAPI handles the lifecycle
+        yield session  # generator — FastAPI handles lifecycle
 
-auth = FastAuth(
-    user_model=User,
-    jwt_secret="secret",
-    get_db=get_db,   # ← pass session dependency
-)
+auth = FastAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
 ```
+
+### Sync
+
+```python
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine("sqlite:///./app.db", connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+auth = FastAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
+```
+
+> **Note:** sync sessions block the FastAPI event loop. Use async for production.
 
 ---
 
