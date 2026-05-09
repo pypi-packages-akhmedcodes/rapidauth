@@ -16,8 +16,8 @@
   <meta property="og:site_name" content="RapidAuth" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="RapidAuth — Auth Framework for FastAPI" />
-  <meta name="twitter:description" content="JWT, OAuth2, RBAC, bcrypt. pip install rapidauth-framework" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RapidAuth","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","description":"Professional plug-and-play backend authentication framework for FastAPI.","url":"https://pypi.org/project/rapidauth-framework/","author":{"@type":"Person","name":"akhmedcodes","url":"https://beacons.ai/akhmedcodes"},"license":"https://opensource.org/licenses/MIT","programmingLanguage":"Python","codeRepository":"https://github.com/pypi-packages-akhmedcodes/rapidauth"}</script>
+  <meta name="twitter:description" content="JWT, OAuth2, RBAC, bcrypt. pip install rapidauth" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RapidAuth","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","description":"Professional plug-and-play backend authentication framework for FastAPI.","url":"https://pypi.org/project/rapidauth/","author":{"@type":"Person","name":"akhmedcodes","url":"https://beacons.ai/akhmedcodes"},"license":"https://opensource.org/licenses/MIT","programmingLanguage":"Python","codeRepository":"https://github.com/pypi-packages-akhmedcodes/rapidauth"}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -297,15 +297,15 @@
     <a href="#config">Config</a>
   </div>
   <div class="na">
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth-framework" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="https://pypi.org/project/rapidauth-framework/" target="_blank" class="btn bp"><i class="fa-solid fa-box"></i> PyPI</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
+    <a href="https://pypi.org/project/rapidauth/" target="_blank" class="btn bp"><i class="fa-solid fa-box"></i> PyPI</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
   <div class="hglow"></div>
-  <div class="hbadge"><i class="fa-solid fa-tag"></i> rapidauth-framework 0.2.9.3</div>
+  <div class="hbadge"><i class="fa-solid fa-tag"></i> rapidauth 0.2.9.3</div>
   <h1>Auth for FastAPI.<br><span class="grad">Pure backend. Pure JSON.</span></h1>
   <p class="hsub">
     JWT, OAuth2, bcrypt/argon2, refresh rotation, RBAC, email verification, rate limiting —
@@ -314,20 +314,20 @@
   </p>
   <div class="hinstall" onclick="copyInstall(this)">
     <i class="fa-solid fa-terminal" style="color:var(--ind)"></i>
-    <span>pip install rapidauth-framework</span>
+    <span>pip install rapidauth</span>
     <span class="chint">click to copy</span>
   </div>
   <div class="hcta">
     <a href="#quickstart" class="btn bp"><i class="fa-solid fa-rocket"></i> Get Started</a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth-framework" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
     <a href="https://beacons.ai/akhmedcodes" target="_blank" class="btn bo"><i class="fa-solid fa-user"></i> Author</a>
   </div>
   <div class="hbadges">
-    <img src="https://img.shields.io/pypi/v/rapidauth-framework?color=6366f1&label=PyPI&style=flat-square" alt="version" />
-    <img src="https://img.shields.io/pypi/pyversions/rapidauth-framework?color=22d3ee&style=flat-square" alt="python" />
-    <img src="https://img.shields.io/github/stars/pypi-packages-akhmedcodes/rapidauth-framework?color=fbbf24&style=flat-square" alt="stars" />
+    <img src="https://img.shields.io/pypi/v/rapidauth?color=6366f1&label=PyPI&style=flat-square" alt="version" />
+    <img src="https://img.shields.io/pypi/pyversions/rapidauth?color=22d3ee&style=flat-square" alt="python" />
+    <img src="https://img.shields.io/github/stars/pypi-packages-akhmedcodes/rapidauth?color=fbbf24&style=flat-square" alt="stars" />
     <img src="https://img.shields.io/badge/license-MIT-34d399?style=flat-square" alt="license" />
-    <img src="https://img.shields.io/pypi/dm/rapidauth-framework?color=f87171&style=flat-square&label=downloads" alt="downloads" />
+    <img src="https://img.shields.io/pypi/dm/rapidauth?color=f87171&style=flat-square&label=downloads" alt="downloads" />
   </div>
 </section>
 <hr class="dv" />
@@ -363,11 +363,11 @@
     <h2>Choose your ORM</h2>
     <p class="sd">RapidAuth auto-detects Tortoise ORM and SQLAlchemy from your model class. Pass <code>get_db</code> for SQLAlchemy; omit it for Tortoise.</p>
     <div class="ig">
-      <div class="ic"><h4><i class="fa-solid fa-box" style="color:var(--ind)"></i> Base only</h4><code>pip install rapidauth-framework</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--green)"></i> Tortoise ORM <span class="tag tg">recommended async</span></h4><code>pip install "rapidauth-framework[tortoise]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x</h4><code>pip install "rapidauth-framework[sqlalchemy]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--cyan)"></i> SQLModel</h4><code>pip install "rapidauth-framework[sqlmodel]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-star" style="color:var(--yellow)"></i> All extras</h4><code>pip install "rapidauth-framework[all]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-box" style="color:var(--ind)"></i> Base only</h4><code>pip install rapidauth</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--green)"></i> Tortoise ORM <span class="tag tg">recommended async</span></h4><code>pip install "rapidauth[tortoise]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x</h4><code>pip install "rapidauth[sqlalchemy]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--cyan)"></i> SQLModel</h4><code>pip install "rapidauth[sqlmodel]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-star" style="color:var(--yellow)"></i> All extras</h4><code>pip install "rapidauth[all]"</code></div>
     </div>
   </div>
 </section>
@@ -382,8 +382,8 @@
 
     <div class="smb">
       <div class="srow"><div class="snum">1</div><h4>Install</h4></div>
-      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-bash">pip install "rapidauth-framework[tortoise]"    # Tortoise ORM + SQLite
-pip install "rapidauth-framework[sqlalchemy]"  # SQLAlchemy async</code></pre></div>
+      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-bash">pip install "rapidauth[tortoise]"    # Tortoise ORM + SQLite
+pip install "rapidauth[sqlalchemy]"  # SQLAlchemy async</code></pre></div>
     </div>
 
     <div class="smb">
@@ -867,7 +867,7 @@ async def dev_reset_token(email: str):
     </div>
     <div class="clother">
       <div class="clrow2"><span class="clcmd">rapidauth init</span><span class="cldesc">Scaffold <code>.env.example</code> and <code>auth_config.py</code></span></div>
-      <div class="clrow2"><span class="clcmd">rapidauth version</span><span class="cldesc">Print installed rapidauth-framework version</span></div>
+      <div class="clrow2"><span class="clcmd">rapidauth version</span><span class="cldesc">Print installed rapidauth version</span></div>
     </div>
     <div class="notice ny" style="margin-top:1rem"><i class="fa-solid fa-circle-info" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i><code>--sync</code> generates synchronous SQLAlchemy code. Sync calls block the FastAPI event loop — use <code>--async</code> for production.</div>
   </div>
@@ -922,9 +922,9 @@ async def dev_reset_token(email: str):
   <div class="flogo"><i class="fa-solid fa-lock"></i> RapidAuth</div>
   <p class="ftag">Professional backend authentication framework for FastAPI</p>
   <div class="flinks">
-    <a href="https://pypi.org/project/rapidauth-framework/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth-framework" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth-framework/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
+    <a href="https://pypi.org/project/rapidauth/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
     <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
   </div>
   <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.9.3</p>
@@ -963,7 +963,7 @@ async def dev_reset_token(email: str):
   }
 
   function copyInstall(el) {
-    navigator.clipboard.writeText('pip install rapidauth-framework').then(() => {
+    navigator.clipboard.writeText('pip install rapidauth').then(() => {
       const h = el.querySelector('.chint');
       h.textContent = 'copied!'; h.style.color = 'var(--green)';
       setTimeout(() => { h.textContent = 'click to copy'; h.style.color = ''; }, 1800);

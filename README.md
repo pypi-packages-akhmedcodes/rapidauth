@@ -2,9 +2,9 @@
 
 **Professional plug-and-play authentication framework for FastAPI.**
 
-[![PyPI version](https://img.shields.io/pypi/v/rapidauth-framework?color=6366f1&label=PyPI&style=flat-square)](https://pypi.org/project/rapidauth-framework/)
-[![Python](https://img.shields.io/pypi/pyversions/rapidauth-framework?color=22d3ee&style=flat-square)](https://pypi.org/project/rapidauth-framework/)
-[![Downloads](https://img.shields.io/pypi/dm/rapidauth-framework?color=34d399&style=flat-square)](https://pypi.org/project/rapidauth-framework/)
+[![PyPI version](https://img.shields.io/pypi/v/rapidauth?color=6366f1&label=PyPI&style=flat-square)](https://pypi.org/project/rapidauth/)
+[![Python](https://img.shields.io/pypi/pyversions/rapidauth?color=22d3ee&style=flat-square)](https://pypi.org/project/rapidauth/)
+[![Downloads](https://img.shields.io/pypi/dm/rapidauth?color=34d399&style=flat-square)](https://pypi.org/project/rapidauth/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-fbbf24?style=flat-square)](LICENSE)
 [![Author](https://img.shields.io/badge/author-akhmedcodes-6366f1?style=flat-square)](https://beacons.ai/akhmedcodes)
 
@@ -37,16 +37,16 @@ RapidAuth is a **pure backend** authentication framework. Every endpoint returns
 ## Install
 
 ```bash
-pip install rapidauth-framework
+pip install rapidauth
 
 # Tortoise ORM (recommended async ORM):
-pip install "rapidauth-framework[tortoise]"
+pip install "rapidauth[tortoise]"
 
 # SQLAlchemy async or sync:
-pip install "rapidauth-framework[sqlalchemy]"
+pip install "rapidauth[sqlalchemy]"
 
 # Everything:
-pip install "rapidauth-framework[all]"
+pip install "rapidauth[all]"
 ```
 
 ---
