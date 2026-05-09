@@ -7,8 +7,8 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 if TYPE_CHECKING:
-    from fastauth.managers.user import UserManager
-    from fastauth.jwt.handler import JWTHandler
+    from rapidauth.managers.user import UserManager
+    from rapidauth.jwt.handler import JWTHandler
 
 
 class _AnonymousUser:

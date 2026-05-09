@@ -6,11 +6,11 @@ from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from fastauth.config.settings import FastAuthSettings
-from fastauth.exceptions import UserNotFoundError
-from fastauth.managers.rate_limit import RateLimiter
-from fastauth.managers.user import UserManager
-from fastauth.schemas.auth import (
+from rapidauth.config.settings import RapidAuthSettings
+from rapidauth.exceptions import UserNotFoundError
+from rapidauth.managers.rate_limit import RateLimiter
+from rapidauth.managers.user import UserManager
+from rapidauth.schemas.auth import (
     ChangePasswordSchema,
     EmailVerifySchema,
     LoginSchema,
@@ -34,7 +34,7 @@ def _get_token(
 
 # ── URL helpers ───────────────────────────────────────────────────────────────
 
-def _build_verify_url(settings: FastAuthSettings, token: str) -> str:
+def _build_verify_url(settings: RapidAuthSettings, token: str) -> str:
     """Return the full email verification link.
 
     Uses verify_email_url if set; otherwise falls back to the backend
@@ -45,7 +45,7 @@ def _build_verify_url(settings: FastAuthSettings, token: str) -> str:
     return f"{base}?token={token}"
 
 
-def _build_reset_url(settings: FastAuthSettings, token: str) -> Optional[str]:
+def _build_reset_url(settings: RapidAuthSettings, token: str) -> Optional[str]:
     """Return the full password-reset link, or None if no URL is configured.
 
     When None is returned the caller should send a dev-mode email that
@@ -60,7 +60,7 @@ def _build_reset_url(settings: FastAuthSettings, token: str) -> Optional[str]:
 
 def build_router(
     user_manager: UserManager,
-    settings: FastAuthSettings,
+    settings: RapidAuthSettings,
     rate_limiter: Optional[RateLimiter] = None,
     email_sender: Optional[Any] = None,
     oauth_providers: Optional[Dict[str, Any]] = None,
@@ -82,7 +82,7 @@ def build_router(
         token: Optional[str] = Depends(_get_token),
         extra: Dict[str, Any] = Depends(get_extra),
     ) -> Any:
-        from fastauth.exceptions import TokenInvalidError
+        from rapidauth.exceptions import TokenInvalidError
         if token is None:
             raise TokenInvalidError()
         payload = user_manager._jwt.decode_access(token)
@@ -298,7 +298,7 @@ def _register_oauth_routes(
     name: str,
     provider: Any,
     user_manager: UserManager,
-    settings: FastAuthSettings,
+    settings: RapidAuthSettings,
     extra_kwargs_factory: Optional[Callable],
 ) -> None:
     import secrets as _secrets
@@ -332,7 +332,7 @@ def _register_oauth_routes(
         user = await user_manager.get_by_email(email, **extra) if email else None
         if user is None:
             import re
-            from fastauth.utils.helpers import generate_token
+            from rapidauth.utils.helpers import generate_token
 
             safe_username = re.sub(r"[^a-zA-Z0-9_-]", "_", username)[:30]
             base_name = safe_username
@@ -361,7 +361,7 @@ def _register_oauth_routes(
 
 def _set_cookies(
     response: Response,
-    settings: FastAuthSettings,
+    settings: RapidAuthSettings,
     access: str,
     refresh: str,
 ) -> None:
@@ -379,12 +379,12 @@ def _set_cookies(
         )
 
 
-def _clear_cookies(response: Response, settings: FastAuthSettings) -> None:
+def _clear_cookies(response: Response, settings: RapidAuthSettings) -> None:
     response.delete_cookie("refresh_token")
     response.delete_cookie("access_token")
 
 
-def _token_response(settings: FastAuthSettings, access: str, refresh: str) -> TokenSchema:
+def _token_response(settings: RapidAuthSettings, access: str, refresh: str) -> TokenSchema:
     include_refresh = settings.refresh_token_mode in ("body", "both")
     return TokenSchema(
         access_token=access,

@@ -16,8 +16,8 @@ from sqlalchemy import Boolean, Integer, String, JSON, create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
-from fastauth import FastAuth
-from fastauth.exceptions import PermissionDeniedError
+from rapidauth import RapidAuth
+from rapidauth.exceptions import PermissionDeniedError
 
 
 class Base(DeclarativeBase):
@@ -52,7 +52,7 @@ async def get_async_db():
 
 async_app = FastAPI(title="FastAuth Async Test")
 
-async_auth = FastAuth(
+async_auth = RapidAuth(
     user_model=User,
     jwt_secret="test-secret-async-min-32-chars!!",
     password_hasher="bcrypt",
@@ -111,7 +111,7 @@ def get_sync_db():
 
 sync_app = FastAPI(title="FastAuth Sync Test")
 
-sync_auth = FastAuth(
+sync_auth = RapidAuth(
     user_model=User,
     jwt_secret="test-secret-sync--min-32-chars!!",
     password_hasher="bcrypt",

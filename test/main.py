@@ -33,8 +33,8 @@ from tortoise import fields
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.models import Model
 
-from fastauth import FastAuth
-from fastauth.exceptions import PermissionDeniedError
+from rapidauth import RapidAuth
+from rapidauth.exceptions import PermissionDeniedError
 
 # ── Database model ────────────────────────────────────────────────────────────
 
@@ -89,7 +89,7 @@ register_tortoise(
 
 # ── FastAuth setup ────────────────────────────────────────────────────────────
 
-auth = FastAuth(
+auth = RapidAuth(
     user_model=User,
     jwt_secret="super-secret-key-change-in-production-please-32chars",
     jwt={

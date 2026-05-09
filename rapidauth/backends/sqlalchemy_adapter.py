@@ -30,7 +30,7 @@ class SQLAlchemyAdapter(BaseAdapter):
             finally:
                 db.close()
 
-    FastAuth auto-detects which one is used at query time via inspect.isawaitable.
+    RapidAuth auto-detects which one is used at query time via inspect.isawaitable.
     """
 
     def __init__(self, model: type, get_db: Callable, id_field: str = "id") -> None:
@@ -41,7 +41,7 @@ class SQLAlchemyAdapter(BaseAdapter):
         if session is None:
             raise RuntimeError(
                 "SQLAlchemyAdapter requires a `session` kwarg. "
-                "Pass get_db=your_session_dependency to FastAuth()."
+                "Pass get_db=your_session_dependency to RapidAuth()."
             )
         from sqlalchemy import select
 
@@ -53,7 +53,7 @@ class SQLAlchemyAdapter(BaseAdapter):
         if session is None:
             raise RuntimeError(
                 "SQLAlchemyAdapter requires a `session` kwarg. "
-                "Pass get_db=your_session_dependency to FastAuth()."
+                "Pass get_db=your_session_dependency to RapidAuth()."
             )
         instance = self.model(**data)
         session.add(instance)
@@ -65,7 +65,7 @@ class SQLAlchemyAdapter(BaseAdapter):
         if session is None:
             raise RuntimeError(
                 "SQLAlchemyAdapter requires a `session` kwarg. "
-                "Pass get_db=your_session_dependency to FastAuth()."
+                "Pass get_db=your_session_dependency to RapidAuth()."
             )
         for key, val in data.items():
             setattr(instance, key, val)

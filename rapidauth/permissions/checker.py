@@ -4,7 +4,7 @@ from typing import Any, Callable, List
 
 from fastapi import Depends
 
-from fastauth.exceptions import PermissionDeniedError
+from rapidauth.exceptions import PermissionDeniedError
 
 
 class PermissionChecker:

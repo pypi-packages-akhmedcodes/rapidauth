@@ -1,13 +1,13 @@
 """
-FastAuth — Professional plug-and-play authentication framework for FastAPI.
+RapidAuth — Professional plug-and-play authentication framework for FastAPI.
 
 Minimal usage::
 
     from fastapi import FastAPI
-    from fastauth import FastAuth
+    from rapidauth import RapidAuth
 
     app = FastAPI()
-    auth = FastAuth(user_model=User, jwt_secret="supersecret")
+    auth = RapidAuth(user_model=User, jwt_secret="supersecret")
     app.include_router(auth.router)
 
     @app.get("/me")
@@ -15,9 +15,9 @@ Minimal usage::
         return user
 """
 
-from fastauth.core import FastAuth
-from fastauth.decorators.auth import login_required, permission_required, role_required
-from fastauth.exceptions import (
+from rapidauth.core import RapidAuth
+from rapidauth.decorators.auth import login_required, permission_required, role_required
+from rapidauth.exceptions import (
     AccountInactiveError,
     AuthException,
     EmailNotVerifiedError,
@@ -29,7 +29,7 @@ from fastauth.exceptions import (
     UserAlreadyExistsError,
     UserNotFoundError,
 )
-from fastauth.schemas.auth import (
+from rapidauth.schemas.auth import (
     LoginSchema,
     MessageSchema,
     RegisterSchema,
@@ -37,9 +37,9 @@ from fastauth.schemas.auth import (
     UserBaseSchema,
 )
 
-__version__ = "0.2.7"
+__version__ = "1.0.0"
 __all__ = [
-    "FastAuth",
+    "RapidAuth",
     # Decorators
     "login_required",
     "role_required",

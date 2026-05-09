@@ -1,5 +1,5 @@
 """
-Integration test suite for FastAuth.
+Integration test suite for RapidAuth.
 Run: python3.10 test/test_fastauth.py
 """
 
@@ -16,8 +16,8 @@ from tortoise import fields
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.models import Model
 
-from fastauth import FastAuth
-from fastauth.exceptions import PermissionDeniedError
+from rapidauth import RapidAuth
+from rapidauth.exceptions import PermissionDeniedError
 
 
 class User(Model):
@@ -34,9 +34,9 @@ class User(Model):
         table = "users"
 
 
-app = FastAPI(title="FastAuth Test")
+app = FastAPI(title="RapidAuth Test")
 
-auth = FastAuth(
+auth = RapidAuth(
     user_model=User,
     jwt_secret="test-secret-key-minimum-16-chars!!",
     password_hasher="bcrypt",
@@ -113,7 +113,7 @@ def run_tests() -> bool:
             print(f"  FAIL  {name}  →  {detail}")
             failed += 1
 
-    print("\n── FastAuth Integration Tests ──────────────────────────────────────")
+    print("\n── RapidAuth Integration Tests ──────────────────────────────────────")
 
     with TestClient(app, raise_server_exceptions=True) as client:
 

@@ -1,13 +1,14 @@
-# FastAuth
+# RapidAuth
 
 **Professional plug-and-play authentication framework for FastAPI.**
 
-[![PyPI version](https://img.shields.io/pypi/v/fastauth-framework?color=6366f1&label=PyPI&style=flat-square)](https://pypi.org/project/fastauth-framework/)
-[![Python](https://img.shields.io/pypi/pyversions/fastauth-framework?color=22d3ee&style=flat-square)](https://pypi.org/project/fastauth-framework/)
-[![Downloads](https://img.shields.io/pypi/dm/fastauth-framework?color=34d399&style=flat-square)](https://pypi.org/project/fastauth-framework/)
+[![PyPI version](https://img.shields.io/pypi/v/rapidauth-framework?color=6366f1&label=PyPI&style=flat-square)](https://pypi.org/project/rapidauth-framework/)
+[![Python](https://img.shields.io/pypi/pyversions/rapidauth-framework?color=22d3ee&style=flat-square)](https://pypi.org/project/rapidauth-framework/)
+[![Downloads](https://img.shields.io/pypi/dm/rapidauth-framework?color=34d399&style=flat-square)](https://pypi.org/project/rapidauth-framework/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-fbbf24?style=flat-square)](LICENSE)
+[![Author](https://img.shields.io/badge/author-akhmedcodes-6366f1?style=flat-square)](https://beacons.ai/akhmedcodes)
 
-FastAuth is a **pure backend** authentication framework. Every endpoint returns JSON. You wire in one router and immediately get a complete, production-grade auth system. Your frontend (React, Vue, mobile app) talks to the API over HTTP.
+RapidAuth is a **pure backend** authentication framework. Every endpoint returns JSON. Wire in one router and get a complete, production-grade auth system instantly. Your frontend (React, Vue, mobile app) talks to the API over HTTP.
 
 ---
 
@@ -15,11 +16,11 @@ FastAuth is a **pure backend** authentication framework. Every endpoint returns 
 
 1. [Install](#install)
 2. [Quick Start](#quick-start)
-3. [Tortoise ORM Setup](#tortoise-orm-setup) ← fix for the `No TortoiseContext` error
+3. [Tortoise ORM Setup](#tortoise-orm-setup)
 4. [SQLAlchemy Setup](#sqlalchemy-setup)
 5. [All Endpoints](#all-endpoints)
-6. [FastAuth() — full parameter reference](#fastauth--full-parameter-reference)
-7. [FastAuth methods](#fastauth-methods)
+6. [RapidAuth() — full parameter reference](#rapidauth--full-parameter-reference)
+7. [RapidAuth methods](#rapidauth-methods)
 8. [UserManager methods](#usermanager-methods)
 9. [Email Setup](#email-setup)
 10. [Role-Based Access Control](#role-based-access-control)
@@ -36,16 +37,16 @@ FastAuth is a **pure backend** authentication framework. Every endpoint returns 
 ## Install
 
 ```bash
-pip install fastauth-framework
+pip install rapidauth-framework
 
 # Tortoise ORM (recommended async ORM):
-pip install "fastauth-framework[tortoise]"
+pip install "rapidauth-framework[tortoise]"
 
 # SQLAlchemy async or sync:
-pip install "fastauth-framework[sqlalchemy]"
+pip install "rapidauth-framework[sqlalchemy]"
 
 # Everything:
-pip install "fastauth-framework[all]"
+pip install "rapidauth-framework[all]"
 ```
 
 ---
@@ -54,11 +55,11 @@ pip install "fastauth-framework[all]"
 
 ```python
 from fastapi import FastAPI, Depends
-from fastauth import FastAuth
+from rapidauth import RapidAuth
 from your_models import User
 
 app  = FastAPI()
-auth = FastAuth(user_model=User, jwt_secret="your-secret-min-32-chars")
+auth = RapidAuth(user_model=User, jwt_secret="your-secret-min-32-chars")
 app.include_router(auth.router)
 
 @app.get("/profile")
@@ -72,14 +73,10 @@ One `include_router` call mounts **14 endpoints** automatically.
 
 ## Tortoise ORM Setup
 
-### ⚠️ Fix: `RuntimeError: No TortoiseContext is currently active`
+> **⚠️ Tortoise ORM 1.x users** — use `RegisterTortoise` inside a `lifespan`, not the old
+> `register_tortoise` or `Tortoise.init()` alone. See the fix below.
 
-**Tortoise ORM 1.x changed how database contexts work.** Using the old
-`register_tortoise` or calling `Tortoise.init()` without
-`_enable_global_fallback=True` causes this error.
-
-**The fix:** Use `RegisterTortoise` inside a FastAPI `lifespan` context. It
-sets up the global fallback context that request handlers need automatically.
+### ✅ Correct setup (works with Tortoise ORM 1.x)
 
 ```python
 # database.py
@@ -89,29 +86,42 @@ from tortoise.contrib.fastapi import RegisterTortoise
 
 @asynccontextmanager
 async def tortoise_lifespan(app: FastAPI):
-    """Initialize Tortoise ORM on startup, close connections on shutdown."""
+    """Initialize Tortoise ORM on startup; close connections on shutdown."""
     async with RegisterTortoise(
         app,
         db_url="sqlite://./app.db",         # or postgresql+asyncpg://...
-        modules={"models": ["models"]},      # list of modules with Model classes
-        generate_schemas=True,               # creates tables if they don't exist
+        modules={"models": ["models"]},
+        generate_schemas=True,
     ):
-        yield  # server runs here
+        yield
 ```
 
 ```python
 # main.py
-from fastapi import FastAPI, Depends
-from fastauth import FastAuth
+from fastapi import FastAPI
+from rapidauth import RapidAuth
 from database import tortoise_lifespan
 from models import User
 
-app  = FastAPI(lifespan=tortoise_lifespan)   # pass the lifespan here
-auth = FastAuth(user_model=User, jwt_secret="your-secret")
+app  = FastAPI(lifespan=tortoise_lifespan)
+auth = RapidAuth(user_model=User, jwt_secret="your-secret")
 app.include_router(auth.router)
 ```
 
-### ✅ Complete Tortoise ORM example
+### ❌ Why the old way fails with Tortoise ORM 1.x
+
+Tortoise ORM 1.x requires a `TortoiseContext` to be active on every async task that
+performs DB operations. `RegisterTortoise` sets `_enable_global_fallback=True` which
+makes this context available to all request handlers automatically.
+
+Using the old `register_tortoise()` call or plain `Tortoise.init()` without
+`_enable_global_fallback=True` causes:
+
+```
+RuntimeError: No TortoiseContext is currently active.
+```
+
+### Complete Tortoise ORM example
 
 ```python
 # models.py
@@ -153,12 +163,12 @@ async def tortoise_lifespan(app: FastAPI):
 ```python
 # main.py
 from fastapi import FastAPI, Depends
-from fastauth import FastAuth
+from rapidauth import RapidAuth
 from database import tortoise_lifespan
 from models import User
 
 app  = FastAPI(title="My App", lifespan=tortoise_lifespan)
-auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-in-production")
+auth = RapidAuth(user_model=User, jwt_secret="change-this-in-production")
 app.include_router(auth.router)
 
 get_current_user = auth.get_current_user()
@@ -170,37 +180,19 @@ async def profile(user: User = Depends(get_current_user)):
 
 Run: `uvicorn main:app --reload`
 
-### PostgreSQL with Tortoise ORM
-
-```python
-@asynccontextmanager
-async def tortoise_lifespan(app):
-    async with RegisterTortoise(
-        app,
-        db_url="postgresql+asyncpg://user:password@localhost:5432/mydb",
-        modules={"models": ["models"]},
-        generate_schemas=True,
-    ):
-        yield
-```
-
-```bash
-pip install "fastauth-framework[tortoise]" asyncpg
-```
-
 ---
 
 ## SQLAlchemy Setup
 
-### Async (recommended for production)
+### Async (recommended)
 
 ```python
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from sqlalchemy import Boolean, Integer, String, JSON
-from fastauth import FastAuth
+from rapidauth import RapidAuth
 
 engine = create_async_engine("sqlite+aiosqlite:///./app.db")
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
@@ -229,11 +221,11 @@ async def lifespan(app):
     yield
 
 app  = FastAPI(lifespan=lifespan)
-auth = FastAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
+auth = RapidAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
 app.include_router(auth.router)
 ```
 
-### Sync (development only — blocks the event loop)
+### Sync (development only)
 
 ```python
 from sqlalchemy import create_engine
@@ -249,73 +241,75 @@ def get_db():
     finally:
         db.close()
 
-auth = FastAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
+auth = RapidAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
 ```
+
+> Sync sessions block the event loop. Use async for production.
 
 ---
 
 ## All Endpoints
 
-Mounted under `/auth` by default (change via `router_prefix`). All return JSON.
+Mounted under `/auth` by default (configurable via `router_prefix`). All return JSON.
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/auth/register` | — | Register a new account. Returns token pair. Sends verification or welcome email if email is configured. |
+| `POST` | `/auth/register` | — | Register account. Returns token pair. Sends verification or welcome email if configured. |
 | `POST` | `/auth/login` | — | Login with username **or** email + password. Returns token pair. Rate-limited. |
-| `GET` | `/auth/me` | Bearer | Return current user fields (id, username, email, is_active, is_verified, roles). |
-| `POST` | `/auth/refresh` | Refresh token | Issue a new token pair. Old refresh token is immediately revoked. |
-| `POST` | `/auth/logout` | Bearer | Blacklist the current access token. Clears cookies if set. |
+| `GET` | `/auth/me` | Bearer | Return current user (id, username, email, is_active, is_verified, roles). |
+| `POST` | `/auth/refresh` | Refresh token | Issue new token pair. Old refresh token immediately revoked. |
+| `POST` | `/auth/logout` | Bearer | Blacklist current access token. Clears cookies if set. |
 | `POST` | `/auth/change-password` | Bearer | Change password. Requires `old_password` + `new_password`. |
-| `POST` | `/auth/reset-password` | — | Request a password reset email. Always returns 200 (anti-enumeration). |
-| `POST` | `/auth/reset-password/confirm` | — | Confirm reset with `{"token":"...","new_password":"..."}`. Token expires in 1 hour. |
-| `GET` | `/auth/verify-email?token=…` | — | Verify email inline. Returns JSON `{"message":"Email verified successfully"}`. |
-| `POST` | `/auth/verify-email` | — | Verify email with token in body `{"token":"..."}`. |
-| `POST` | `/auth/resend-verification` | Bearer **or** `{"email":"..."}` | Resend verification email. Accepts Bearer token OR email in body — no auth needed if email is provided. Always 200. |
+| `POST` | `/auth/reset-password` | — | Request password reset email. Always 200 (anti-enumeration). |
+| `POST` | `/auth/reset-password/confirm` | — | Confirm reset: `{"token":"…","new_password":"…"}`. 1-hour expiry. |
+| `GET` | `/auth/verify-email?token=…` | — | Verify email inline → JSON `{"message":"Email verified successfully"}`. |
+| `POST` | `/auth/verify-email` | — | Verify email with `{"token":"…"}` in body. |
+| `POST` | `/auth/resend-verification` | Bearer **or** `{"email":"…"}` | Resend verification. No auth needed if email provided in body. Always 200. |
 | `POST` | `/auth/revoke-all` | Bearer | Revoke all refresh tokens for the current user. |
 | `GET` | `/auth/{provider}/login` | — | Redirect to OAuth2 provider (`google` / `github` / `discord`). |
 | `GET` | `/auth/{provider}/callback` | — | Handle OAuth2 callback, create/login user, return token pair. |
 
 ---
 
-## `FastAuth()` — full parameter reference
+## `RapidAuth()` — full parameter reference
 
 ```python
-auth = FastAuth(
+auth = RapidAuth(
     # ── Required ──────────────────────────────────────────────────────────────
     user_model=User,           # Your ORM model class (Tortoise, SQLAlchemy, SQLModel)
-    jwt_secret="...",          # Secret for signing JWTs — min 16 chars, keep in .env
+    jwt_secret="...",          # JWT signing secret — min 16 chars, store in .env
 
     # ── JWT (full config dict, alternative to jwt_secret) ─────────────────────
     jwt={
         "secret":         "your-secret-min-32-chars",
         "algorithm":      "HS256",   # default
-        "access_expire":  900,       # access token lifetime in seconds  (default 15 min)
-        "refresh_expire": 604800,    # refresh token lifetime in seconds (default 7 days)
+        "access_expire":  900,       # access token TTL in seconds  (default 15 min)
+        "refresh_expire": 604800,    # refresh token TTL in seconds (default 7 days)
     },
 
     # ── Field name overrides ───────────────────────────────────────────────────
-    # Use these when your model columns have different names than the defaults.
-    username_field="username",       # default "username"
-    email_field="email",             # default "email"
-    password_field="password",       # default "password"
-    id_field="id",                   # default "id"
-    is_active_field="is_active",     # default "is_active"
-    is_verified_field="is_verified", # default "is_verified"
-    roles_field="roles",             # default "roles"
-    permissions_field="permissions", # default "permissions"
+    # Use these when your model columns differ from the defaults.
+    username_field="username",       # default
+    email_field="email",             # default
+    password_field="password",       # default
+    id_field="id",                   # default
+    is_active_field="is_active",     # default
+    is_verified_field="is_verified", # default
+    roles_field="roles",             # default
+    permissions_field="permissions", # default
 
     # ── Refresh token delivery ─────────────────────────────────────────────────
     refresh_token_mode="body",       # "body"   → token in JSON response (default)
                                      # "cookie" → httpOnly cookie only
                                      # "both"   → token in response AND cookie
 
-    # ── Cookie config (used when refresh_token_mode is "cookie" or "both") ────
+    # ── Cookie config (used when mode is "cookie" or "both") ──────────────────
     cookie={
-        "httponly": True,            # default True
-        "secure":   True,            # True = HTTPS only (set False for local dev)
+        "httponly": True,
+        "secure":   True,            # True = HTTPS only (False for local dev)
         "samesite": "lax",           # "lax" | "strict" | "none"
-        "domain":   None,            # set for cross-subdomain cookies
-        "max_age":  None,            # seconds; defaults to refresh_token_expire
+        "domain":   None,
+        "max_age":  None,            # defaults to refresh_token_expire
     },
 
     # ── Password hashing ───────────────────────────────────────────────────────
@@ -329,32 +323,32 @@ auth = FastAuth(
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
         "use_tls":    True,          # STARTTLS (default, port 587)
-        "use_ssl":    False,         # SSL (set True for port 465)
-        "timeout":    30,            # connection timeout in seconds
+        "use_ssl":    False,         # SSL (True for port 465)
+        "timeout":    30,            # seconds
     },
 
     # ── URL config ─────────────────────────────────────────────────────────────
     base_url="http://localhost:8000",  # Your backend URL (used in email link defaults)
 
     # Where verification email links point. Token appended as ?token=TOKEN.
-    # Default (None) → {base_url}/auth/verify-email (GET verifies inline, returns JSON)
-    # Production: set to your frontend page, e.g. "https://myapp.com/verify-email"
+    # Default (None) → {base_url}/auth/verify-email (GET verifies inline, JSON)
+    # Production: set to your frontend, e.g. "https://myapp.com/verify-email"
     verify_email_url=None,
 
     # Where password-reset email links point. Token appended as ?token=TOKEN.
-    # Default (None) → dev mode: email shows raw token + curl command for testing
-    # Production: set to your frontend page, e.g. "https://myapp.com/reset-password"
+    # Default (None) → dev mode email: shows raw token + curl command
+    # Production: set to your frontend, e.g. "https://myapp.com/reset-password"
     reset_password_url=None,
 
     # ── Feature flags ──────────────────────────────────────────────────────────
-    email_verification_required=False,  # if True: login blocked until email verified
-    enable_refresh_rotation=True,        # if True: old refresh token revoked on use
+    email_verification_required=False,  # True: login blocked until email verified
+    enable_refresh_rotation=True,        # True: old refresh token revoked on use
 
     # ── Rate limiting ──────────────────────────────────────────────────────────
     rate_limit={
         "enabled":             True,
         "max_login_attempts":  5,    # failed attempts before lockout
-        "lockout_seconds":     300,  # lockout duration (5 minutes)
+        "lockout_seconds":     300,  # lockout window (5 minutes)
     },
 
     # ── Social OAuth ───────────────────────────────────────────────────────────
@@ -378,21 +372,21 @@ auth = FastAuth(
 
     # ── SQLAlchemy ─────────────────────────────────────────────────────────────
     get_db=get_db,              # FastAPI dependency yielding a DB session.
-                                # Omit this for Tortoise ORM.
+                                # Omit for Tortoise ORM.
 
     # ── Router ─────────────────────────────────────────────────────────────────
-    router_prefix="/auth",          # URL prefix for all endpoints (default "/auth")
-    router_tags=["Authentication"], # OpenAPI tags shown in Swagger UI
+    router_prefix="/auth",          # URL prefix for all endpoints (default)
+    router_tags=["Authentication"], # OpenAPI tags in Swagger UI
 
     # ── Custom token store ─────────────────────────────────────────────────────
-    token_store=None,           # Use a custom store (e.g. Redis).
+    token_store=None,           # Custom store (e.g. Redis).
                                 # Must implement: save/get/delete/revoke_all_for_user
 )
 ```
 
 ---
 
-## FastAuth methods
+## RapidAuth methods
 
 ### `auth.router` — property
 
@@ -400,7 +394,7 @@ auth = FastAuth(
 app.include_router(auth.router)
 ```
 
-Returns the `APIRouter` containing all 14 auth endpoints.
+Returns the `APIRouter` with all 14 auth endpoints.
 
 ---
 
@@ -414,20 +408,19 @@ async def profile(user = Depends(get_current_user)):
     return {"username": user.username}
 ```
 
-Returns a FastAPI dependency function that:
+Returns a FastAPI dependency that:
 1. Reads `Authorization: Bearer <token>` from the request header
 2. Decodes and validates the JWT
 3. Fetches the user from the database
-4. Raises `HTTP 401` if the token is missing, expired, revoked, or invalid
+4. Raises `HTTP 401` if missing, expired, revoked, or invalid
 5. Returns the user model instance
 
 ---
 
-### `auth.current_user_dependency()` — alias
+### `auth.current_user_dependency()` — alias for `get_current_user()`
 
 ```python
-# Same as auth.get_current_user()
-dep = auth.current_user_dependency()
+dep = auth.current_user_dependency()   # identical to auth.get_current_user()
 ```
 
 ---
@@ -444,50 +437,49 @@ async def home(request: Request):
     return {"hello": "anonymous"}
 ```
 
-Attaches `AuthMiddleware` so that `request.state.user` is populated on every request.
-Anonymous requests get a proxy object with `is_authenticated = False`.
+Attaches `AuthMiddleware`. `request.state.user` is populated on every request.
+Unauthenticated requests get a proxy object with `is_authenticated = False`.
 
 ---
 
-### `auth.manager` — property
+### `auth.manager` — property → `UserManager`
 
 ```python
-manager = auth.manager   # returns UserManager instance
+manager = auth.manager
 ```
 
-Access to the full `UserManager` API (see below).
+Direct access to the `UserManager` instance (see below).
 
 ---
 
 ### `await auth.create_user(username, email, password, extra=None, **kw)`
 
 ```python
-# Create a user programmatically (e.g. in seed scripts or tests)
 user = await auth.create_user("alice", "alice@example.com", "AlicePass1!")
 
-# With extra fields (roles, permissions, etc.)
+# With extra fields
 user = await auth.create_user(
     "admin", "admin@example.com", "AdminPass1!",
     extra={"roles": ["admin"], "permissions": ["users.write"]},
 )
 ```
 
-Checks username and email uniqueness, hashes the password, and creates the record.
-Raises `UserAlreadyExistsError` (HTTP 409) if username or email is taken.
+Checks uniqueness, hashes password, creates and returns the DB record.
+Raises `UserAlreadyExistsError` (409) if username or email is taken.
 
 ---
 
 ### `await auth.authenticate(username_or_email, password, **kw)`
 
 ```python
-user = await auth.authenticate("alice", "AlicePass1!")           # by username
-user = await auth.authenticate("alice@example.com", "AlicePass1!")  # by email
+user = await auth.authenticate("alice", "AlicePass1!")
+user = await auth.authenticate("alice@example.com", "AlicePass1!")
 ```
 
 Returns the user on success. Raises:
 - `InvalidCredentialsError` (401) — wrong password or user not found
-- `AccountInactiveError` (403) — `is_active` is False
-- `EmailNotVerifiedError` (403) — email not verified and `email_verification_required=True`
+- `AccountInactiveError` (403) — user is deactivated
+- `EmailNotVerifiedError` (403) — email unverified + `email_verification_required=True`
 
 ---
 
@@ -497,7 +489,7 @@ Returns the user on success. Raises:
 hashed = auth.hash_password("my-plain-password")
 ```
 
-Returns the bcrypt or argon2 hash of `password`. Uses the hasher configured by `password_hasher`.
+Returns the bcrypt/argon2 hash. Uses the `password_hasher` setting.
 
 ---
 
@@ -507,41 +499,35 @@ Returns the bcrypt or argon2 hash of `password`. Uses the hasher configured by `
 ok = auth.verify_password("my-plain-password", hashed)
 ```
 
-Timing-safe comparison. Returns `True` if the plain password matches the hash.
+Timing-safe comparison. Returns `True` if the plain password matches.
 
 ---
 
 ## UserManager methods
 
-Access the manager via `auth.manager`.
+Access via `auth.manager`.
 
-### `await manager.get_by_username(username, **kw)` → user or None
+### `await manager.get_by_username(username, **kw)` → user | None
 
 ```python
 user = await auth.manager.get_by_username("alice")
 ```
 
-Looks up a user by their username field. Returns `None` if not found.
-
 ---
 
-### `await manager.get_by_email(email, **kw)` → user or None
+### `await manager.get_by_email(email, **kw)` → user | None
 
 ```python
 user = await auth.manager.get_by_email("alice@example.com")
 ```
 
-Looks up a user by their email field. Returns `None` if not found.
-
 ---
 
-### `await manager.get_by_id(user_id, **kw)` → user or None
+### `await manager.get_by_id(user_id, **kw)` → user | None
 
 ```python
 user = await auth.manager.get_by_id(42)
 ```
-
-Looks up a user by primary key. Returns `None` if not found.
 
 ---
 
@@ -551,19 +537,18 @@ Looks up a user by primary key. Returns `None` if not found.
 access, refresh = await auth.manager.create_token_pair(user)
 ```
 
-Creates a JWT access token and a refresh token for `user`. Persists the
-refresh token hash in the token store. Returns the raw token strings.
+Creates JWT access + refresh tokens, persists the refresh token hash.
 
 ---
 
 ### `await manager.refresh_tokens(refresh_token, **kw)` → `(access_token, refresh_token)`
 
 ```python
-access, new_refresh = await auth.manager.refresh_tokens(old_refresh_token)
+access, new_refresh = await auth.manager.refresh_tokens(old_refresh)
 ```
 
-Validates the refresh token, revokes it, and issues a new token pair.
-Raises `InvalidCredentialsError` (401) if the token is invalid or already revoked.
+Validates, revokes old token, issues new pair.
+Raises `InvalidCredentialsError` (401) if invalid or already revoked.
 
 ---
 
@@ -573,7 +558,7 @@ Raises `InvalidCredentialsError` (401) if the token is invalid or already revoke
 await auth.manager.revoke_all_tokens(user)
 ```
 
-Removes all refresh tokens for `user` from the token store. Useful for "log out everywhere".
+Removes all refresh tokens for `user`. Use for "log out everywhere".
 
 ---
 
@@ -581,11 +566,10 @@ Removes all refresh tokens for `user` from the token store. Useful for "log out 
 
 ```python
 token = await auth.manager.create_verification_token(user)
-# Token is valid for 24 hours
+# Expires in 24 hours
 ```
 
-Creates and stores a one-time email verification token for `user`.
-Returns the raw (unhashed) token string.
+Creates and stores a one-time email verification token.
 
 ---
 
@@ -595,20 +579,19 @@ Returns the raw (unhashed) token string.
 user = await auth.manager.verify_email_token("TOKEN_FROM_URL")
 ```
 
-Validates the token, marks the user as verified, and deletes the token.
-Raises `InvalidCredentialsError` if the token is invalid or expired.
+Validates, marks user as verified, deletes the token.
+Raises `InvalidCredentialsError` if invalid or expired.
 
 ---
 
-### `await manager.create_reset_token(email, **kw)` → `str` or `None`
+### `await manager.create_reset_token(email, **kw)` → `str` | None
 
 ```python
 token = await auth.manager.create_reset_token("alice@example.com")
-# Returns None if email not found (safe — don't expose this to users)
+# Returns None if email not found — do not expose this to users
 ```
 
-Creates a one-time password reset token for the user with the given email.
-Token expires in 1 hour. Returns `None` if the email is not registered.
+Creates a 1-hour password reset token. Returns `None` if email not registered.
 
 ---
 
@@ -618,8 +601,8 @@ Token expires in 1 hour. Returns `None` if the email is not registered.
 user = await auth.manager.confirm_reset("TOKEN", "NewPassword1!")
 ```
 
-Validates the token, hashes `new_password`, updates the user, and deletes the token.
-Raises `InvalidCredentialsError` if the token is invalid or expired.
+Validates token, updates password, deletes token.
+Raises `InvalidCredentialsError` if invalid or expired.
 
 ---
 
@@ -629,7 +612,7 @@ Raises `InvalidCredentialsError` if the token is invalid or expired.
 user = await auth.manager.change_password(user, "OldPass1!", "NewPass1!")
 ```
 
-Verifies `old_password` matches the stored hash, then sets `new_password`.
+Verifies `old_password`, hashes and saves `new_password`.
 Raises `InvalidCredentialsError` if `old_password` is wrong.
 
 ---
@@ -637,14 +620,14 @@ Raises `InvalidCredentialsError` if `old_password` is wrong.
 ### Field helpers (read-only)
 
 ```python
-manager.get_id(user)           # → primary key value
-manager.get_username(user)     # → str
-manager.get_email(user)        # → str
-manager.get_password(user)     # → hashed password string
-manager.is_active(user)        # → bool (defaults True if field missing)
-manager.is_verified(user)      # → bool (defaults True if field missing)
-manager.get_roles(user)        # → list[str]
-manager.get_permissions(user)  # → list[str]
+manager.get_id(user)           # primary key
+manager.get_username(user)     # str
+manager.get_email(user)        # str
+manager.get_password(user)     # hashed password string
+manager.is_active(user)        # bool (True if field missing)
+manager.is_verified(user)      # bool (True if field missing)
+manager.get_roles(user)        # list[str]
+manager.get_permissions(user)  # list[str]
 ```
 
 ---
@@ -652,23 +635,22 @@ manager.get_permissions(user)  # → list[str]
 ## Email Setup
 
 Without the `email` dict the auth endpoints still work — no emails are sent.
-Add it when you want real delivery.
+Tokens can be tested directly via Swagger/curl. Add the `email` dict for real delivery.
 
 ### Password reset flow
 
 ```
 Development (reset_password_url not set):
   POST /auth/reset-password  {"email": "user@example.com"}
-  → Token created (1-hour expiry)
-  → Email sent showing raw token + curl command for Swagger testing
-  → Use token: POST /auth/reset-password/confirm {"token":"...","new_password":"..."}
+  → 1-hour token created
+  → Dev email: shows raw token + curl command for testing
+  → POST /auth/reset-password/confirm {"token":"…","new_password":"…"}
 
 Production (reset_password_url set):
   POST /auth/reset-password  {"email": "user@example.com"}
-  → Token created (1-hour expiry)
-  → Email sent with link: {reset_password_url}?token=TOKEN
-  → User opens frontend page, reads ?token= from URL
-  → Frontend: POST /auth/reset-password/confirm {"token":"...","new_password":"..."}
+  → 1-hour token created
+  → Email link: {reset_password_url}?token=TOKEN
+  → Frontend reads ?token= → POST /auth/reset-password/confirm
 ```
 
 ### Email verification flow
@@ -678,14 +660,12 @@ Development (verify_email_url not set):
   POST /auth/register
   → Email with link: {base_url}/auth/verify-email?token=TOKEN
   → User clicks → GET /auth/verify-email?token=TOKEN
-  → Returns JSON {"message": "Email verified successfully"}
+  → JSON {"message": "Email verified successfully"}
 
 Production (verify_email_url set):
   POST /auth/register
   → Email with link: {verify_email_url}?token=TOKEN
-  → User opens frontend page, reads ?token= from URL
-  → Frontend: POST /auth/verify-email {"token":"..."}
-              or GET  /auth/verify-email?token=... (same result)
+  → Frontend reads ?token= → POST /auth/verify-email {"token":"…"}
 ```
 
 ### Resend verification
@@ -695,8 +675,8 @@ Production (verify_email_url set):
 POST /auth/resend-verification
 Authorization: Bearer <access_token>
 
-# Without auth (e.g. user can't log in because email_verification_required=True
-# and their access token expired):
+# Without auth (user can't log in because email_verification_required=True
+# and their access token has expired):
 POST /auth/resend-verification
 {"email": "user@example.com"}
 
@@ -706,21 +686,21 @@ POST /auth/resend-verification
 ### Gmail App Password
 
 1. **myaccount.google.com** → **Security** → enable **2-Step Verification**
-2. Search **App passwords** → App: Mail / Device: Other → name it `fastauth`
-3. Copy the 16-char password → paste as `"password"` in the email config
+2. Search **App passwords** → App: Mail / Device: Other → generate
+3. Copy 16-char password → paste as `"password"` in email config
 
 ### SMTP providers
 
 | Provider | `host` | `port` | Notes |
 |----------|--------|--------|-------|
 | Gmail | `smtp.gmail.com` | 587 | App Password required |
-| Outlook / Hotmail | `smtp.office365.com` | 587 | Account password |
+| Outlook | `smtp.office365.com` | 587 | Account password |
 | Yahoo | `smtp.mail.yahoo.com` | 587 | App Password required |
 | Yandex | `smtp.yandex.com` | 587 | — |
 | Mailgun | `smtp.mailgun.org` | 587 | Dashboard SMTP creds |
 | SendGrid | `smtp.sendgrid.net` | 587 | `username="apikey"`, password=API key |
 | Amazon SES | `email-smtp.<region>.amazonaws.com` | 587 | AWS SMTP creds |
-| Custom VPS | your hostname | `25`/`587`/`465` | port 465 → `use_ssl=True` |
+| Custom VPS | your hostname | 587/465 | port 465 → `use_ssl=True` |
 
 ---
 
@@ -728,10 +708,10 @@ POST /auth/resend-verification
 
 ```python
 from fastapi import Depends
-from fastauth.exceptions import PermissionDeniedError
+from rapidauth.exceptions import PermissionDeniedError
 
 def require_role(*roles: str):
-    """Dependency factory: raises 403 if the user doesn't have all required roles."""
+    """Raises HTTP 403 if the user is missing any required role."""
     async def dep(user = Depends(auth.get_current_user())):
         for role in roles:
             if role not in (user.roles or []):
@@ -740,43 +720,35 @@ def require_role(*roles: str):
     return dep
 
 @app.get("/admin")
-async def admin(user = Depends(require_role("admin"))):
-    return {"message": f"Welcome admin {user.username}"}
+async def admin_panel(user = Depends(require_role("admin"))):
+    return {"message": f"Hello, {user.username}"}
 
-@app.get("/dashboard")
-async def dashboard(user = Depends(auth.get_current_user())):
-    return {"welcome": user.username}
+@app.get("/mod")
+async def mod_panel(user = Depends(require_role("admin", "moderator"))):
+    return {"ok": True}
 ```
 
 ---
 
 ## OAuth2 Social Auth
 
-Configure providers and the routes are added automatically:
-
 ```python
-auth = FastAuth(
+auth = RapidAuth(
     user_model=User,
     jwt_secret="...",
     social_auth={
-        "google": {
-            "client_id":     "YOUR_CLIENT_ID",
-            "client_secret": "YOUR_CLIENT_SECRET",
-            "redirect_uri":  "https://api.myapp.com/auth/google/callback",
-        },
-        "github": {
-            "client_id":     "YOUR_CLIENT_ID",
-            "client_secret": "YOUR_CLIENT_SECRET",
-            "redirect_uri":  "https://api.myapp.com/auth/github/callback",
-        },
+        "google":  {"client_id": "...", "client_secret": "...", "redirect_uri": "..."},
+        "github":  {"client_id": "...", "client_secret": "...", "redirect_uri": "..."},
+        "discord": {"client_id": "...", "client_secret": "...", "redirect_uri": "..."},
     },
 )
-# Adds: GET /auth/google/login, GET /auth/google/callback
-#        GET /auth/github/login,  GET /auth/github/callback
+# Mounts automatically:
+# GET /auth/google/login    GET /auth/google/callback
+# GET /auth/github/login    GET /auth/github/callback
+# GET /auth/discord/login   GET /auth/discord/callback
 ```
 
-OAuth users are created automatically on first login. `is_verified` is set to `True`.
-A random password is generated for OAuth-only users.
+OAuth users are created on first login with `is_verified=True` and a random password.
 
 ---
 
@@ -787,69 +759,54 @@ auth.add_middleware(app)
 
 @app.get("/")
 async def home(request: Request):
-    user = request.state.user
-    if user.is_authenticated:
-        return {"hello": user.username}
+    if request.state.user.is_authenticated:
+        return {"hello": request.state.user.username}
     return {"hello": "anonymous"}
 ```
 
-Attaches `AuthMiddleware` to the app. On every request:
-- If a valid Bearer token is present: `request.state.user` is the DB user object,
-  with `is_authenticated = True`
-- Otherwise: `request.state.user` is an anonymous proxy with `is_authenticated = False`
+Every request gets `request.state.user` populated.
+Authenticated: the DB user object with `is_authenticated = True`.
+Anonymous: a proxy object with `is_authenticated = False`.
 
 ---
 
 ## Custom Token Store
 
-By default, refresh tokens are stored in memory (lost on restart). For multi-process
-or persistent deployments, implement a custom store:
+In-memory by default (lost on restart). Swap in Redis for production:
 
 ```python
 from datetime import datetime, timezone
 
 class RedisTokenStore:
-    """Refresh token store backed by Redis."""
-
-    def __init__(self, redis_client):
-        self.redis = redis_client
+    def __init__(self, redis):
+        self.redis = redis
 
     async def save(self, token_hash: str, user_id: str, expires_at: datetime) -> None:
-        """Persist a refresh token hash with its owner and expiry."""
         ttl = int((expires_at - datetime.now(timezone.utc)).total_seconds())
         await self.redis.setex(f"rt:{token_hash}", ttl, user_id)
 
     async def get(self, token_hash: str) -> dict | None:
-        """Return {"user_id": "..."} if the token exists, else None."""
         val = await self.redis.get(f"rt:{token_hash}")
         return {"user_id": val.decode()} if val else None
 
     async def delete(self, token_hash: str) -> None:
-        """Delete a single refresh token (called on rotation or logout)."""
         await self.redis.delete(f"rt:{token_hash}")
 
     async def revoke_all_for_user(self, user_id: str) -> None:
-        """Revoke all refresh tokens for a user (POST /auth/revoke-all).
-        Implement with a user→tokens reverse index for full support."""
-        pass
+        pass  # implement with a reverse index if needed
 
-auth = FastAuth(
-    user_model=User,
-    jwt_secret="...",
-    token_store=RedisTokenStore(redis_client),
-)
+auth = RapidAuth(user_model=User, jwt_secret="...", token_store=RedisTokenStore(redis))
 ```
 
 ---
 
 ## Exception reference
 
-All exceptions are subclasses of `fastauth.exceptions.AuthException` which extends
-`fastapi.HTTPException`. They are automatically handled by FastAPI and return
-structured JSON responses.
+All exceptions extend `rapidauth.exceptions.AuthException` (→ `fastapi.HTTPException`).
+FastAPI handles them automatically and returns JSON responses.
 
-| Exception | HTTP status | Default message |
-|-----------|-------------|-----------------|
+| Exception | HTTP | Default detail |
+|-----------|------|----------------|
 | `InvalidCredentialsError` | 401 | "Invalid credentials" |
 | `TokenExpiredError` | 401 | "Token has expired" |
 | `TokenInvalidError` | 401 | "Invalid token" |
@@ -862,9 +819,8 @@ structured JSON responses.
 | `AccountInactiveError` | 403 | "Account is inactive" |
 | `RateLimitExceededError` | 429 | "Too many login attempts. Please try again later." |
 
-Import from `fastauth.exceptions`:
 ```python
-from fastauth.exceptions import PermissionDeniedError, UserNotFoundError
+from rapidauth.exceptions import PermissionDeniedError, UserNotFoundError
 ```
 
 ---
@@ -877,10 +833,10 @@ from fastauth.exceptions import PermissionDeniedError, UserNotFoundError
 | JWT | Per-token `jti` in-memory blacklist on logout |
 | Refresh rotation | Old token revoked the moment a new pair is issued |
 | Brute-force protection | Sliding-window: 5 failed attempts → 5-min IP lockout |
-| Email enumeration | Reset + resend always return 200 regardless of email existence |
+| Email enumeration | Reset + resend always return 200 regardless of email |
 | Timing attacks | Dummy hash verify on unknown usernames |
 | Cookie flags | `httpOnly`, `secure`, `sameSite` — all configurable |
-| Reset tokens | 1-hour expiry, single-use (deleted on confirm) |
+| Reset tokens | 1-hour expiry, single-use |
 | Verify tokens | 24-hour expiry, single-use |
 
 ---
@@ -888,35 +844,32 @@ from fastauth.exceptions import PermissionDeniedError, UserNotFoundError
 ## CLI
 
 ```bash
-# Generate a complete project
-fastauth --default-setup sqlite              # Tortoise ORM + SQLite (async)
-fastauth --default-setup sqlite --sync       # SQLAlchemy sync + SQLite
-fastauth --default-setup sqlalchemy --async  # SQLAlchemy async + SQLite
-fastauth --default-setup sqlalchemy --sync   # SQLAlchemy sync  + SQLite
-fastauth --default-setup postgresql --async  # SQLAlchemy async + PostgreSQL
-fastauth --default-setup postgresql --sync   # SQLAlchemy sync  + PostgreSQL
+# Scaffold a full project (3 files: database.py + models.py + main.py)
+rapidauth --default-setup sqlite              # Tortoise ORM + SQLite (async)
+rapidauth --default-setup sqlite --sync       # SQLAlchemy sync + SQLite
+rapidauth --default-setup sqlalchemy --async  # SQLAlchemy async + SQLite
+rapidauth --default-setup sqlalchemy --sync   # SQLAlchemy sync + SQLite
+rapidauth --default-setup postgresql --async  # SQLAlchemy async + PostgreSQL
+rapidauth --default-setup postgresql --sync   # SQLAlchemy sync + PostgreSQL
 
-# Other commands
-fastauth init       # scaffold .env.example + auth_config.py
-fastauth version    # print installed version
+rapidauth init       # scaffold .env.example + auth_config.py
+rapidauth version    # print installed version
 ```
-
-Each `--default-setup` generates three files: `database.py` + `models.py` + `main.py`.
 
 ---
 
 ## Development Tips
 
-**Test email flows without SMTP:**
+**Test auth flows without SMTP:**
 
 ```python
-@app.post("/dev/verify-token")    # REMOVE IN PRODUCTION
+@app.post("/dev/verify-token")   # REMOVE IN PRODUCTION
 async def dev_verify_token(email: str):
     user  = await auth.manager.get_by_email(email)
     token = await auth.manager.create_verification_token(user)
     return {"token": token, "url": f"/auth/verify-email?token={token}"}
 
-@app.post("/dev/reset-token")     # REMOVE IN PRODUCTION
+@app.post("/dev/reset-token")    # REMOVE IN PRODUCTION
 async def dev_reset_token(email: str):
     token = await auth.manager.create_reset_token(email)
     return {"token": token}
@@ -938,15 +891,15 @@ async def lifespan(app):
         yield
 ```
 
-**Full reset via curl:**
+**Full reset flow via curl:**
 
 ```bash
-# 1. Request reset
+# 1. Request
 curl -X POST http://localhost:8000/auth/reset-password \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com"}'
 
-# 2. Get token from dev endpoint (or dev-mode email)
+# 2. Get token (dev endpoint or dev-mode email)
 curl -X POST "http://localhost:8000/dev/reset-token?email=user@example.com"
 
 # 3. Confirm

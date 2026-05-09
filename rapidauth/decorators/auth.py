@@ -5,7 +5,7 @@ from typing import Any, Callable, List
 
 from fastapi import Depends
 
-from fastauth.exceptions import PermissionDeniedError, TokenInvalidError
+from rapidauth.exceptions import PermissionDeniedError, TokenInvalidError
 
 
 def login_required(func: Callable) -> Callable:

@@ -1,12 +1,12 @@
-"""fastauth CLI
+"""rapidauth CLI
 
 Commands
 --------
-fastauth init                                    – scaffold .env.example + auth_config.py
-fastauth --default-setup sqlite     [--async|--sync]  – Tortoise async | SQLAlchemy sync + SQLite
-fastauth --default-setup sqlalchemy [--async|--sync]  – SQLAlchemy + SQLite (async or sync)
-fastauth --default-setup postgresql [--async|--sync]  – SQLAlchemy + PostgreSQL (async or sync)
-fastauth version                                 – print version
+rapidauth init                                    – scaffold .env.example + auth_config.py
+rapidauth --default-setup sqlite     [--async|--sync]  – Tortoise async | SQLAlchemy sync + SQLite
+rapidauth --default-setup sqlalchemy [--async|--sync]  – SQLAlchemy + SQLite (async or sync)
+rapidauth --default-setup postgresql [--async|--sync]  – SQLAlchemy + PostgreSQL (async or sync)
+rapidauth version                                 – print version
 
 Default mode when no flag given: --async
 """
@@ -21,7 +21,7 @@ import textwrap
 # ── Shared templates ──────────────────────────────────────────────────────────
 
 _ENV_EXAMPLE = textwrap.dedent("""\
-    # FastAuth environment variables
+    # RapidAuth environment variables
     JWT_SECRET=change-me-to-a-long-random-string-min-32-chars
     JWT_ALGORITHM=HS256
     ACCESS_TOKEN_EXPIRE=900
@@ -100,16 +100,16 @@ _MODELS_TORTOISE = textwrap.dedent("""\
 """)
 
 _MAIN_SQLITE_ASYNC = textwrap.dedent("""\
-    # main.py  –  FastAPI + FastAuth + Tortoise ORM (async)
+    # main.py  –  FastAPI + RapidAuth + Tortoise ORM (async)
     from fastapi import Depends, FastAPI
-    from fastauth import FastAuth
+    from rapidauth import RapidAuth
     from database import tortoise_lifespan
     from models import User
 
     # tortoise_lifespan initializes Tortoise ORM on startup via RegisterTortoise
     app = FastAPI(title="My App", lifespan=tortoise_lifespan)
 
-    auth = FastAuth(
+    auth = RapidAuth(
         user_model=User,
         jwt_secret="super-secret-key-change-it",  # change in production!
     )
@@ -172,10 +172,10 @@ _MODELS_SQLALCHEMY = textwrap.dedent("""\
 """)
 
 _MAIN_SQLALCHEMY_ASYNC = textwrap.dedent("""\
-    # main.py  –  FastAPI + FastAuth + SQLAlchemy (async)
+    # main.py  –  FastAPI + RapidAuth + SQLAlchemy (async)
     from contextlib import asynccontextmanager
     from fastapi import Depends, FastAPI
-    from fastauth import FastAuth
+    from rapidauth import RapidAuth
     from database import create_tables, get_db
     from models import User
 
@@ -188,7 +188,7 @@ _MAIN_SQLALCHEMY_ASYNC = textwrap.dedent("""\
 
     app = FastAPI(title="My App", lifespan=lifespan)
 
-    auth = FastAuth(
+    auth = RapidAuth(
         user_model=User,
         jwt_secret="super-secret-key-change-it",
         get_db=get_db,
@@ -289,12 +289,12 @@ _MODELS_SQLALCHEMY_SYNC = textwrap.dedent("""\
 """)
 
 _MAIN_SYNC = textwrap.dedent("""\
-    # main.py  –  FastAPI + FastAuth + SQLAlchemy (sync)
+    # main.py  –  FastAPI + RapidAuth + SQLAlchemy (sync)
     # NOTE: sync DB calls block the event loop.
     # Wrap with run_in_executor or switch to --async for production.
     from contextlib import asynccontextmanager
     from fastapi import Depends, FastAPI
-    from fastauth import FastAuth
+    from rapidauth import RapidAuth
     from database import create_tables, get_db
     from models import User
 
@@ -307,7 +307,7 @@ _MAIN_SYNC = textwrap.dedent("""\
 
     app = FastAPI(title="My App", lifespan=lifespan)
 
-    auth = FastAuth(
+    auth = RapidAuth(
         user_model=User,
         jwt_secret="super-secret-key-change-it",
         get_db=get_db,
@@ -370,8 +370,8 @@ def main() -> None:
         return
 
     if args[0] == "version":
-        from fastauth import __version__
-        print(f"fastauth-framework {__version__}")
+        from rapidauth import __version__
+        print(f"rapidauth-framework {__version__}")
         return
 
     if args[0] == "init":
@@ -380,7 +380,7 @@ def main() -> None:
 
     if args[0] == "--default-setup":
         if len(args) < 2:
-            print("Usage: fastauth --default-setup sqlite|sqlalchemy|postgresql [--async|--sync]")
+            print("Usage: rapidauth --default-setup sqlite|sqlalchemy|postgresql [--async|--sync]")
             sys.exit(1)
 
         backend = args[1].lower()
@@ -405,17 +405,17 @@ def main() -> None:
 
 def _print_help() -> None:
     print(textwrap.dedent("""\
-        fastauth-framework CLI
+        rapidauth-framework CLI
 
         Commands:
-          fastauth init                                   Scaffold .env.example + auth_config.py
-          fastauth --default-setup sqlite   [--async]    Tortoise ORM + SQLite     (default: --async)
-          fastauth --default-setup sqlite   --sync       SQLAlchemy sync + SQLite
-          fastauth --default-setup sqlalchemy [--async]  SQLAlchemy async + SQLite (default: --async)
-          fastauth --default-setup sqlalchemy --sync     SQLAlchemy sync  + SQLite
-          fastauth --default-setup postgresql [--async]  SQLAlchemy async + PostgreSQL
-          fastauth --default-setup postgresql --sync     SQLAlchemy sync  + PostgreSQL (psycopg2)
-          fastauth version                               Print installed version
+          rapidauth init                                   Scaffold .env.example + auth_config.py
+          rapidauth --default-setup sqlite   [--async]    Tortoise ORM + SQLite     (default: --async)
+          rapidauth --default-setup sqlite   --sync       SQLAlchemy sync + SQLite
+          rapidauth --default-setup sqlalchemy [--async]  SQLAlchemy async + SQLite (default: --async)
+          rapidauth --default-setup sqlalchemy --sync     SQLAlchemy sync  + SQLite
+          rapidauth --default-setup postgresql [--async]  SQLAlchemy async + PostgreSQL
+          rapidauth --default-setup postgresql --sync     SQLAlchemy sync  + PostgreSQL (psycopg2)
+          rapidauth version                               Print installed version
     """))
 
 
@@ -425,7 +425,7 @@ def _init() -> None:
     _write_if_missing(cwd, "auth_config.py", _AUTH_CONFIG_PY)
     print("\nNext steps:")
     print("  1. cp .env.example .env  and fill in your secrets")
-    print("  2. fastauth --default-setup sqlite --async")
+    print("  2. rapidauth --default-setup sqlite --async")
     print("  3. uvicorn main:app --reload")
 
 
@@ -439,14 +439,14 @@ def _default_setup(backend: str, mode: str) -> None:
                 "models.py":   _MODELS_TORTOISE,
                 "main.py":     _MAIN_SQLITE_ASYNC,
             }
-            pip_hint = 'pip install "fastauth-framework[tortoise]" uvicorn[standard]'
+            pip_hint = 'pip install "rapidauth-framework[tortoise]" uvicorn[standard]'
         else:
             files = {
                 "database.py": _DB_SQLITE_SYNC,
                 "models.py":   _MODELS_SQLALCHEMY_SYNC,
                 "main.py":     _MAIN_SYNC,
             }
-            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" uvicorn[standard]'
+            pip_hint = 'pip install "rapidauth-framework[sqlalchemy]" uvicorn[standard]'
 
     elif backend == "sqlalchemy":
         if mode == "async":
@@ -455,14 +455,14 @@ def _default_setup(backend: str, mode: str) -> None:
                 "models.py":   _MODELS_SQLALCHEMY,
                 "main.py":     _MAIN_SQLALCHEMY_ASYNC,
             }
-            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" aiosqlite uvicorn[standard]'
+            pip_hint = 'pip install "rapidauth-framework[sqlalchemy]" aiosqlite uvicorn[standard]'
         else:
             files = {
                 "database.py": _DB_SQLALCHEMY_SYNC,
                 "models.py":   _MODELS_SQLALCHEMY_SYNC,
                 "main.py":     _MAIN_SYNC,
             }
-            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" uvicorn[standard]'
+            pip_hint = 'pip install "rapidauth-framework[sqlalchemy]" uvicorn[standard]'
 
     elif backend == "postgresql":
         if mode == "async":
@@ -471,14 +471,14 @@ def _default_setup(backend: str, mode: str) -> None:
                 "models.py":   _MODELS_SQLALCHEMY,
                 "main.py":     _MAIN_SQLALCHEMY_ASYNC,
             }
-            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" asyncpg uvicorn[standard]'
+            pip_hint = 'pip install "rapidauth-framework[sqlalchemy]" asyncpg uvicorn[standard]'
         else:
             files = {
                 "database.py": _DB_POSTGRESQL_SYNC,
                 "models.py":   _MODELS_SQLALCHEMY_SYNC,
                 "main.py":     _MAIN_SYNC,
             }
-            pip_hint = 'pip install "fastauth-framework[sqlalchemy]" psycopg2-binary uvicorn[standard]'
+            pip_hint = 'pip install "rapidauth-framework[sqlalchemy]" psycopg2-binary uvicorn[standard]'
 
     else:
         print(f"Unknown backend '{backend}'. Choose: sqlite | sqlalchemy | postgresql")

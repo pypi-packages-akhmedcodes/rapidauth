@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 
 
 class AuthException(HTTPException):
-    """Base class for all FastAuth exceptions."""
+    """Base class for all RapidAuth exceptions."""
 
 
 class InvalidCredentialsError(AuthException):

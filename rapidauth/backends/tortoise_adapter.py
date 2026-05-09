@@ -15,7 +15,7 @@ Fix — use RegisterTortoise inside a FastAPI lifespan (recommended):
     from contextlib import asynccontextmanager
     from fastapi import FastAPI
     from tortoise.contrib.fastapi import RegisterTortoise
-    from fastauth import FastAuth
+    from rapidauth import RapidAuth
     from models import User
 
     @asynccontextmanager
@@ -29,7 +29,7 @@ Fix — use RegisterTortoise inside a FastAPI lifespan (recommended):
             yield
 
     app = FastAPI(lifespan=lifespan)
-    auth = FastAuth(user_model=User, jwt_secret="your-secret")
+    auth = RapidAuth(user_model=User, jwt_secret="your-secret")
     app.include_router(auth.router)
 
 Alternatively, call Tortoise.init() with _enable_global_fallback=True:

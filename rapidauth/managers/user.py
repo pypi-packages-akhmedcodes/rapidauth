@@ -4,19 +4,19 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional, Tuple
 
-from fastauth.backends.base import BaseAdapter
-from fastauth.config.settings import FastAuthSettings
-from fastauth.exceptions import (
+from rapidauth.backends.base import BaseAdapter
+from rapidauth.config.settings import RapidAuthSettings
+from rapidauth.exceptions import (
     AccountInactiveError,
     EmailNotVerifiedError,
     InvalidCredentialsError,
     UserAlreadyExistsError,
     UserNotFoundError,
 )
-from fastauth.hashing.handler import HashingHandler
-from fastauth.jwt.handler import JWTHandler
-from fastauth.jwt.store import InMemoryTokenStore
-from fastauth.utils.helpers import generate_token, hash_token, is_expired
+from rapidauth.hashing.handler import HashingHandler
+from rapidauth.jwt.handler import JWTHandler
+from rapidauth.jwt.store import InMemoryTokenStore
+from rapidauth.utils.helpers import generate_token, hash_token, is_expired
 
 
 class UserManager:
@@ -29,7 +29,7 @@ class UserManager:
     def __init__(
         self,
         adapter: BaseAdapter,
-        settings: FastAuthSettings,
+        settings: RapidAuthSettings,
         jwt: JWTHandler,
         hasher: HashingHandler,
         token_store: Optional[Any] = None,
@@ -218,7 +218,7 @@ class UserManager:
         return token
 
     async def verify_email_token(self, token: str, **kw: Any) -> Any:
-        from fastauth.exceptions import TokenInvalidError
+        from rapidauth.exceptions import TokenInvalidError
 
         key = hash_token(token)
         async with self._lock:

@@ -37,7 +37,7 @@ class RateLimitConfig(BaseModel):
     lockout_seconds: int = 300     # 5-minute lockout
 
 
-class FastAuthSettings(BaseModel):
+class RapidAuthSettings(BaseModel):
     # ── Field mappings ──────────────────────────────────────────────────────
     username_field: str = "username"
     email_field: str = "email"

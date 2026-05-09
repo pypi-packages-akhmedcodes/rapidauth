@@ -54,7 +54,7 @@ class JWTHandler:
     # ── Token verification ───────────────────────────────────────────────────
 
     def decode(self, token: str, expected_type: Optional[str] = None) -> Dict[str, Any]:
-        from fastauth.exceptions import (
+        from rapidauth.exceptions import (
             TokenBlacklistedError,
             TokenExpiredError,
             TokenInvalidError,

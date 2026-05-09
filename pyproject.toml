@@ -3,13 +3,13 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fastauth-framework"
-version = "0.2.9.3"
+name = "rapidauth-framework"
+version = "1.0.0"
 description = "Professional plug-and-play authentication framework for FastAPI"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-keywords = ["fastapi", "auth", "jwt", "oauth", "authentication", "security"]
+keywords = ["fastapi", "auth", "jwt", "oauth", "authentication", "security", "rapidauth"]
 authors = [
     {name = "akhmedcodes", email = "axmadjonqaxxorovc@gmail.com"},
 ]
@@ -35,9 +35,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tortoise = ["tortoise-orm>=0.20.0", "aiosqlite>=0.19.0"]
+tortoise   = ["tortoise-orm>=0.20.0", "aiosqlite>=0.19.0"]
 sqlalchemy = ["sqlalchemy[asyncio]>=2.0.0", "alembic>=1.12.0"]
-sqlmodel = ["sqlmodel>=0.0.14"]
+sqlmodel   = ["sqlmodel>=0.0.14"]
 all = [
     "tortoise-orm>=0.20.0",
     "aiosqlite>=0.19.0",
@@ -54,14 +54,14 @@ dev = [
 ]
 
 [project.urls]
-Homepage       = "https://github.com/pypi-packages-akhmedcodes/fastauth-framework"
-Repository     = "https://github.com/pypi-packages-akhmedcodes/fastauth-framework"
-"Bug Tracker"  = "https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues"
+Homepage       = "https://github.com/pypi-packages-akhmedcodes/rapidauth"
+Repository     = "https://github.com/pypi-packages-akhmedcodes/rapidauth"
+"Bug Tracker"  = "https://github.com/pypi-packages-akhmedcodes/rapidauth/issues"
 Author         = "https://beacons.ai/akhmedcodes"
 
 [project.scripts]
-fastauth = "fastauth.cli:main"
+rapidauth = "rapidauth.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["fastauth*"]
+include = ["rapidauth*"]

@@ -5,7 +5,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
-from fastauth.utils.helpers import hash_token
+from rapidauth.utils.helpers import hash_token
 
 
 class SessionManager:

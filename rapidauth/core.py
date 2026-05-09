@@ -5,36 +5,36 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from fastapi import APIRouter, Depends, FastAPI
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from fastauth.backends.base import BaseAdapter, detect_orm
-from fastauth.backends.sqlalchemy_adapter import SQLAlchemyAdapter
-from fastauth.backends.tortoise_adapter import TortoiseAdapter
-from fastauth.config.settings import CookieConfig, EmailConfig, FastAuthSettings, RateLimitConfig
-from fastauth.email.sender import EmailSender
-from fastauth.exceptions import TokenInvalidError, UserNotFoundError
-from fastauth.hashing.handler import HashingHandler
-from fastauth.jwt.handler import JWTHandler
-from fastauth.jwt.store import InMemoryTokenStore
-from fastauth.managers.rate_limit import RateLimiter
-from fastauth.managers.user import UserManager
-from fastauth.middleware.auth import AuthMiddleware
-from fastauth.router.auth import build_router
+from rapidauth.backends.base import BaseAdapter, detect_orm
+from rapidauth.backends.sqlalchemy_adapter import SQLAlchemyAdapter
+from rapidauth.backends.tortoise_adapter import TortoiseAdapter
+from rapidauth.config.settings import CookieConfig, EmailConfig, RapidAuthSettings, RateLimitConfig
+from rapidauth.email.sender import EmailSender
+from rapidauth.exceptions import TokenInvalidError, UserNotFoundError
+from rapidauth.hashing.handler import HashingHandler
+from rapidauth.jwt.handler import JWTHandler
+from rapidauth.jwt.store import InMemoryTokenStore
+from rapidauth.managers.rate_limit import RateLimiter
+from rapidauth.managers.user import UserManager
+from rapidauth.middleware.auth import AuthMiddleware
+from rapidauth.router.auth import build_router
 
 
 _bearer = HTTPBearer(auto_error=False)
 
 
-class FastAuth:
+class RapidAuth:
     """
-    Main entry point for FastAuth.
+    Main entry point for RapidAuth.
 
     Minimal usage::
 
-        auth = FastAuth(user_model=User, jwt_secret="supersecret")
+        auth = RapidAuth(user_model=User, jwt_secret="supersecret")
         app.include_router(auth.router)
 
     Advanced usage::
 
-        auth = FastAuth(
+        auth = RapidAuth(
             user_model=User,
             username_field="login",
             email_field="mail",
@@ -107,11 +107,11 @@ class FastAuth:
         secret = jwt_cfg.get("secret") or jwt_secret
         if not secret:
             raise ValueError(
-                "FastAuth requires a JWT secret. "
+                "RapidAuth requires a JWT secret. "
                 "Pass jwt_secret='...' or jwt={'secret': '...'}"
             )
 
-        self._settings = FastAuthSettings(
+        self._settings = RapidAuthSettings(
             username_field=username_field,
             email_field=email_field,
             password_field=password_field,
@@ -161,7 +161,7 @@ class FastAuth:
         elif orm in ("sqlalchemy", "sqlmodel"):
             raise ValueError(
                 f"Detected {orm} model but no `get_db` dependency provided. "
-                "Pass get_db=your_async_session_dependency to FastAuth()."
+                "Pass get_db=your_async_session_dependency to RapidAuth()."
             )
         else:
             # Generic fallback — developer must handle DB ops via callbacks
@@ -304,9 +304,9 @@ class FastAuth:
 # ── OAuth provider factory ────────────────────────────────────────────────────
 
 def _build_oauth_providers(social_auth: Dict[str, Dict[str, str]]) -> Dict[str, Any]:
-    from fastauth.oauth.discord import DiscordOAuth
-    from fastauth.oauth.github import GitHubOAuth
-    from fastauth.oauth.google import GoogleOAuth
+    from rapidauth.oauth.discord import DiscordOAuth
+    from rapidauth.oauth.github import GitHubOAuth
+    from rapidauth.oauth.google import GoogleOAuth
 
     _map = {
         "google": GoogleOAuth,
@@ -318,7 +318,7 @@ def _build_oauth_providers(social_auth: Dict[str, Dict[str, str]]) -> Dict[str, 
         cls = _map.get(name.lower())
         if cls is None:
             import warnings
-            warnings.warn(f"FastAuth: unknown OAuth provider '{name}', skipping")
+            warnings.warn(f"RapidAuth: unknown OAuth provider '{name}', skipping")
             continue
         providers[name] = cls(
             client_id=cfg["client_id"],

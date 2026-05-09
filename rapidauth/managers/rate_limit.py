@@ -5,7 +5,7 @@ import time
 from collections import defaultdict
 from typing import Dict, List
 
-from fastauth.exceptions import RateLimitExceededError
+from rapidauth.exceptions import RateLimitExceededError
 
 
 class RateLimiter:

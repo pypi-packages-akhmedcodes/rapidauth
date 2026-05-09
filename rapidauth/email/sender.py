@@ -4,7 +4,7 @@ import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-logger = logging.getLogger("fastauth.email")
+logger = logging.getLogger("rapidauth.email")
 
 
 class EmailSender:
@@ -48,7 +48,7 @@ class EmailSender:
   <pre style="background:#0f172a;color:#7dd3fc;border-radius:8px;padding:1rem 1.2rem;font-size:.8rem;overflow-x:auto;margin:.4rem 0">curl -X POST {{ base_url }}/auth/reset-password/confirm \
   -H "Content-Type: application/json" \
   -d '{"token": "{{ token }}", "new_password": "YourNewPassword1!"}'</pre>
-  <p style="font-size:.78rem;color:#cbd5e1;margin-top:1rem">This token expires in 1 hour. Set <code>reset_password_url</code> in FastAuth() for production.</p>
+  <p style="font-size:.78rem;color:#cbd5e1;margin-top:1rem">This token expires in 1 hour. Set <code>reset_password_url</code> in RapidAuth() for production.</p>
 </div>
 </body></html>
 """
@@ -122,7 +122,7 @@ class EmailSender:
         """Dev-mode reset email: shows raw token + curl example.
 
         Sent when reset_password_url is not configured.  Switch to send_reset()
-        by setting reset_password_url in FastAuth() before going to production.
+        by setting reset_password_url in RapidAuth() before going to production.
         """
         from jinja2 import Template
         html = Template(self.RESET_DEV_HTML).render(token=token, base_url=base_url.rstrip("/"))
