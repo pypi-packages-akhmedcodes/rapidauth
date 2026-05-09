@@ -56,18 +56,26 @@ _AUTH_CONFIG_PY = textwrap.dedent("""\
 # sqlite --async  →  Tortoise ORM + aiosqlite
 _DB_SQLITE_ASYNC = textwrap.dedent("""\
     # database.py  –  Tortoise ORM + SQLite (async)
+    # Uses RegisterTortoise (Tortoise ORM 1.x compatible).
+    from contextlib import asynccontextmanager
     from fastapi import FastAPI
-    from tortoise.contrib.fastapi import register_tortoise
+    from tortoise.contrib.fastapi import RegisterTortoise
 
 
-    def init_db(app: FastAPI, db_url: str = "sqlite://./app.db") -> None:
-        register_tortoise(
+    @asynccontextmanager
+    async def tortoise_lifespan(app: FastAPI):
+        \"\"\"Initialize Tortoise ORM on startup, close connections on shutdown.
+
+        RegisterTortoise sets _enable_global_fallback=True so that request
+        handlers can access the DB without an explicit TortoiseContext.
+        \"\"\"
+        async with RegisterTortoise(
             app,
-            db_url=db_url,
+            db_url="sqlite://./app.db",
             modules={"models": ["models"]},
             generate_schemas=True,
-            add_exception_handlers=True,
-        )
+        ):
+            yield
 """)
 
 _MODELS_TORTOISE = textwrap.dedent("""\
@@ -95,15 +103,15 @@ _MAIN_SQLITE_ASYNC = textwrap.dedent("""\
     # main.py  –  FastAPI + FastAuth + Tortoise ORM (async)
     from fastapi import Depends, FastAPI
     from fastauth import FastAuth
-    from database import init_db
+    from database import tortoise_lifespan
     from models import User
 
-    app = FastAPI(title="My App")
-    init_db(app)
+    # tortoise_lifespan initializes Tortoise ORM on startup via RegisterTortoise
+    app = FastAPI(title="My App", lifespan=tortoise_lifespan)
 
     auth = FastAuth(
         user_model=User,
-        jwt_secret="super-secret-key-change-it",
+        jwt_secret="super-secret-key-change-it",  # change in production!
     )
     app.include_router(auth.router)
 

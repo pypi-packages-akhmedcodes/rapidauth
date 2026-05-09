@@ -305,7 +305,7 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hglow"></div>
-  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.9.1</div>
+  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.9.3</div>
   <h1>Auth for FastAPI.<br><span class="grad">Pure backend. Pure JSON.</span></h1>
   <p class="hsub">
     JWT, OAuth2, bcrypt/argon2, refresh rotation, RBAC, email verification, rate limiting —
@@ -417,9 +417,11 @@ get_current_user = auth.get_current_user()
 async def profile(user = Depends(get_current_user)):
     return {"username": user.username, "email": user.email}</code></pre></div></div>
 
-      <div id="t-tort" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import FastAPI, Depends
+      <div id="t-tort" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># Works with Tortoise ORM 1.x — uses RegisterTortoise with global fallback
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends
 from tortoise import fields
-from tortoise.contrib.fastapi import register_tortoise
+from tortoise.contrib.fastapi import RegisterTortoise
 from tortoise.models import Model
 from fastauth import FastAuth
 
@@ -435,11 +437,19 @@ class User(Model):
     class Meta:
         table = "users"
 
-app  = FastAPI()
+@asynccontextmanager
+async def lifespan(app):
+    async with RegisterTortoise(
+        app,
+        db_url="sqlite://./app.db",
+        modules={"models": ["__main__"]},
+        generate_schemas=True,
+    ):
+        yield
+
+app  = FastAPI(lifespan=lifespan)
 auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it")
 app.include_router(auth.router)
-register_tortoise(app, db_url="sqlite://./app.db",
-                  modules={"models": ["__main__"]}, generate_schemas=True)
 
 @app.get("/profile")
 async def profile(user = Depends(auth.get_current_user())):
@@ -917,7 +927,7 @@ async def dev_reset_token(email: str):
     <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
     <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
   </div>
-  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.9.1</p>
+  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.9.3</p>
 </footer>
 
 <button id="top" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
