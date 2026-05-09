@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rapidauth"
-version = "1.0.0"
+version = "0.2.9.4"
 description = "Professional plug-and-play authentication framework for FastAPI"
 readme = "README.md"
 license = "MIT"
