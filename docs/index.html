@@ -3,422 +3,193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RapidAuth — Professional Authentication Framework for FastAPI</title>
-  <meta name="description" content="RapidAuth is a plug-and-play backend authentication framework for FastAPI. JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification, rate limiting. Pure JSON API." />
-  <meta name="keywords" content="rapidauth, fastapi authentication, fastapi jwt, fastapi oauth2, python auth, fastapi security, fastapi login, fastapi rbac" />
-  <meta name="author" content="akhmedcodes" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://pypi-packages-akhmedcodes.github.io/rapidauth/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://pypi-packages-akhmedcodes.github.io/rapidauth/" />
-  <meta property="og:title" content="RapidAuth — Professional Authentication Framework for FastAPI" />
-  <meta property="og:description" content="Pure backend JSON API auth for FastAPI. JWT, OAuth2, bcrypt, RBAC, email flows. One line setup." />
-  <meta property="og:site_name" content="RapidAuth" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="RapidAuth — Auth Framework for FastAPI" />
-  <meta name="twitter:description" content="JWT, OAuth2, RBAC, bcrypt. pip install rapidauth" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RapidAuth","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","description":"Professional plug-and-play backend authentication framework for FastAPI.","url":"https://pypi.org/project/rapidauth/","author":{"@type":"Person","name":"akhmedcodes","url":"https://beacons.ai/akhmedcodes"},"license":"https://opensource.org/licenses/MIT","programmingLanguage":"Python","codeRepository":"https://github.com/pypi-packages-akhmedcodes/rapidauth"}</script>
-
+  <title>RapidAuth — Authentication Framework for FastAPI</title>
+  <meta name="description" content="RapidAuth is a professional plug-and-play backend authentication framework for FastAPI. JWT, OAuth2, social login, RBAC, rate limiting — pure JSON API." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js" defer></script>
-
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:#080c17; --bg2:#0d1220; --bg3:#131929; --bg4:#1a2133;
-      --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
-      --ind:#6366f1; --ind-dk:#4f46e5; --ind-lt:#818cf8;
-      --cyan:#22d3ee; --green:#34d399; --yellow:#fbbf24; --red:#f87171;
-      --text:#e2e8f0; --muted:#94a3b8; --faint:#475569;
-      --r:12px; --rsm:7px;
-    }
-    html { scroll-behavior: smooth; }
-    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; font-size:15px; }
-    a { color:var(--ind); text-decoration:none; transition:color .2s; }
-    a:hover { color:var(--cyan); }
-    code, pre { font-family:'JetBrains Mono',monospace; }
-    strong { font-weight:600; }
-    ::-webkit-scrollbar { width:5px; }
-    ::-webkit-scrollbar-track { background:var(--bg); }
-    ::-webkit-scrollbar-thumb { background:var(--ind-dk); border-radius:3px; }
-
-    .grad { background:linear-gradient(135deg,var(--ind-lt),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .tag { display:inline-block; padding:.13rem .5rem; border-radius:99px; font-size:.7rem; font-weight:700; }
-    .tg  { background:rgba(52,211,153,.1);  color:var(--green); }
-    .ty  { background:rgba(251,191,36,.1);  color:var(--yellow); }
-    .ti  { background:rgba(99,102,241,.12); color:var(--ind-lt); }
-    .tc  { background:rgba(34,211,238,.1);  color:var(--cyan); }
-    .tr2 { background:rgba(248,113,113,.1); color:var(--red); }
-
-    /* NAV */
-    #nav {
-      position:fixed; top:0; left:0; right:0; z-index:200;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:.85rem 2.5rem;
-      background:rgba(8,12,23,.88); backdrop-filter:blur(16px);
-      border-bottom:1px solid var(--border); transition:box-shadow .3s;
-    }
-    #nav.scrolled { box-shadow:0 2px 28px rgba(0,0,0,.55); }
-    .brand {
-      font-size:1.1rem; font-weight:800; letter-spacing:-.4px;
-      display:flex; align-items:center; gap:.45rem;
-      background:linear-gradient(135deg,var(--ind-lt),var(--cyan));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    }
-    .nl { display:flex; gap:1.7rem; align-items:center; }
-    .nl a { font-size:.875rem; font-weight:500; color:var(--muted); }
-    .nl a:hover { color:var(--text); }
-    .na { display:flex; gap:.55rem; }
-    .btn {
-      display:inline-flex; align-items:center; gap:.38rem;
-      padding:.44rem 1rem; border-radius:var(--rsm);
-      font-size:.8rem; font-weight:600; cursor:pointer;
-      transition:all .18s; border:none; font-family:inherit;
-    }
-    .bp { background:var(--ind); color:#fff; }
-    .bp:hover { background:var(--ind-dk); color:#fff; transform:translateY(-1px); box-shadow:0 4px 16px rgba(99,102,241,.38); }
-    .bo { background:transparent; color:var(--muted); border:1px solid var(--border2); }
-    .bo:hover { color:var(--text); border-color:var(--ind); }
-
-    /* HERO */
-    #hero {
-      min-height:100vh; display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      text-align:center; padding:7rem 1.5rem 5rem;
-      position:relative; overflow:hidden;
-    }
-    .hglow {
-      position:absolute; top:30%; left:50%; transform:translate(-50%,-50%);
-      width:800px; height:480px;
-      background:radial-gradient(ellipse,rgba(99,102,241,.13) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .hbadge {
-      display:inline-flex; align-items:center; gap:.4rem;
-      padding:.28rem .82rem; border-radius:99px;
-      background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.26);
-      font-size:.75rem; font-weight:700; color:var(--ind-lt);
-      margin-bottom:1.6rem; letter-spacing:.3px; text-transform:uppercase;
-    }
-    h1 { font-size:clamp(2.6rem,7vw,5rem); font-weight:900; line-height:1.06; letter-spacing:-2px; margin-bottom:1.2rem; }
-    .hsub { font-size:clamp(.92rem,2vw,1.1rem); color:var(--muted); max-width:600px; margin:0 auto 2.4rem; }
-    .hinstall {
-      display:inline-flex; align-items:center; gap:.8rem;
-      background:var(--bg3); border:1px solid var(--border2);
-      padding:.68rem 1.4rem; border-radius:var(--r);
-      font-family:'JetBrains Mono',monospace; font-size:.88rem;
-      color:var(--green); margin-bottom:2.2rem; cursor:pointer;
-      transition:border-color .2s;
-    }
-    .hinstall:hover { border-color:var(--ind); }
-    .chint { font-size:.7rem; color:var(--faint); font-family:'Inter',sans-serif; }
-    .hcta { display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; margin-bottom:3.5rem; }
-    .hcta .btn { padding:.68rem 1.6rem; font-size:.875rem; }
-    .hbadges { display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; }
-    .hbadges img { height:20px; }
-
-    /* SECTION */
-    section { padding:5rem 1.5rem; }
-    .w { max-width:1080px; margin:0 auto; }
-    .sl { font-size:.71rem; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; color:var(--ind); margin-bottom:.6rem; }
-    h2 { font-size:clamp(1.6rem,3.5vw,2.5rem); font-weight:800; letter-spacing:-.7px; margin-bottom:.9rem; line-height:1.2; }
-    .sd { color:var(--muted); font-size:.975rem; max-width:620px; margin-bottom:2.7rem; }
-    hr.dv { border:none; border-top:1px solid var(--border); margin:0; }
-
-    /* CARDS */
-    .grid { display:grid; gap:1rem; }
-    .g2 { grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); }
-    .g3 { grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); }
-    .card {
-      background:var(--bg2); border:1px solid var(--border);
-      border-radius:var(--r); padding:1.4rem;
-      transition:border-color .2s,transform .18s,box-shadow .18s;
-    }
-    .card:hover { border-color:rgba(99,102,241,.32); transform:translateY(-2px); box-shadow:0 0 24px rgba(99,102,241,.1); }
-    .cicon {
-      width:38px; height:38px;
-      background:rgba(99,102,241,.1); border-radius:9px;
-      display:flex; align-items:center; justify-content:center;
-      color:var(--ind); font-size:.95rem; margin-bottom:.85rem;
-    }
-    .card h3 { font-size:.92rem; font-weight:700; margin-bottom:.32rem; }
-    .card p { font-size:.82rem; color:var(--muted); line-height:1.58; }
-
-    /* CODE */
-    .cbg { background:var(--bg2); }
-    .tr { display:flex; gap:.18rem; flex-wrap:wrap; margin-bottom:-1px; }
-    .tab {
-      padding:.48rem .95rem; border-radius:var(--rsm) var(--rsm) 0 0;
-      font-size:.78rem; font-weight:600; cursor:pointer;
-      background:var(--bg3); color:var(--muted);
-      border:1px solid var(--border); border-bottom:none;
-      transition:all .15s; font-family:inherit;
-    }
-    .tab.on { background:var(--bg); color:var(--ind); border-color:rgba(99,102,241,.28); }
-    .tp { display:none; }
-    .tp.on { display:block; }
-    .cb {
-      background:#0d1117; border:1px solid var(--border);
-      border-radius:0 var(--r) var(--r) var(--r);
-      position:relative; overflow:hidden;
-    }
-    .cb.full { border-radius:var(--r); }
-    .cb pre { margin:0!important; padding:1.25rem 1.45rem!important; font-size:.79rem!important; line-height:1.68!important; overflow-x:auto; }
-    .cpbtn {
-      position:absolute; top:.62rem; right:.62rem;
-      background:var(--bg3); border:1px solid var(--border);
-      border-radius:var(--rsm); padding:.22rem .58rem;
-      font-size:.68rem; color:var(--muted); cursor:pointer;
-      transition:all .15s; font-family:inherit;
-    }
-    .cpbtn:hover { color:var(--ind); border-color:var(--ind); }
-
-    /* STEPS */
-    .snum {
-      width:27px; height:27px; border-radius:50%;
-      background:var(--ind); color:#fff;
-      display:flex; align-items:center; justify-content:center;
-      font-size:.75rem; font-weight:800; flex-shrink:0;
-    }
-    .srow { display:flex; align-items:center; gap:.7rem; margin-bottom:.85rem; }
-    .srow h4 { font-size:.93rem; font-weight:700; }
-    .smb { margin-bottom:2rem; }
-
-    /* TABLE */
-    .tw { overflow-x:auto; }
-    table { width:100%; border-collapse:collapse; font-size:.84rem; }
-    thead th {
-      background:var(--bg3); color:var(--muted);
-      font-weight:600; font-size:.74rem; letter-spacing:.5px;
-      padding:.7rem 1rem; text-align:left;
-      border-bottom:1px solid var(--border);
-    }
-    tbody td { padding:.68rem 1rem; border-bottom:1px solid rgba(255,255,255,.033); vertical-align:top; }
-    tbody tr:last-child td { border-bottom:none; }
-    tbody tr:hover td { background:rgba(255,255,255,.018); }
-    .mth { display:inline-block; padding:.12rem .48rem; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700; }
-    .post { background:rgba(52,211,153,.1); color:var(--green); }
-    .get  { background:rgba(34,211,238,.1); color:var(--cyan); }
-    .ep   { font-family:'JetBrains Mono',monospace; font-size:.79rem; }
-    .kw   { font-family:'JetBrains Mono',monospace; font-size:.79rem; color:var(--ind-lt); }
-    .tp2  { font-family:'JetBrains Mono',monospace; font-size:.77rem; color:var(--yellow); }
-    .df   { font-family:'JetBrains Mono',monospace; font-size:.77rem; color:var(--muted); }
-
-    /* INSTALL */
-    .ig { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:.95rem; }
-    .ic { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.1rem 1.3rem; }
-    .ic h4 { font-size:.855rem; font-weight:700; margin-bottom:.65rem; display:flex; align-items:center; gap:.48rem; }
-    .ic code { display:block; background:var(--bg3); padding:.55rem .88rem; border-radius:var(--rsm); font-size:.76rem; color:var(--green); }
-
-    /* CLI */
-    .clg { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; margin-bottom:1rem; }
-    .clcard { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.1rem 1.3rem; }
-    .cllabel { font-size:.7rem; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:.75rem; }
-    .clrow { display:flex; flex-direction:column; gap:.15rem; padding:.5rem .75rem; background:var(--bg3); border-radius:var(--rsm); margin-bottom:.45rem; }
-    .clrow:last-child { margin-bottom:0; }
-    .clcmd { font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--cyan); }
-    .cldesc { font-size:.77rem; color:var(--muted); }
-    .cldef { font-size:.7rem; color:var(--green); font-weight:600; }
-    .clother { display:flex; flex-direction:column; gap:.48rem; }
-    .clrow2 { display:flex; align-items:center; gap:1rem; padding:.65rem 1.05rem; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); }
-
-    /* SECURITY */
-    .sg { display:grid; grid-template-columns:repeat(auto-fill,minmax(245px,1fr)); gap:.95rem; }
-    .sc { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.15rem 1.35rem; display:flex; gap:.85rem; align-items:flex-start; transition:border-color .2s; }
-    .sc:hover { border-color:rgba(52,211,153,.22); }
-    .scicon { width:33px; height:33px; flex-shrink:0; background:rgba(52,211,153,.08); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.88rem; color:var(--green); }
-    .sc h4 { font-size:.855rem; font-weight:700; margin-bottom:.2rem; }
-    .sc p { font-size:.79rem; color:var(--muted); line-height:1.53; }
-
-    /* EMAIL FLOWS */
-    .fc { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.35rem; }
-    .fc h4 { font-size:.88rem; font-weight:700; margin-bottom:.95rem; display:flex; align-items:center; gap:.45rem; }
-    .fstep { display:flex; gap:.7rem; align-items:flex-start; padding:.55rem .75rem; background:var(--bg3); border-radius:var(--rsm); margin-bottom:.45rem; }
-    .fstep:last-child { margin-bottom:0; }
-    .farrow { padding:.18rem .7rem; color:var(--faint); font-size:.78rem; }
-    .fep { font-family:'JetBrains Mono',monospace; font-size:.78rem; }
-    .fnote { font-size:.75rem; color:var(--muted); }
-    .notice { padding:.8rem 1.05rem; border-radius:var(--rsm); font-size:.83rem; display:flex; align-items:flex-start; gap:.55rem; margin-bottom:.9rem; }
-    .ny { background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.17); color:var(--muted); }
-    .ng { background:rgba(52,211,153,.06);  border:1px solid rgba(52,211,153,.17); color:var(--muted); }
-    .nr { background:rgba(248,113,113,.06); border:1px solid rgba(248,113,113,.17); color:var(--muted); }
-
-    /* URL DIAGRAM */
-    .url-diagram { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); padding:1.2rem 1.4rem; font-size:.82rem; }
-    .url-diagram .label { font-size:.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--ind); margin-bottom:.7rem; }
-    .url-row { display:flex; align-items:flex-start; gap:.7rem; margin-bottom:.55rem; }
-    .url-row:last-child { margin-bottom:0; }
-    .url-cond { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--yellow); flex-shrink:0; padding-top:.08rem; }
-    .url-val { font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--green); }
-    .url-desc { font-size:.75rem; color:var(--muted); }
-
-    /* FOOTER */
-    footer { background:var(--bg2); border-top:1px solid var(--border); padding:2.8rem 1.5rem 2.2rem; text-align:center; }
-    .flogo { font-size:1.3rem; font-weight:900; background:linear-gradient(135deg,var(--ind-lt),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:.4rem; }
-    .ftag { color:var(--muted); font-size:.875rem; margin-bottom:1.4rem; }
-    .flinks { display:flex; gap:1.3rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.7rem; }
-    .flinks a { color:var(--muted); font-size:.84rem; font-weight:500; display:flex; align-items:center; gap:.38rem; }
-    .flinks a:hover { color:var(--ind); }
-    .fcopy { font-size:.77rem; color:var(--faint); }
-    .fcopy a { color:var(--ind); font-weight:600; }
-
-    /* TOP BTN */
-    #top { position:fixed; bottom:1.3rem; right:1.3rem; z-index:99; width:38px; height:38px; border-radius:50%; background:var(--ind); color:#fff; border:none; cursor:pointer; opacity:0; transition:opacity .25s,transform .18s; display:flex; align-items:center; justify-content:center; font-size:.88rem; }
-    #top.show { opacity:1; }
-    #top:hover { transform:translateY(-2px); }
-
-    @media (max-width:760px) {
-      .nl { display:none; }
-      #nav { padding:.72rem 1.1rem; }
-      section { padding:3.2rem 1.1rem; }
-      .hcta { flex-direction:column; align-items:center; }
-    }
+    #hero{min-height:100vh;display:flex;align-items:center;padding:8rem 0 5rem;position:relative;overflow:hidden}
+    .hero-glow-1{position:absolute;top:20%;left:-10%;width:600px;height:600px;background:radial-gradient(ellipse,rgba(99,102,241,.12) 0%,transparent 65%);pointer-events:none;animation:glow 5s ease-in-out infinite}
+    .hero-glow-2{position:absolute;top:40%;right:-5%;width:500px;height:400px;background:radial-gradient(ellipse,rgba(34,211,238,.07) 0%,transparent 65%);pointer-events:none;animation:glow 6s ease-in-out infinite reverse}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:1}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:.45rem;padding:.28rem .85rem;border-radius:99px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.22);font-size:.72rem;font-weight:700;color:var(--primary-lt);letter-spacing:.4px;text-transform:uppercase;margin-bottom:1.4rem}
+    .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-border 2s ease-in-out infinite}
+    .hero-title{font-size:clamp(2.4rem,5vw,3.8rem);font-weight:900;line-height:1.08;letter-spacing:-2px;margin-bottom:1.2rem}
+    .hero-sub{font-size:1.05rem;color:var(--muted);line-height:1.7;max-width:480px;margin-bottom:2rem}
+    .hero-install{display:inline-flex;align-items:center;gap:.8rem;background:var(--bg3);border:1px solid var(--border2);padding:.7rem 1.2rem;border-radius:var(--radius-sm);font-family:var(--mono);font-size:.875rem;color:var(--green);cursor:pointer;transition:border-color var(--transition);margin-bottom:1.8rem;width:fit-content}
+    .hero-install:hover{border-color:var(--primary)}
+    .hero-install .copy-hint{font-size:.68rem;color:var(--faint);font-family:var(--font)}
+    .hero-cta{display:flex;gap:.75rem;flex-wrap:wrap}
+    .code-window{background:#0d1117;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg),0 0 60px rgba(99,102,241,.08);animation:float 6s ease-in-out infinite}
+    .code-window-bar{display:flex;align-items:center;gap:1rem;padding:.75rem 1.1rem;background:var(--bg3);border-bottom:1px solid var(--border)}
+    .win-dots{display:flex;gap:.38rem}
+    .win-dots span{width:11px;height:11px;border-radius:50%}
+    .win-dots .r{background:#ff5f57}.win-dots .y{background:#febc2e}.win-dots .g{background:#28c840}
+    .win-file{font-size:.73rem;color:var(--faint);font-family:var(--mono)}
+    .code-window pre{padding:1.4rem 1.5rem;font-size:.78rem;line-height:1.75;overflow-x:auto;margin:0}
+    .stats-bar{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2rem 0}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+    .stat-item{text-align:center;padding:1rem;border-right:1px solid var(--border)}
+    .stat-item:last-child{border-right:none}
+    .stat-number{font-size:2rem;font-weight:900;letter-spacing:-1px;line-height:1;margin-bottom:.25rem}
+    .stat-label{font-size:.78rem;color:var(--faint);font-weight:500}
+    #features{padding:6rem 0}
+    .section-label{font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--primary);margin-bottom:.6rem}
+    .section-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-1px;margin-bottom:.8rem}
+    .section-desc{color:var(--muted);font-size:.975rem;max-width:540px;margin-bottom:3rem}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+    .feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;transition:all var(--transition)}
+    .feature-card:hover{border-color:rgba(99,102,241,.3);transform:translateY(-2px);box-shadow:0 0 32px rgba(99,102,241,.1)}
+    .feature-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;margin-bottom:1rem}
+    .feature-card h3{font-size:.92rem;margin-bottom:.35rem}
+    .feature-card p{font-size:.82rem;color:var(--muted);line-height:1.6}
+    #code-preview{padding:6rem 0;background:var(--bg2)}
+    .tabs-row{display:flex;gap:.2rem;margin-bottom:-1px;flex-wrap:wrap}
+    .tab-btn{padding:.5rem 1.1rem;border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-size:.8rem;font-weight:600;cursor:pointer;background:var(--bg3);color:var(--muted);border:1px solid var(--border);border-bottom:none;font-family:var(--font);transition:all var(--transition)}
+    .tab-btn.active{background:#0d1117;color:var(--primary-lt);border-color:rgba(99,102,241,.3)}
+    .tab-content{display:none}.tab-content.active{display:block}
+    #cta{padding:6rem 0;text-align:center;position:relative;overflow:hidden}
+    #cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(99,102,241,.08) 0%,transparent 70%);pointer-events:none}
+    .cta-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;letter-spacing:-1px;margin-bottom:.8rem}
+    .cta-sub{color:var(--muted);max-width:480px;margin:0 auto 2rem}
+    .cta-actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.code-window{display:none}.stats-grid{grid-template-columns:repeat(2,1fr)}.stat-item:nth-child(2){border-right:none}}
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav id="nav">
-  <a class="brand" href="#hero"><i class="fa-solid fa-lock"></i> RapidAuth</a>
-  <div class="nl">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+    <span>RapidAuth</span>
+  </a>
+  <div class="nav-links">
     <a href="#features">Features</a>
-    <a href="#quickstart">Quick Start</a>
-    <a href="#endpoints">API</a>
-    <a href="#email">Email</a>
-    <a href="#security">Security</a>
-    <a href="#cli">CLI</a>
-    <a href="#config">Config</a>
+    <a href="#code-preview">Examples</a>
+    <a href="documentation.html">Docs</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank">GitHub</a>
   </div>
-  <div class="na">
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="https://pypi.org/project/rapidauth/" target="_blank" class="btn bp"><i class="fa-solid fa-box"></i> PyPI</a>
+  <div class="nav-actions">
+    <span class="nav-version">v1.0.2</span>
+    <a href="documentation.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-book-open"></i> Documentation</a>
   </div>
 </nav>
 
-<!-- HERO -->
 <section id="hero">
-  <div class="hglow"></div>
-  <div class="hbadge"><i class="fa-solid fa-tag"></i> rapidauth 1.0.2</div>
-  <h1>Auth for FastAPI.<br><span class="grad">Pure backend. Pure JSON.</span></h1>
-  <p class="hsub">
-    JWT, OAuth2, bcrypt/argon2, refresh rotation, RBAC, email verification, rate limiting —
-    one <code style="color:var(--cyan);font-size:.9em">include_router</code> call, 14 endpoints ready, zero HTML.
-    Your frontend talks to the API.
-  </p>
-  <div class="hinstall" onclick="copyInstall(this)">
-    <i class="fa-solid fa-terminal" style="color:var(--ind)"></i>
-    <span>pip install rapidauth</span>
-    <span class="chint">click to copy</span>
-  </div>
-  <div class="hcta">
-    <a href="#quickstart" class="btn bp"><i class="fa-solid fa-rocket"></i> Get Started</a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn bo"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="https://beacons.ai/akhmedcodes" target="_blank" class="btn bo"><i class="fa-solid fa-user"></i> Author</a>
-  </div>
-  <div class="hbadges">
-    <img src="https://img.shields.io/pypi/v/rapidauth?color=6366f1&label=PyPI&style=flat-square" alt="version" />
-    <img src="https://img.shields.io/pypi/pyversions/rapidauth?color=22d3ee&style=flat-square" alt="python" />
-    <img src="https://img.shields.io/github/stars/pypi-packages-akhmedcodes/rapidauth?color=fbbf24&style=flat-square" alt="stars" />
-    <img src="https://img.shields.io/badge/license-MIT-34d399?style=flat-square" alt="license" />
-    <img src="https://img.shields.io/pypi/dm/rapidauth?color=f87171&style=flat-square&label=downloads" alt="downloads" />
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- FEATURES -->
-<section id="features">
-  <div class="w">
-    <div class="sl">Why RapidAuth</div>
-    <h2>Everything auth. Zero boilerplate.</h2>
-    <p class="sd">Stop rewriting auth logic on every project. RapidAuth handles the complete authentication stack — as a pure JSON API — so you focus on your product.</p>
-    <div class="grid g3">
-      <div class="card"><div class="cicon"><i class="fa-solid fa-plug"></i></div><h3>Plug &amp; Play</h3><p>One <code>include_router</code> call registers 14 auth endpoints. Works with any frontend framework.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-brackets-curly"></i></div><h3>Pure JSON API</h3><p>Every endpoint returns JSON. No HTML pages, no redirects. Your frontend owns the UI.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-key"></i></div><h3>JWT + Refresh Tokens</h3><p>Per-token <code>jti</code> blacklisting, automatic rotation on refresh, configurable expiry.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-lock"></i></div><h3>bcrypt &amp; argon2</h3><p>Best-in-class password hashing. Timing-safe verify. Switch hasher with one config value.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-brands fa-google"></i></div><h3>Social OAuth2</h3><p>Google, GitHub, Discord. Auto-create users from OAuth profiles. One config dict.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-users"></i></div><h3>RBAC</h3><p>Built-in role and permission system. Gate any route with one dependency function.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-envelope"></i></div><h3>Email Verification</h3><p>Auto-send on register. Dev mode shows token in email for instant testing. Production: point at your SPA.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-rotate"></i></div><h3>Password Reset</h3><p>Token-based, 1-hour expiry. Dev mode email shows raw token + curl command. Anti-enumeration by design.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-ban"></i></div><h3>Rate Limiting</h3><p>Sliding-window brute-force protection on login. Configurable attempts and lockout window.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-database"></i></div><h3>Multi-ORM</h3><p>Tortoise ORM, SQLAlchemy async and sync. Auto-detected at runtime from your model class.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-cookie"></i></div><h3>Cookie / Body / Both</h3><p>Refresh tokens in body, httpOnly cookie, or both. One config value.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-terminal"></i></div><h3>CLI Scaffolding</h3><p><code>rapidauth --default-setup postgresql --async</code> generates a complete project in seconds.</p></div>
-    </div>
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- INSTALL -->
-<section id="install">
-  <div class="w">
-    <div class="sl">Installation</div>
-    <h2>Choose your ORM</h2>
-    <p class="sd">RapidAuth auto-detects Tortoise ORM and SQLAlchemy from your model class. Pass <code>get_db</code> for SQLAlchemy; omit it for Tortoise.</p>
-    <div class="ig">
-      <div class="ic"><h4><i class="fa-solid fa-box" style="color:var(--ind)"></i> Base only</h4><code>pip install rapidauth</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--green)"></i> Tortoise ORM <span class="tag tg">recommended async</span></h4><code>pip install "rapidauth[tortoise]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x</h4><code>pip install "rapidauth[sqlalchemy]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--cyan)"></i> SQLModel</h4><code>pip install "rapidauth[sqlmodel]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-star" style="color:var(--yellow)"></i> All extras</h4><code>pip install "rapidauth[all]"</code></div>
-    </div>
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- QUICK START -->
-<section id="quickstart" class="cbg">
-  <div class="w">
-    <div class="sl">Quick Start</div>
-    <h2>From zero to full auth in minutes</h2>
-    <p class="sd">14 endpoints, JWT, RBAC, refresh rotation — the moment you call <code>include_router</code>.</p>
-
-    <div class="smb">
-      <div class="srow"><div class="snum">1</div><h4>Install</h4></div>
-      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-bash">pip install "rapidauth[tortoise]"    # Tortoise ORM + SQLite
-pip install "rapidauth[sqlalchemy]"  # SQLAlchemy async</code></pre></div>
-    </div>
-
-    <div class="smb">
-      <div class="srow"><div class="snum">2</div><h4>Scaffold (optional)</h4></div>
-      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-bash">rapidauth --default-setup sqlite     --async   # Tortoise ORM + SQLite
-rapidauth --default-setup sqlalchemy --async   # SQLAlchemy async + SQLite
-rapidauth --default-setup postgresql --async   # SQLAlchemy async + PostgreSQL
-# Generates: database.py + models.py + main.py</code></pre></div>
-    </div>
-
-    <div class="smb">
-      <div class="srow"><div class="snum">3</div><h4>Wire it up</h4></div>
-      <div class="tr">
-        <button class="tab on" onclick="st(this,'t-min')">Minimal</button>
-        <button class="tab" onclick="st(this,'t-tort')">Tortoise ORM</button>
-        <button class="tab" onclick="st(this,'t-async')">SQLAlchemy async</button>
-        <button class="tab" onclick="st(this,'t-sync')">SQLAlchemy sync</button>
-        <button class="tab" onclick="st(this,'t-adv')">Full config</button>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow fade-up"><span class="dot"></span> v1.0.2 · pip install rapidauth</div>
+        <h1 class="hero-title fade-up fade-up-1">Auth for FastAPI.<br><span class="grad">Done in one line.</span></h1>
+        <p class="hero-sub fade-up fade-up-2">JWT tokens, OAuth2 social login, RBAC, email verification, rate limiting — all wired together as a pure JSON API. One <code>include_router</code> call. 14 endpoints. Ready.</p>
+        <div class="hero-install fade-up fade-up-2" onclick="copyInstall(this)">
+          <i class="fa-solid fa-terminal" style="color:var(--primary)"></i>
+          <span>pip install rapidauth</span>
+          <span class="copy-hint">click to copy</span>
+        </div>
+        <div class="hero-cta fade-up fade-up-3">
+          <a href="documentation.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-rocket"></i> Get Started</a>
+          <a href="documentation.html" class="btn btn-outline btn-lg"><i class="fa-solid fa-book"></i> View Docs</a>
+          <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn btn-outline btn-lg"><i class="fa-brands fa-github"></i> GitHub</a>
+        </div>
       </div>
-      <div id="t-min" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import FastAPI, Depends
+      <div>
+        <div class="code-window">
+          <div class="code-window-bar">
+            <div class="win-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+            <span class="win-file">main.py</span>
+          </div>
+          <pre><code class="language-python">from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends
+from tortoise.contrib.fastapi import RegisterTortoise
 from rapidauth import RapidAuth
-from your_models import User
+from models import User
 
-app  = FastAPI()
-auth = RapidAuth(user_model=User, jwt_secret="your-secret-min-32-chars")
+@asynccontextmanager
+async def lifespan(app):
+    async with RegisterTortoise(
+        app,
+        db_url="sqlite://./app.db",
+        modules={"models": ["models"]},
+        generate_schemas=True,
+    ):
+        yield
+
+app  = FastAPI(lifespan=lifespan)
+auth = RapidAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+    social_auth={
+        "google": {
+            "client_id": "...",
+            "client_secret": "...",
+            "redirect_uri": "...",
+        }
+    },
+)
 app.include_router(auth.router)
+# 14 endpoints. Done.</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="section-divider" />
 
-get_current_user = auth.get_current_user()
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-number grad">14</div><div class="stat-label">Auth Endpoints</div></div>
+      <div class="stat-item"><div class="stat-number grad-green">3</div><div class="stat-label">OAuth Providers</div></div>
+      <div class="stat-item"><div class="stat-number" style="color:var(--yellow)">3.10+</div><div class="stat-label">Python Version</div></div>
+      <div class="stat-item"><div class="stat-number" style="color:var(--cyan)">MIT</div><div class="stat-label">License</div></div>
+    </div>
+  </div>
+</div>
+<hr class="section-divider" />
 
-@app.get("/profile")
-async def profile(user = Depends(get_current_user)):
-    return {"username": user.username, "email": user.email}</code></pre></div></div>
+<section id="features">
+  <div class="container">
+    <div class="section-label">Why RapidAuth</div>
+    <div class="section-title">Everything auth. Zero boilerplate.</div>
+    <p class="section-desc">Stop rewriting auth on every project. RapidAuth is a pure backend JSON API — your frontend handles the UI, RapidAuth handles the security.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(99,102,241,.1);color:var(--primary)"><i class="fa-solid fa-bolt"></i></div><h3>Plug &amp; Play</h3><p>One <code>include_router</code> call registers all 14 endpoints. No boilerplate, no config files to maintain.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(34,211,238,.1);color:var(--cyan)"><i class="fa-solid fa-brackets-curly"></i></div><h3>Pure JSON API</h3><p>Every endpoint returns JSON. No HTML rendering, no server-side forms. Your frontend owns the UX completely.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,.1);color:var(--green)"><i class="fa-solid fa-key"></i></div><h3>JWT + Refresh Tokens</h3><p>Per-token <code>jti</code> blacklisting, automatic rotation on refresh, and fully configurable expiry times.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(251,191,36,.1);color:var(--yellow)"><i class="fa-brands fa-google"></i></div><h3>Social OAuth2</h3><p>Google, GitHub, Discord. Auto-create users from OAuth profiles on first login. One config dict.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(99,102,241,.1);color:var(--primary)"><i class="fa-solid fa-users"></i></div><h3>RBAC</h3><p>Built-in role and permission system. Gate any route with a single dependency function.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(248,113,113,.1);color:var(--red)"><i class="fa-solid fa-lock"></i></div><h3>bcrypt &amp; argon2</h3><p>Best-in-class password hashing. Timing-safe verify. Switch with one config value.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(34,211,238,.1);color:var(--cyan)"><i class="fa-solid fa-envelope"></i></div><h3>Email Verification</h3><p>Auto-send on register. Dev-friendly raw token mode. Production: point links at your SPA.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(251,146,60,.1);color:var(--orange)"><i class="fa-solid fa-ban"></i></div><h3>Rate Limiting</h3><p>Sliding-window brute-force protection on login. Configurable attempts and lockout window.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,.1);color:var(--green)"><i class="fa-solid fa-database"></i></div><h3>Multi-ORM</h3><p>Tortoise ORM 1.x and SQLAlchemy async/sync. Auto-detected from your model class at runtime.</p></div>
+    </div>
+  </div>
+</section>
+<hr class="section-divider" />
 
-      <div id="t-tort" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># Works with Tortoise ORM 1.x — uses RegisterTortoise with global fallback
-from contextlib import asynccontextmanager
+<section id="code-preview">
+  <div class="container">
+    <div class="section-label">Quick Start</div>
+    <div class="section-title">Up and running in minutes</div>
+    <p class="section-desc" style="margin-bottom:2rem">Choose your ORM and start building. RapidAuth auto-detects your model and wires everything automatically.</p>
+    <div class="tabs-row">
+      <button class="tab-btn active" onclick="switchTab(this,'t-tort')">Tortoise ORM</button>
+      <button class="tab-btn" onclick="switchTab(this,'t-async')">SQLAlchemy async</button>
+      <button class="tab-btn" onclick="switchTab(this,'t-adv')">Full config</button>
+      <button class="tab-btn" onclick="switchTab(this,'t-rbac')">RBAC</button>
+    </div>
+    <div id="t-tort" class="tab-content active">
+      <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · main.py</span></div><button class="copy-btn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from tortoise import fields
 from tortoise.contrib.fastapi import RegisterTortoise
@@ -433,9 +204,7 @@ class User(Model):
     is_active   = fields.BooleanField(default=True)
     is_verified = fields.BooleanField(default=True)
     roles       = fields.JSONField(default=list)
-    permissions = fields.JSONField(default=list)
-    class Meta:
-        table = "users"
+    class Meta: table = "users"
 
 @asynccontextmanager
 async def lifespan(app):
@@ -448,14 +217,15 @@ async def lifespan(app):
         yield
 
 app  = FastAPI(lifespan=lifespan)
-auth = RapidAuth(user_model=User, jwt_secret="super-secret-key-change-it")
+auth = RapidAuth(user_model=User, jwt_secret="change-in-production")
 app.include_router(auth.router)
 
 @app.get("/profile")
 async def profile(user = Depends(auth.get_current_user())):
-    return {"id": user.id, "username": user.username}</code></pre></div></div>
-
-      <div id="t-async" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
+    return {"username": user.username, "email": user.email}</code></pre></div>
+    </div>
+    <div id="t-async" class="tab-content">
+      <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · main.py</span></div><button class="copy-btn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
@@ -469,18 +239,16 @@ class Base(DeclarativeBase): pass
 
 class User(Base):
     __tablename__ = "users"
-    id          : Mapped[int]  = mapped_column(Integer, primary_key=True)
-    username    : Mapped[str]  = mapped_column(String(100), unique=True)
-    email       : Mapped[str]  = mapped_column(String(254), unique=True)
-    password    : Mapped[str]  = mapped_column(String(200))
-    is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
-    is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
-    roles       : Mapped[list] = mapped_column(JSON, default=list)
-    permissions : Mapped[list] = mapped_column(JSON, default=list)
+    id       : Mapped[int]  = mapped_column(Integer, primary_key=True)
+    username : Mapped[str]  = mapped_column(String(100), unique=True)
+    email    : Mapped[str]  = mapped_column(String(254), unique=True)
+    password : Mapped[str]  = mapped_column(String(200))
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    roles    : Mapped[list] = mapped_column(JSON, default=list)
 
 async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
+    async with AsyncSessionLocal() as s:
+        yield s
 
 @asynccontextmanager
 async def lifespan(app):
@@ -489,99 +257,38 @@ async def lifespan(app):
     yield
 
 app  = FastAPI(lifespan=lifespan)
-auth = RapidAuth(user_model=User, jwt_secret="super-secret-key", get_db=get_db)
-app.include_router(auth.router)</code></pre></div></div>
-
-      <div id="t-sync" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from sqlalchemy import create_engine, Boolean, Integer, String, JSON
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
-from rapidauth import RapidAuth
-
-# NOTE: sync sessions block the event loop — prefer async for production
-engine = create_engine("sqlite:///./app.db", connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-class Base(DeclarativeBase): pass
-
-class User(Base):
-    __tablename__ = "users"
-    id          : Mapped[int]  = mapped_column(Integer, primary_key=True)
-    username    : Mapped[str]  = mapped_column(String(100), unique=True)
-    email       : Mapped[str]  = mapped_column(String(254), unique=True)
-    password    : Mapped[str]  = mapped_column(String(200))
-    is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
-    is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
-    roles       : Mapped[list] = mapped_column(JSON, default=list)
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-@asynccontextmanager
-async def lifespan(app):
-    Base.metadata.create_all(bind=engine)
-    yield
-
-app  = FastAPI(lifespan=lifespan)
-auth = RapidAuth(user_model=User, jwt_secret="super-secret-key", get_db=get_db)
-app.include_router(auth.router)</code></pre></div></div>
-
-      <div id="t-adv" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = RapidAuth(
+auth = RapidAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
+app.include_router(auth.router)</code></pre></div>
+    </div>
+    <div id="t-adv" class="tab-content">
+      <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · full config</span></div><button class="copy-btn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = RapidAuth(
     user_model=User,
-
-    # JWT
-    jwt={
-        "secret":         "your-secret-key-min-32-chars",
-        "algorithm":      "HS256",
-        "access_expire":  900,      # 15 min
-        "refresh_expire": 604800,   # 7 days
-    },
-
-    # Token delivery
-    refresh_token_mode="cookie",    # "body" | "cookie" | "both"
+    jwt_secret="your-long-secret",
+    jwt={"access_expire": 900, "refresh_expire": 604800},
+    refresh_token_mode="cookie",
     cookie={"httponly": True, "secure": True, "samesite": "lax"},
-    password_hasher="argon2",       # "bcrypt" (default) | "argon2"
-
-    # Email
+    password_hasher="argon2",
     email={
-        "host":       "smtp.gmail.com",
-        "port":       587,
-        "username":   "you@gmail.com",
-        "password":   "app-password-16-chars",
+        "host": "smtp.gmail.com", "port": 587,
+        "username": "you@gmail.com", "password": "app-password",
         "from_email": "you@gmail.com",
     },
-
-    # URL config — see Email section for full explanation
     base_url="https://api.myapp.com",
-    verify_email_url="https://myapp.com/verify-email",   # optional
-    reset_password_url="https://myapp.com/reset-password", # optional
-
-    email_verification_required=True,
-
-    # Social OAuth
+    verify_email_url="https://myapp.com/verify",
+    reset_password_url="https://myapp.com/reset-password",
     social_auth={
-        "google": {
-            "client_id":     "...",
-            "client_secret": "...",
-            "redirect_uri":  "https://api.myapp.com/auth/google/callback",
-        },
+        "google":  {"client_id": "...", "client_secret": "...", "redirect_uri": "..."},
+        "github":  {"client_id": "...", "client_secret": "...", "redirect_uri": "..."},
     },
-
-    # Rate limiting
     rate_limit={"enabled": True, "max_login_attempts": 5, "lockout_seconds": 300},
-)</code></pre></div></div>
+    email_verification_required=True,
+)</code></pre></div>
     </div>
-
-    <div>
-      <div class="srow"><div class="snum">4</div><h4>RBAC — protect routes with roles</h4></div>
-      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import Depends
+    <div id="t-rbac" class="tab-content">
+      <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · RBAC</span></div><button class="copy-btn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import Depends
 from rapidauth.exceptions import PermissionDeniedError
 
-def require_role(*roles):
+def require_role(*roles: str):
     async def dep(user = Depends(auth.get_current_user())):
         for role in roles:
             if role not in (user.roles or []):
@@ -591,392 +298,57 @@ def require_role(*roles):
 
 @app.get("/admin")
 async def admin_panel(user = Depends(require_role("admin"))):
-    return {"message": f"Hello admin {user.username}"}
+    return {"message": f"Hello, {user.username}"}
 
-@app.get("/mod")
+@app.get("/moderator")
 async def mod_panel(user = Depends(require_role("admin", "moderator"))):
-    return {"message": "Mod panel"}</code></pre></div>
+    return {"ok": True}
+
+# Seed admin user
+await auth.create_user(
+    "admin", "admin@example.com", "AdminPass1!",
+    extra={"roles": ["admin"]},
+)</code></pre></div>
     </div>
   </div>
 </section>
-<hr class="dv" />
+<hr class="section-divider" />
 
-<!-- ENDPOINTS -->
-<section id="endpoints">
-  <div class="w">
-    <div class="sl">API Reference</div>
-    <h2>All 14 endpoints — pure JSON</h2>
-    <p class="sd">Mounted under <code>/auth</code> by default (configurable via <code>router_prefix</code>). Every endpoint returns JSON. No HTML, no redirects.</p>
-    <div class="tw">
-      <table>
-        <thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/register</td><td>—</td><td>Create account; sends welcome or verification email if configured</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/login</td><td>—</td><td>Login with username <em>or</em> email + password; returns token pair</td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/me</td><td>Bearer</td><td>Return current authenticated user</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/refresh</td><td>Refresh token</td><td>Issue new token pair; old refresh token immediately revoked</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/logout</td><td>Bearer</td><td>Blacklist current access token, clear cookies</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/change-password</td><td>Bearer</td><td>Change password — old password required</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password</td><td>—</td><td>Request reset email; always 200 (anti-enumeration)</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Confirm with <code>{"token":"…","new_password":"…"}</code></td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/verify-email?token=…</td><td>—</td><td>Verify email inline — returns JSON confirmation</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>Verify email with token in body <code>{"token":"…"}</code></td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/resend-verification</td><td>Bearer <em>or</em> <code>{"email":"…"}</code></td><td>Resend verification email; no auth needed if email provided in body</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/revoke-all</td><td>Bearer</td><td>Revoke all refresh tokens for this user</td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/login</td><td>—</td><td>Redirect to OAuth2 provider (google / github / discord)</td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/callback</td><td>—</td><td>Handle OAuth2 callback; create or login user; return token pair</td></tr>
-        </tbody>
-      </table>
+<section id="cta">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="badge badge-indigo" style="margin:0 auto 1.2rem;width:fit-content"><i class="fa-solid fa-bolt"></i> Open Source · MIT</div>
+    <div class="cta-title">Start building in 2 minutes</div>
+    <p class="cta-sub">Full documentation, working examples, and a CLI scaffold — everything you need to ship auth fast.</p>
+    <div class="cta-actions">
+      <a href="documentation.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-book-open"></i> Read the Docs</a>
+      <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn btn-outline btn-lg"><i class="fa-brands fa-github"></i> View on GitHub</a>
     </div>
   </div>
 </section>
-<hr class="dv" />
+<hr class="section-divider" />
 
-<!-- EMAIL -->
-<section id="email">
-  <div class="w">
-    <div class="sl">Email Setup</div>
-    <h2>Password reset &amp; email verification</h2>
-    <p class="sd">Without email config the endpoints still work — no email is sent. Tokens can be tested directly via Swagger or curl. Add the <code>email</code> dict when ready for real delivery.</p>
-
-    <div style="margin-bottom:2.5rem">
-      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.9rem"><i class="fa-solid fa-link" style="color:var(--ind);margin-right:.4rem"></i>URL Configuration — the right way</h3>
-      <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">RapidAuth uses two URL parameters to control where email links point. Both are optional with sensible dev-mode defaults.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem;margin-bottom:1rem">
-        <div class="url-diagram">
-          <div class="label"><i class="fa-solid fa-envelope-circle-check"></i> verify_email_url</div>
-          <div class="url-row"><span class="url-cond">dev </span><div><div class="url-val">{base_url}/auth/verify-email?token=…</div><div class="url-desc">Link goes to backend GET endpoint → returns JSON</div></div></div>
-          <div class="url-row"><span class="url-cond">prod</span><div><div class="url-val">https://myapp.com/verify?token=…</div><div class="url-desc">Link goes to your frontend page → frontend calls POST /auth/verify-email</div></div></div>
-        </div>
-        <div class="url-diagram">
-          <div class="label"><i class="fa-solid fa-key"></i> reset_password_url</div>
-          <div class="url-row"><span class="url-cond">dev </span><div><div class="url-val">not set → dev email</div><div class="url-desc">Email shows raw token + curl example for Swagger testing</div></div></div>
-          <div class="url-row"><span class="url-cond">prod</span><div><div class="url-val">https://myapp.com/reset?token=…</div><div class="url-desc">Link goes to your frontend page → frontend calls POST /auth/reset-password/confirm</div></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:2rem">
-      <div class="tr">
-        <button class="tab on" onclick="et(this,'e-dev')">Development</button>
-        <button class="tab" onclick="et(this,'e-prod')">Production</button>
-        <button class="tab" onclick="et(this,'e-js')">Frontend JS</button>
-        <button class="tab" onclick="et(this,'e-resend')">Resend verify</button>
-      </div>
-
-      <div id="e-dev" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># Development — no verify_email_url or reset_password_url needed
-auth = RapidAuth(
-    user_model=User,
-    jwt_secret="your-secret",
-    email={
-        "host":       "smtp.gmail.com",
-        "port":       587,
-        "username":   "you@gmail.com",
-        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
-        "from_email": "you@gmail.com",
-    },
-    base_url="http://localhost:8000",          # used in email link defaults
-    email_verification_required=True,
-)
-
-# Verify email link  → GET http://localhost:8000/auth/verify-email?token=TOKEN
-#   User clicks → returns JSON: {"message": "Email verified successfully"}
-#
-# Reset password  → dev email with raw token + curl example:
-#   curl -X POST http://localhost:8000/auth/reset-password/confirm
-#        -H "Content-Type: application/json"
-#        -d '{"token": "TOKEN", "new_password": "NewPass1!"}'</code></pre></div></div>
-
-      <div id="e-prod" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># Production — set both URLs to your frontend pages
-auth = RapidAuth(
-    user_model=User,
-    jwt_secret="your-secret",
-    get_db=get_db,
-    email={
-        "host":       "smtp.gmail.com",
-        "port":       587,
-        "username":   "you@gmail.com",
-        "password":   "xxxx xxxx xxxx xxxx",
-        "from_email": "you@gmail.com",
-    },
-    base_url="https://api.myapp.com",
-    # Where verification email links point
-    verify_email_url="https://myapp.com/verify-email",
-    # Where password-reset email links point
-    reset_password_url="https://myapp.com/reset-password",
-    email_verification_required=True,
-)
-
-# Verify email link  → https://myapp.com/verify-email?token=TOKEN
-#   Your SPA reads ?token= → calls POST /auth/verify-email  {"token":"…"}
-#
-# Reset email link   → https://myapp.com/reset-password?token=TOKEN
-#   Your SPA reads ?token= → user enters password → POST /auth/reset-password/confirm</code></pre></div></div>
-
-      <div id="e-js" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-javascript">// ── Email verification ───────────────────────────────────────────────────────
-// User lands on your SPA verify page with ?token=TOKEN in the URL
-const token = new URLSearchParams(window.location.search).get("token");
-
-const res = await fetch("https://api.myapp.com/auth/verify-email", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token }),
-});
-// { "message": "Email verified successfully" }
-
-// ── Password reset ───────────────────────────────────────────────────────────
-// User lands on your SPA reset page with ?token=TOKEN in the URL
-const token = new URLSearchParams(window.location.search).get("token");
-
-// User enters new password, then:
-const res = await fetch("https://api.myapp.com/auth/reset-password/confirm", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token, new_password: "NewPass123!" }),
-});
-// { "message": "Password reset successfully" }</code></pre></div></div>
-
-      <div id="e-resend" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># POST /auth/resend-verification accepts either:
-
-# 1. Bearer token (user has a valid access token)
-import httpx
-httpx.post("/auth/resend-verification",
-    headers={"Authorization": f"Bearer {access_token}"})
-
-# 2. Email in body — no auth needed
-#    Useful when email_verification_required=True and the user cannot log in
-#    because their token expired before they verified.
-httpx.post("/auth/resend-verification",
-    json={"email": "user@example.com"})
-
-# Both always return 200 with a generic message (anti-enumeration):
-# { "message": "If that account exists and is unverified, a verification email has been sent" }</code></pre></div></div>
-    </div>
-
-    <div style="margin-bottom:2rem">
-      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-brands fa-google" style="color:var(--red);margin-right:.4rem"></i>Gmail App Password</h3>
-      <div class="notice ny"><i class="fa-solid fa-triangle-exclamation" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i>Gmail blocks plain account passwords for SMTP. You must generate an App Password.</div>
-      <div style="display:flex;flex-direction:column;gap:.45rem">
-        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">1</div><span style="font-size:.865rem">Go to <strong>myaccount.google.com</strong> &rarr; <strong>Security</strong></span></div>
-        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">2</div><span style="font-size:.865rem">Enable <strong>2-Step Verification</strong> (required)</span></div>
-        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">3</div><span style="font-size:.865rem">Search <strong>App passwords</strong> in Security settings</span></div>
-        <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">4</div><span style="font-size:.865rem">App: <strong>Mail</strong> / Device: <strong>Other</strong> &rarr; name it <code>rapidauth</code> &rarr; Generate</span></div>
-        <div class="clrow2" style="border-color:rgba(52,211,153,.22)"><div class="snum" style="width:24px;height:24px;font-size:.7rem;background:var(--green)">5</div><span style="font-size:.865rem">Copy the <strong style="color:var(--green)">16-character password</strong> &rarr; paste as <code>"password"</code></span></div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:2rem">
-      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-server" style="color:var(--cyan);margin-right:.4rem"></i>SMTP providers</h3>
-      <div class="tw">
-        <table>
-          <thead><tr><th>Provider</th><th>host</th><th>port</th><th>Note</th></tr></thead>
-          <tbody>
-            <tr><td>Gmail</td><td class="ep">smtp.gmail.com</td><td class="ep">587</td><td>App Password required</td></tr>
-            <tr><td>Outlook / Hotmail</td><td class="ep">smtp.office365.com</td><td class="ep">587</td><td>Regular account password</td></tr>
-            <tr><td>Yahoo</td><td class="ep">smtp.mail.yahoo.com</td><td class="ep">587</td><td>App Password required</td></tr>
-            <tr><td>Yandex</td><td class="ep">smtp.yandex.com</td><td class="ep">587</td><td>—</td></tr>
-            <tr><td>Mailgun</td><td class="ep">smtp.mailgun.org</td><td class="ep">587</td><td>SMTP credentials from dashboard</td></tr>
-            <tr><td>SendGrid</td><td class="ep">smtp.sendgrid.net</td><td class="ep">587</td><td>username=<code>apikey</code>, password=API key</td></tr>
-            <tr><td>Amazon SES</td><td class="ep">email-smtp.&lt;region&gt;.amazonaws.com</td><td class="ep">587</td><td>SMTP credentials from AWS Console</td></tr>
-            <tr><td>Custom VPS</td><td class="ep">your-domain.com</td><td class="ep">25/587/465</td><td>port 465 &rarr; <code>use_ssl: True</code></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div style="margin-bottom:2rem">
-      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-flask" style="color:var(--green);margin-right:.4rem"></i>Testing without real SMTP</h3>
-      <div class="notice nr"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red);flex-shrink:0;margin-top:.1rem"></i>Dev-only endpoints — remove before production.</div>
-      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">@app.post("/dev/get-verify-token")   # REMOVE IN PRODUCTION
-async def dev_verify_token(email: str):
-    user = await auth.manager.get_by_email(email)
-    token = await auth.manager.create_verification_token(user)
-    return {"token": token, "url": f"/auth/verify-email?token={token}"}
-
-@app.post("/dev/get-reset-token")    # REMOVE IN PRODUCTION
-async def dev_reset_token(email: str):
-    token = await auth.manager.create_reset_token(email)
-    return {"token": token}</code></pre></div>
-    </div>
-
-    <div class="grid g2">
-      <div class="fc">
-        <h4><i class="fa-solid fa-key" style="color:var(--yellow)"></i> Password reset flow</h4>
-        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password</div><div class="fnote">Creates 1h token; sends email (link or dev token)</div></div></div>
-        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user follows reset_password_url link</div>
-        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password/confirm</div><div class="fnote"><code>{"token": "…", "new_password": "…"}</code></div></div></div>
-        <div style="margin-top:.75rem;font-size:.77rem;color:var(--faint)"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> Always returns 200 — no email enumeration</div>
-      </div>
-      <div class="fc">
-        <h4><i class="fa-solid fa-envelope-circle-check" style="color:var(--cyan)"></i> Email verification flow</h4>
-        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/register</div><div class="fnote">Account created; verification email sent (24h token)</div></div></div>
-        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks verify_email_url link</div>
-        <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/verify-email?token=…</div><div class="fnote">returns JSON confirmation — always</div></div></div>
-        <div class="fstep" style="margin-top:.45rem"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/resend-verification</div><div class="fnote">Bearer token <em>or</em> <code>{"email":"…"}</code> — no auth required</div></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- SECURITY -->
-<section id="security">
-  <div class="w">
-    <div class="sl">Security</div>
-    <h2>Secure by default</h2>
-    <p class="sd">Every security decision is made for you using industry-standard defaults. No configuration required.</p>
-    <div class="sg">
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-lock"></i></div><div><h4>bcrypt / argon2</h4><p>Adaptive cost hashing with timing-safe verify. Switch hashers with one config value.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-shield-halved"></i></div><div><h4>JWT jti blacklist</h4><p>Every token has a unique ID. Logout blacklists it instantly. Pluggable store (Redis).</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-rotate"></i></div><div><h4>Refresh rotation</h4><p>Old refresh token is revoked the moment a new pair is issued — replay attacks blocked.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-gauge-high"></i></div><div><h4>Brute-force protection</h4><p>Sliding-window rate limiter: 5 failed attempts triggers a 5-minute IP lockout.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-eye-slash"></i></div><div><h4>Email enumeration guard</h4><p>Password reset and resend always return 200 regardless of whether the email exists.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-hourglass-half"></i></div><div><h4>Timing attack mitigation</h4><p>Dummy hash verify runs on unknown usernames to prevent response-time leaks.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-cookie-bite"></i></div><div><h4>Secure cookie flags</h4><p><code>httpOnly</code>, <code>secure</code>, <code>sameSite</code> configurable. Safe defaults included.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-clock"></i></div><div><h4>Short-lived tokens</h4><p>Access: 15 min. Reset links: 1 hour. Verify links: 24 hours. All configurable.</p></div></div>
-    </div>
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- CLI -->
-<section id="cli">
-  <div class="w">
-    <div class="sl">CLI</div>
-    <h2>rapidauth command line</h2>
-    <p class="sd">Scaffold a complete project in seconds. Every <code>--default-setup</code> generates <code>database.py</code> + <code>models.py</code> + <code>main.py</code>. Default mode is <code>--async</code>.</p>
-    <div class="clg">
-      <div class="clcard">
-        <div class="cllabel" style="color:var(--cyan)"><i class="fa-solid fa-database"></i> SQLite</div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup sqlite</span><span class="cldesc">Tortoise ORM + aiosqlite <span class="cldef">async, default</span></span></div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup sqlite --async</span><span class="cldesc">Tortoise ORM + aiosqlite</span></div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup sqlite --sync</span><span class="cldesc">SQLAlchemy sync + sqlite3</span></div>
-      </div>
-      <div class="clcard">
-        <div class="cllabel" style="color:var(--yellow)"><i class="fa-solid fa-database"></i> SQLAlchemy</div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup sqlalchemy</span><span class="cldesc">SQLAlchemy async + aiosqlite <span class="cldef">async, default</span></span></div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup sqlalchemy --async</span><span class="cldesc">SQLAlchemy async + aiosqlite</span></div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup sqlalchemy --sync</span><span class="cldesc">SQLAlchemy sync + sqlite3</span></div>
-      </div>
-      <div class="clcard">
-        <div class="cllabel" style="color:var(--ind-lt)"><i class="fa-solid fa-database"></i> PostgreSQL</div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup postgresql</span><span class="cldesc">SQLAlchemy async + asyncpg <span class="cldef">async, default</span></span></div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup postgresql --async</span><span class="cldesc">SQLAlchemy async + asyncpg</span></div>
-        <div class="clrow"><span class="clcmd">rapidauth --default-setup postgresql --sync</span><span class="cldesc">SQLAlchemy sync + psycopg2</span></div>
-      </div>
-    </div>
-    <div class="clother">
-      <div class="clrow2"><span class="clcmd">rapidauth init</span><span class="cldesc">Scaffold <code>.env.example</code> and <code>auth_config.py</code></span></div>
-      <div class="clrow2"><span class="clcmd">rapidauth version</span><span class="cldesc">Print installed rapidauth version</span></div>
-    </div>
-    <div class="notice ny" style="margin-top:1rem"><i class="fa-solid fa-circle-info" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i><code>--sync</code> generates synchronous SQLAlchemy code. Sync calls block the FastAPI event loop — use <code>--async</code> for production.</div>
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- CONFIG -->
-<section id="config">
-  <div class="w">
-    <div class="sl">Configuration</div>
-    <h2>RapidAuth() parameters</h2>
-    <p class="sd">Only <code>user_model</code> and <code>jwt_secret</code> are required. Everything else has a sensible default.</p>
-    <div class="tw">
-      <table>
-        <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr><td class="kw">user_model</td><td class="tp2">type</td><td class="df">required</td><td>Your ORM User model class</td></tr>
-          <tr><td class="kw">jwt_secret</td><td class="tp2">str</td><td class="df">required</td><td>Secret key for signing JWTs (min 16 chars)</td></tr>
-          <tr><td class="kw">jwt</td><td class="tp2">dict</td><td class="df">None</td><td><code>secret</code>, <code>algorithm</code>, <code>access_expire</code>, <code>refresh_expire</code></td></tr>
-          <tr><td class="kw">username_field</td><td class="tp2">str</td><td class="df">"username"</td><td>Field name for username in your model</td></tr>
-          <tr><td class="kw">email_field</td><td class="tp2">str</td><td class="df">"email"</td><td>Field name for email</td></tr>
-          <tr><td class="kw">password_field</td><td class="tp2">str</td><td class="df">"password"</td><td>Field name for hashed password</td></tr>
-          <tr><td class="kw">id_field</td><td class="tp2">str</td><td class="df">"id"</td><td>Field name for primary key</td></tr>
-          <tr><td class="kw">is_active_field</td><td class="tp2">str</td><td class="df">"is_active"</td><td>Field name for active flag</td></tr>
-          <tr><td class="kw">is_verified_field</td><td class="tp2">str</td><td class="df">"is_verified"</td><td>Field name for email-verified flag</td></tr>
-          <tr><td class="kw">roles_field</td><td class="tp2">str</td><td class="df">"roles"</td><td>Field name for roles list (JSON)</td></tr>
-          <tr><td class="kw">permissions_field</td><td class="tp2">str</td><td class="df">"permissions"</td><td>Field name for permissions list (JSON)</td></tr>
-          <tr><td class="kw">password_hasher</td><td class="tp2">str</td><td class="df">"bcrypt"</td><td><code>"bcrypt"</code> or <code>"argon2"</code></td></tr>
-          <tr><td class="kw">refresh_token_mode</td><td class="tp2">str</td><td class="df">"body"</td><td><code>"body"</code> · <code>"cookie"</code> · <code>"both"</code></td></tr>
-          <tr><td class="kw">cookie</td><td class="tp2">dict</td><td class="df">{}</td><td><code>httponly</code>, <code>secure</code>, <code>samesite</code>, <code>domain</code>, <code>max_age</code></td></tr>
-          <tr><td class="kw">email</td><td class="tp2">dict</td><td class="df">None</td><td>SMTP config: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from_email</code>, <code>use_tls</code>, <code>use_ssl</code>, <code>timeout</code></td></tr>
-          <tr><td class="kw">base_url</td><td class="tp2">str</td><td class="df">"http://localhost:8000"</td><td>Backend URL; fallback base for verify_email_url in dev mode</td></tr>
-          <tr><td class="kw">verify_email_url</td><td class="tp2">str</td><td class="df">None</td><td>Full URL for email verification links. Token appended as <code>?token=TOKEN</code>. Default → <code>{base_url}/auth/verify-email</code> (GET returns JSON)</td></tr>
-          <tr><td class="kw">reset_password_url</td><td class="tp2">str</td><td class="df">None</td><td>Full URL for password-reset email links. Token appended as <code>?token=TOKEN</code>. Default → dev email with raw token + curl example</td></tr>
-          <tr><td class="kw">email_verification_required</td><td class="tp2">bool</td><td class="df">False</td><td>Block login until email is verified</td></tr>
-          <tr><td class="kw">enable_refresh_rotation</td><td class="tp2">bool</td><td class="df">True</td><td>Revoke old refresh token when issuing a new pair</td></tr>
-          <tr><td class="kw">rate_limit</td><td class="tp2">dict</td><td class="df">{}</td><td><code>enabled</code>, <code>max_login_attempts</code>, <code>lockout_seconds</code></td></tr>
-          <tr><td class="kw">social_auth</td><td class="tp2">dict</td><td class="df">None</td><td>OAuth providers: <code>google</code>, <code>github</code>, <code>discord</code></td></tr>
-          <tr><td class="kw">get_db</td><td class="tp2">callable</td><td class="df">None</td><td>FastAPI dependency yielding DB session (SQLAlchemy async or sync). Omit for Tortoise ORM.</td></tr>
-          <tr><td class="kw">router_prefix</td><td class="tp2">str</td><td class="df">"/auth"</td><td>URL prefix for all auth endpoints</td></tr>
-          <tr><td class="kw">router_tags</td><td class="tp2">list</td><td class="df">["Authentication"]</td><td>OpenAPI tags shown in Swagger UI</td></tr>
-          <tr><td class="kw">token_store</td><td class="tp2">any</td><td class="df">None</td><td>Custom token store (e.g. Redis). Must implement <code>save / get / delete / revoke_all_for_user</code></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-<hr class="dv" />
-
-<!-- FOOTER -->
 <footer>
-  <div class="flogo"><i class="fa-solid fa-lock"></i> RapidAuth</div>
-  <p class="ftag">Professional backend authentication framework for FastAPI</p>
-  <div class="flinks">
-    <a href="https://pypi.org/project/rapidauth/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
-    <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
+  <div class="container">
+    <div class="footer-logo"><div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>RapidAuth</div>
+    <p class="footer-tagline">Professional authentication framework for FastAPI</p>
+    <div class="footer-links">
+      <a href="https://pypi.org/project/rapidauth/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
+      <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+      <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
+      <a href="documentation.html"><i class="fa-solid fa-book"></i> Docs</a>
+      <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
+    </div>
+    <p class="footer-copy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v1.0.2</p>
   </div>
-  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v1.0.2</p>
 </footer>
 
-<button id="top" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
-  <i class="fa-solid fa-angle-up"></i>
-</button>
-
 <script>
-  document.addEventListener('DOMContentLoaded', () => { if (window.hljs) hljs.highlightAll(); });
-
-  window.addEventListener('scroll', () => {
-    document.getElementById('nav').classList.toggle('scrolled', scrollY > 20);
-    document.getElementById('top').classList.toggle('show', scrollY > 400);
-  });
-
-  const QS_IDS = ['t-min','t-tort','t-async','t-sync','t-adv'];
-  const EM_IDS = ['e-dev','e-prod','e-js','e-resend'];
-
-  function st(btn, id) { switchTabs(btn, id, QS_IDS); }
-  function et(btn, id) { switchTabs(btn, id, EM_IDS); }
-
-  function switchTabs(btn, id, ids) {
-    btn.closest('.tr').querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-    btn.classList.add('on');
-    ids.forEach(i => {
-      const el = document.getElementById(i);
-      if (el) { el.classList.remove('on'); el.style.display = ''; }
-    });
-    const target = document.getElementById(id);
-    if (target) {
-      target.classList.add('on');
-      if (window.hljs) target.querySelectorAll('code:not([data-highlighted])').forEach(b => hljs.highlightElement(b));
-    }
-  }
-
-  function copyInstall(el) {
-    navigator.clipboard.writeText('pip install rapidauth').then(() => {
-      const h = el.querySelector('.chint');
-      h.textContent = 'copied!'; h.style.color = 'var(--green)';
-      setTimeout(() => { h.textContent = 'click to copy'; h.style.color = ''; }, 1800);
-    });
-  }
-
-  function cp(btn) {
-    const code = btn.closest('.cb').querySelector('code');
-    navigator.clipboard.writeText(code.innerText).then(() => {
-      btn.textContent = 'copied!'; btn.style.color = 'var(--green)';
-      setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 1800);
-    });
-  }
+  window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>20));
+  function copyInstall(el){navigator.clipboard.writeText('pip install rapidauth').then(()=>{const h=el.querySelector('.copy-hint');h.textContent='copied!';h.style.color='var(--green)';setTimeout(()=>{h.textContent='click to copy';h.style.color='';},1800)});}
+  const ALL_TABS=['t-tort','t-async','t-adv','t-rbac'];
+  function switchTab(btn,id){btn.closest('.tabs-row').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');ALL_TABS.forEach(t=>{const el=document.getElementById(t);if(el)el.classList.remove('active');});const target=document.getElementById(id);if(target){target.classList.add('active');if(window.hljs)target.querySelectorAll('code:not([data-highlighted])').forEach(b=>hljs.highlightElement(b));}}
+  function cp(btn){const code=btn.closest('.code-block').querySelector('code');navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='copy';btn.classList.remove('copied');},1800)});}
+  document.addEventListener('DOMContentLoaded',()=>{if(window.hljs)hljs.highlightAll();});
 </script>
 </body>
 </html>

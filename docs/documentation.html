@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RapidAuth — Documentation</title>
+  <meta name="description" content="Complete documentation for RapidAuth — the professional FastAPI authentication framework." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js" defer></script>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Docs layout ─────────────────────────────────────── */
+    body { overflow-x: hidden; }
+
+    .docs-layout {
+      display: flex;
+      min-height: 100vh;
+      padding-top: 60px;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────── */
+    #sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: transform .25s ease;
+    }
+
+    .sidebar-search {
+      padding: 1rem 1rem .75rem;
+      position: sticky;
+      top: 0;
+      background: var(--bg2);
+      z-index: 2;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+    .search-wrap i {
+      position: absolute;
+      left: .7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--faint);
+      font-size: .78rem;
+    }
+    #doc-search {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .5rem .75rem .5rem 2rem;
+      color: var(--text);
+      font-size: .8rem;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    #doc-search:focus { border-color: var(--primary); }
+    #doc-search::placeholder { color: var(--faint); }
+
+    .sidebar-nav { padding: .75rem 0 2rem; flex: 1; }
+
+    .sidebar-group { margin-bottom: .25rem; }
+
+    .group-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: .45rem 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      text-align: left;
+    }
+
+    .group-label {
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .group-arrow {
+      font-size: .65rem;
+      color: var(--faint);
+      transition: transform var(--transition);
+    }
+
+    .sidebar-group.collapsed .group-arrow { transform: rotate(-90deg); }
+
+    .sidebar-items {
+      list-style: none;
+      overflow: hidden;
+      transition: max-height .2s ease;
+    }
+    .sidebar-group.collapsed .sidebar-items { display: none; }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .38rem 1rem .38rem 1.2rem;
+      font-size: .83rem;
+      color: var(--muted);
+      border-left: 2px solid transparent;
+      transition: all var(--transition);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .sidebar-link:hover {
+      color: var(--text);
+      background: rgba(255,255,255,.03);
+    }
+    .sidebar-link.active {
+      color: var(--primary-lt);
+      border-left-color: var(--primary);
+      background: rgba(99,102,241,.07);
+      font-weight: 600;
+    }
+    .sidebar-link i {
+      width: 14px;
+      font-size: .72rem;
+      flex-shrink: 0;
+      opacity: .6;
+    }
+    .sidebar-link.active i { opacity: 1; }
+
+    /* ── Mobile overlay ──────────────────────────────────── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 99;
+    }
+    #overlay.show { display: block; }
+
+    /* ── Content area ────────────────────────────────────── */
+    .docs-content {
+      flex: 1;
+      min-width: 0;
+      margin-left: var(--sidebar-w);
+      padding: 2.5rem 3rem 6rem;
+      max-width: calc(100% - var(--sidebar-w));
+    }
+
+    .content-inner { max-width: var(--content-max); }
+
+    /* ── Section headings ─────────────────────────────────── */
+    .doc-section {
+      padding-top: 2.5rem;
+      margin-top: -2.5rem;
+      margin-bottom: 0;
+    }
+
+    .section-category {
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: .5rem;
+    }
+
+    .doc-section > h2 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -.7px;
+      margin-bottom: .75rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .doc-section > h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 1.8rem 0 .6rem;
+      color: var(--text);
+    }
+
+    .doc-section > h4 {
+      font-size: .92rem;
+      font-weight: 700;
+      margin: 1.2rem 0 .4rem;
+      color: var(--muted);
+    }
+
+    .doc-section p { margin-bottom: .85rem; font-size: .9rem; }
+    .doc-section ul, .doc-section ol {
+      margin: .5rem 0 1rem 1.2rem;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.75;
+    }
+
+    /* ── Endpoint docs ────────────────────────────────────── */
+    .endpoint-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 1rem 0 1.5rem;
+      overflow: hidden;
+    }
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .85rem 1.2rem;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+    }
+    .endpoint-path {
+      font-family: var(--mono);
+      font-size: .85rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .endpoint-desc { font-size: .8rem; color: var(--muted); margin-left: auto; }
+    .endpoint-body { padding: 1rem 1.2rem; }
+    .endpoint-body p { font-size: .85rem; margin-bottom: .5rem; }
+
+    /* ── Param table ──────────────────────────────────────── */
+    .param-name { font-family: var(--mono); font-size: .8rem; color: var(--primary-lt); }
+    .param-type { font-family: var(--mono); font-size: .75rem; color: var(--yellow); }
+    .param-req  { font-size: .7rem; font-weight: 700; }
+
+    /* ── Divider between sections ─────────────────────────── */
+    .doc-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* ── Anchor link ──────────────────────────────────────── */
+    .anchor-link {
+      opacity: 0;
+      font-size: .75rem;
+      color: var(--faint);
+      margin-left: .5rem;
+      transition: opacity var(--transition);
+    }
+    h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+
+    /* ── Breadcrumb ───────────────────────────────────────── */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .78rem;
+      color: var(--faint);
+      margin-bottom: 2rem;
+    }
+    .breadcrumb a { color: var(--primary-lt); }
+    .breadcrumb i { font-size: .6rem; }
+
+    /* ── On this page (right TOC) ─────────────────────────── */
+    .page-toc {
+      position: fixed;
+      top: 80px;
+      right: 1.5rem;
+      width: 200px;
+      font-size: .75rem;
+    }
+    .page-toc-title {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: .5rem;
+    }
+    .page-toc a {
+      display: block;
+      color: var(--faint);
+      padding: .2rem 0;
+      border-left: 2px solid var(--border);
+      padding-left: .6rem;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .page-toc a:hover { color: var(--muted); border-color: var(--primary); }
+
+    /* ── Mobile nav toggle ────────────────────────────────── */
+    #menu-toggle {
+      display: none;
+      align-items: center;
+      gap: .4rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .4rem .75rem;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .page-toc { display: none; }
+      .docs-content { padding: 2rem 2rem 6rem; }
+    }
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); }
+      .docs-content { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem 5rem; }
+      #menu-toggle { display: flex; }
+    }
+
+    /* ── Flow diagram ─────────────────────────────────────── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1rem 0;
+    }
+    .flow-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .flow-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .flow-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin-top: 6px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .flow-connector {
+      width: 1px;
+      flex: 1;
+      min-height: 28px;
+      background: var(--border2);
+      margin: 2px 0;
+    }
+    .flow-body {
+      padding-bottom: 1rem;
+      flex: 1;
+    }
+    .flow-body h4 { font-size: .85rem; margin-bottom: .2rem; color: var(--text); }
+    .flow-body p  { font-size: .8rem; color: var(--muted); margin: 0; }
+
+    /* ── OAuth step card ──────────────────────────────────── */
+    .oauth-step {
+      display: flex;
+      gap: 1rem;
+      padding: .9rem 1rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: .6rem;
+    }
+    .oauth-step-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .oauth-step-body h4 { font-size: .85rem; font-weight: 700; margin-bottom: .18rem; }
+    .oauth-step-body p  { font-size: .79rem; color: var(--muted); margin: 0; line-height: 1.5; }
+
+    /* ── Provider badge ───────────────────────────────────── */
+    .provider-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .35rem .8rem;
+      border-radius: 99px;
+      font-size: .78rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .provider-google { background: rgba(234,67,53,.1); color: #ea4335; border: 1px solid rgba(234,67,53,.2); }
+    .provider-github { background: rgba(255,255,255,.06); color: #e2e8f0; border: 1px solid rgba(255,255,255,.12); }
+    .provider-facebook { background: rgba(24,119,242,.1); color: #1877f2; border: 1px solid rgba(24,119,242,.2); }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────────── -->
+<nav id="nav">
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <button id="menu-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <a href="index.html" class="nav-brand">
+      <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+      <span>RapidAuth</span>
+    </a>
+  </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="documentation.html" class="active">Docs</a>
+    <a href="https://pypi.org/project/rapidauth/" target="_blank">PyPI</a>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank">GitHub</a>
+  </div>
+  <div class="nav-actions">
+    <span class="nav-version">v1.0.2</span>
+    <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank" class="btn btn-outline btn-sm"><i class="fa-brands fa-github"></i> Star</a>
+  </div>
+</nav>
+
+<div id="overlay"></div>
+
+<!-- ── DOCS LAYOUT ──────────────────────────────────────────── -->
+<div class="docs-layout">
+
+  <!-- ── SIDEBAR ────────────────────────────────────────────── -->
+  <aside id="sidebar">
+    <div class="sidebar-search">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="doc-search" type="text" placeholder="Search docs..." autocomplete="off" />
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+
+      <!-- Getting Started -->
+      <div class="sidebar-group">
+        <button class="group-toggle">
+          <span class="group-label">Getting Started</span>
+          <i class="fa-solid fa-chevron-down group-arrow"></i>
+        </button>
+        <ul class="sidebar-items">
+          <li><a class="sidebar-link" href="#introduction"><i class="fa-solid fa-house"></i>Introduction</a></li>
+          <li><a class="sidebar-link" href="#installation"><i class="fa-solid fa-download"></i>Installation</a></li>
+          <li><a class="sidebar-link" href="#project-setup"><i class="fa-solid fa-gear"></i>Project Setup</a></li>
+        </ul>
+      </div>
+
+      <!-- Core Concepts -->
+      <div class="sidebar-group">
+        <button class="group-toggle">
+          <span class="group-label">Core Concepts</span>
+          <i class="fa-solid fa-chevron-down group-arrow"></i>
+        </button>
+        <ul class="sidebar-items">
+          <li><a class="sidebar-link" href="#auth-flow"><i class="fa-solid fa-diagram-project"></i>Authentication Flow</a></li>
+          <li><a class="sidebar-link" href="#jwt-system"><i class="fa-solid fa-key"></i>JWT System</a></li>
+          <li><a class="sidebar-link" href="#session-management"><i class="fa-solid fa-database"></i>Session Management</a></li>
+        </ul>
+      </div>
+
+      <!-- API Reference -->
+      <div class="sidebar-group">
+        <button class="group-toggle">
+          <span class="group-label">API Reference</span>
+          <i class="fa-solid fa-chevron-down group-arrow"></i>
+        </button>
+        <ul class="sidebar-items">
+          <li><a class="sidebar-link" href="#api-register"><i class="fa-solid fa-user-plus"></i>Register User</a></li>
+          <li><a class="sidebar-link" href="#api-login"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
+          <li><a class="sidebar-link" href="#api-logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
+          <li><a class="sidebar-link" href="#api-refresh"><i class="fa-solid fa-rotate"></i>Refresh Token</a></li>
+          <li><a class="sidebar-link" href="#api-me"><i class="fa-solid fa-circle-user"></i>Get Current User</a></li>
+          <li><a class="sidebar-link" href="#api-reset"><i class="fa-solid fa-unlock"></i>Password Reset</a></li>
+          <li><a class="sidebar-link" href="#api-verify"><i class="fa-solid fa-envelope-circle-check"></i>Email Verify</a></li>
+        </ul>
+      </div>
+
+      <!-- Social Login -->
+      <div class="sidebar-group">
+        <button class="group-toggle">
+          <span class="group-label">Social Login</span>
+          <i class="fa-solid fa-chevron-down group-arrow"></i>
+        </button>
+        <ul class="sidebar-items">
+          <li><a class="sidebar-link" href="#oauth-google"><i class="fa-brands fa-google"></i>Google OAuth</a></li>
+          <li><a class="sidebar-link" href="#oauth-github"><i class="fa-brands fa-github"></i>GitHub OAuth</a></li>
+          <li><a class="sidebar-link" href="#oauth-facebook"><i class="fa-brands fa-facebook"></i>Facebook Login</a></li>
+          <li><a class="sidebar-link" href="#oauth-callback"><i class="fa-solid fa-arrow-right-arrow-left"></i>Callback Flow</a></li>
+          <li><a class="sidebar-link" href="#oauth-env"><i class="fa-solid fa-file-code"></i>Environment Vars</a></li>
+        </ul>
+      </div>
+
+      <!-- Security -->
+      <div class="sidebar-group">
+        <button class="group-toggle">
+          <span class="group-label">Security</span>
+          <i class="fa-solid fa-chevron-down group-arrow"></i>
+        </button>
+        <ul class="sidebar-items">
+          <li><a class="sidebar-link" href="#password-hashing"><i class="fa-solid fa-shield-halved"></i>Password Hashing</a></li>
+          <li><a class="sidebar-link" href="#token-expiration"><i class="fa-solid fa-clock"></i>Token Expiration</a></li>
+          <li><a class="sidebar-link" href="#rate-limiting"><i class="fa-solid fa-gauge-high"></i>Rate Limiting</a></li>
+        </ul>
+      </div>
+
+      <!-- Advanced -->
+      <div class="sidebar-group">
+        <button class="group-toggle">
+          <span class="group-label">Advanced</span>
+          <i class="fa-solid fa-chevron-down group-arrow"></i>
+        </button>
+        <ul class="sidebar-items">
+          <li><a class="sidebar-link" href="#middleware"><i class="fa-solid fa-layer-group"></i>Middleware</a></li>
+          <li><a class="sidebar-link" href="#custom-backend"><i class="fa-solid fa-plug"></i>Custom Backend</a></li>
+          <li><a class="sidebar-link" href="#db-adapters"><i class="fa-solid fa-server"></i>Database Adapters</a></li>
+        </ul>
+      </div>
+
+    </nav>
+  </aside>
+
+  <!-- ── CONTENT ─────────────────────────────────────────────── -->
+  <main class="docs-content">
+    <div class="content-inner">
+      <div class="breadcrumb">
+        <a href="index.html">RapidAuth</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Documentation</span>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════
+           GETTING STARTED
+      ══════════════════════════════════════════════════════ -->
+
+      <!-- Introduction -->
+      <section class="doc-section" id="introduction">
+        <div class="section-category">Getting Started</div>
+        <h2>Introduction</h2>
+        <p>RapidAuth is a <strong>pure backend</strong> authentication framework for FastAPI. It exposes a clean JSON REST API — no HTML pages, no server-side form rendering. You plug it into your FastAPI application and immediately get a complete, production-grade auth system.</p>
+        <p>Your frontend (React, Vue, Next.js, mobile app) talks to the endpoints over HTTP. RapidAuth handles everything else.</p>
+
+        <h3>Philosophy</h3>
+        <ul>
+          <li><strong>Backend only.</strong> Every endpoint returns JSON.</li>
+          <li><strong>Zero configuration to start.</strong> One line mounts the full system.</li>
+          <li><strong>Scales from dev to production.</strong> Sensible defaults during development; explicit configuration for production.</li>
+          <li><strong>ORM-agnostic.</strong> Tortoise ORM 1.x and SQLAlchemy (async &amp; sync) — auto-detected.</li>
+          <li><strong>Secure by default.</strong> bcrypt/argon2, refresh rotation, rate limiting, token blacklisting out of the box.</li>
+        </ul>
+
+        <h3>What you get</h3>
+        <p>One <code>app.include_router(auth.router)</code> call mounts <strong>14 production-ready endpoints</strong>:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/register</td><td>Create account, return token pair</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/login</td><td>Login with username or email + password</td></tr>
+              <tr><td><span class="method method-get">GET</span></td><td>/auth/me</td><td>Return current authenticated user</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/refresh</td><td>Issue new token pair, revoke old refresh</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/logout</td><td>Blacklist current access token</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/change-password</td><td>Change password (old password required)</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/reset-password</td><td>Request password reset email</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/reset-password/confirm</td><td>Confirm reset with token + new password</td></tr>
+              <tr><td><span class="method method-get">GET</span></td><td>/auth/verify-email</td><td>Verify email — returns JSON</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/verify-email</td><td>Verify email with token in body</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/resend-verification</td><td>Resend verification email</td></tr>
+              <tr><td><span class="method method-post">POST</span></td><td>/auth/revoke-all</td><td>Revoke all refresh tokens for user</td></tr>
+              <tr><td><span class="method method-get">GET</span></td><td>/auth/{provider}/login</td><td>Redirect to OAuth2 provider</td></tr>
+              <tr><td><span class="method method-get">GET</span></td><td>/auth/{provider}/callback</td><td>Handle OAuth2 callback</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Installation -->
+      <section class="doc-section" id="installation">
+        <div class="section-category">Getting Started</div>
+        <h2>Installation</h2>
+        <p>Install RapidAuth from PyPI. Choose the extras that match your ORM.</p>
+
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-bash"># Base package only
+pip install rapidauth
+
+# With Tortoise ORM (recommended async ORM)
+pip install "rapidauth[tortoise]"
+
+# With SQLAlchemy async or sync
+pip install "rapidauth[sqlalchemy]"
+
+# Everything (Tortoise + SQLAlchemy + uvicorn)
+pip install "rapidauth[all]"</code></pre>
+        </div>
+
+        <h3>CLI scaffold</h3>
+        <p>Generate a complete working project in seconds:</p>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-bash">rapidauth --default-setup sqlite              # Tortoise ORM + SQLite
+rapidauth --default-setup sqlalchemy --async  # SQLAlchemy async
+rapidauth --default-setup postgresql --async  # SQLAlchemy + PostgreSQL
+
+# Generates: database.py  models.py  main.py
+rapidauth init     # .env.example + auth_config.py
+rapidauth version  # print installed version</code></pre>
+        </div>
+
+        <h3>Requirements</h3>
+        <ul>
+          <li>Python ≥ 3.10</li>
+          <li>FastAPI ≥ 0.100</li>
+          <li>Tortoise ORM ≥ 1.0 (if using Tortoise)</li>
+          <li>SQLAlchemy ≥ 2.0 (if using SQLAlchemy)</li>
+        </ul>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Project Setup -->
+      <section class="doc-section" id="project-setup">
+        <div class="section-category">Getting Started</div>
+        <h2>Project Setup</h2>
+
+        <div class="callout callout-warning">
+          <i class="fa-solid fa-triangle-exclamation callout-icon"></i>
+          <p><strong>Tortoise ORM 1.x users:</strong> Use <code>RegisterTortoise</code> inside a <code>lifespan</code>, not the old <code>register_tortoise()</code>. See the setup below.</p>
+        </div>
+
+        <h3>Tortoise ORM (recommended)</h3>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · models.py</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-python">from tortoise import fields
+from tortoise.models import Model
+
+class User(Model):
+    id          = fields.IntField(pk=True)
+    username    = fields.CharField(max_length=100, unique=True)
+    email       = fields.CharField(max_length=254, unique=True)
+    password    = fields.CharField(max_length=200)
+    is_active   = fields.BooleanField(default=True)
+    is_verified = fields.BooleanField(default=True)
+    roles       = fields.JSONField(default=list)
+    permissions = fields.JSONField(default=list)
+    created_at  = fields.DatetimeField(auto_now_add=True)
+
+    class Meta:
+        table = "users"</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · main.py</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-python">from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends
+from tortoise.contrib.fastapi import RegisterTortoise
+from rapidauth import RapidAuth
+from models import User
+
+@asynccontextmanager
+async def lifespan(app):
+    async with RegisterTortoise(
+        app,
+        db_url="sqlite://./app.db",
+        modules={"models": ["models"]},
+        generate_schemas=True,
+    ):
+        yield
+
+app  = FastAPI(lifespan=lifespan)
+auth = RapidAuth(user_model=User, jwt_secret="change-this-in-production")
+app.include_router(auth.router)
+
+get_current_user = auth.get_current_user()
+
+@app.get("/profile")
+async def profile(user = Depends(get_current_user)):
+    return {"id": user.id, "username": user.username, "email": user.email}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <i class="fa-solid fa-circle-info callout-icon"></i>
+          <p>Run with: <code>uvicorn main:app --reload</code>. Open <code>http://localhost:8000/docs</code> to see all 14 endpoints in Swagger UI.</p>
+        </div>
+
+        <h3>SQLAlchemy async</h3>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · main.py</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-python">from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+from sqlalchemy import Boolean, Integer, String, JSON
+from rapidauth import RapidAuth
+
+engine = create_async_engine("sqlite+aiosqlite:///./app.db")
+AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+class Base(DeclarativeBase): pass
+
+class User(Base):
+    __tablename__ = "users"
+    id          : Mapped[int]  = mapped_column(Integer, primary_key=True)
+    username    : Mapped[str]  = mapped_column(String(100), unique=True)
+    email       : Mapped[str]  = mapped_column(String(254), unique=True)
+    password    : Mapped[str]  = mapped_column(String(200))
+    is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
+    is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
+    roles       : Mapped[list] = mapped_column(JSON, default=list)
+
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+@asynccontextmanager
+async def lifespan(app):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
+app  = FastAPI(lifespan=lifespan)
+auth = RapidAuth(user_model=User, jwt_secret="your-secret", get_db=get_db)
+app.include_router(auth.router)</code></pre>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           CORE CONCEPTS
+      ══════════════════════════════════════════════════════ -->
+      <hr class="doc-divider" />
+
+      <!-- Authentication Flow -->
+      <section class="doc-section" id="auth-flow">
+        <div class="section-category">Core Concepts</div>
+        <h2>Authentication Flow</h2>
+        <p>RapidAuth implements a standard OAuth2-style flow with JWT tokens. Here is the full lifecycle:</p>
+
+        <h3>Registration</h3>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Client sends credentials</h4><p>POST /auth/register with <code>{"username", "email", "password"}</code></p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>RapidAuth validates &amp; creates user</h4><p>Checks username/email uniqueness, hashes password with bcrypt/argon2, saves to DB.</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Token pair issued</h4><p>Returns <code>access_token</code> (15 min) and <code>refresh_token</code> (7 days).</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div></div>
+            <div class="flow-body"><h4>Optional: verification email sent</h4><p>If <code>email_verification_required=True</code> and email is configured, a verification link is emailed.</p></div>
+          </div>
+        </div>
+
+        <h3>Login</h3>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Client sends credentials</h4><p>POST /auth/login with <code>{"username": "alice"}</code> or <code>{"username": "alice@example.com"}</code>.</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Rate limit check</h4><p>IP checked against sliding window. 5 failed attempts triggers a 5-minute lockout.</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Credentials verified</h4><p>Password hashed and compared timing-safely. Checks <code>is_active</code> and <code>is_verified</code>.</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div></div>
+            <div class="flow-body"><h4>Token pair returned</h4><p>Fresh <code>access_token</code> + <code>refresh_token</code>. Rate limit counter reset.</p></div>
+          </div>
+        </div>
+
+        <h3>Token Refresh</h3>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Client sends refresh token</h4><p>POST /auth/refresh with <code>{"refresh_token": "..."}</code> or via cookie.</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+            <div class="flow-body"><h4>Token validated &amp; revoked</h4><p>Old refresh token removed from store immediately (rotation).</p></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-line"><div class="flow-dot"></div></div>
+            <div class="flow-body"><h4>New token pair issued</h4><p>Fresh access + refresh tokens returned. Any replay of the old refresh token returns 401.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- JWT System -->
+      <section class="doc-section" id="jwt-system">
+        <div class="section-category">Core Concepts</div>
+        <h2>JWT System</h2>
+        <p>RapidAuth uses <strong>HS256</strong> JWT tokens by default. Both access and refresh tokens carry a <code>jti</code> (unique ID) that enables instant revocation.</p>
+
+        <h3>Token types</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Token</th><th>Default TTL</th><th>Stored in</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>Access token</td><td>900s (15 min)</td><td>Client memory</td><td>Authenticate API requests via Bearer header</td></tr>
+              <tr><td>Refresh token</td><td>604800s (7 days)</td><td>Token store</td><td>Obtain new access tokens without re-login</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Configuration</h3>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="your-secret",          # shorthand
+
+    # — or full dict —
+    jwt={
+        "secret":         "your-secret-min-32-chars",
+        "algorithm":      "HS256",     # HS256 | HS384 | HS512
+        "access_expire":  900,         # seconds
+        "refresh_expire": 604800,      # seconds
+    },
+)</code></pre>
+        </div>
+
+        <h3>Refresh token delivery</h3>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-python">auth = RapidAuth(
+    ...
+    # "body"   → refresh_token in JSON response body (default, easiest for SPAs)
+    # "cookie" → httpOnly cookie only (more secure)
+    # "both"   → token in both body and cookie
+    refresh_token_mode="cookie",
+    cookie={
+        "httponly": True,
+        "secure":   True,       # True = HTTPS only
+        "samesite": "lax",      # "lax" | "strict" | "none"
+        "domain":   None,       # set for cross-subdomain
+    },
+)</code></pre>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Session Management -->
+      <section class="doc-section" id="session-management">
+        <div class="section-category">Core Concepts</div>
+        <h2>Session Management</h2>
+        <p>Refresh tokens are persisted in a <strong>token store</strong>. The default is an in-memory dictionary — sufficient for development and single-process deployments.</p>
+        <div class="callout callout-warning">
+          <i class="fa-solid fa-triangle-exclamation callout-icon"></i>
+          <p>The default in-memory store is lost on server restart. Use a Redis store for production multi-process deployments.</p>
+        </div>
+
+        <h3>Custom store interface</h3>
+        <p>Implement these four methods to plug in any backend:</p>
+        <div class="code-block">
+          <div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · redis_store.py</span></div>
+          <button class="copy-btn">copy</button>
+          <pre><code class="language-python">from datetime import datetime, timezone
+
+class RedisTokenStore:
+    def __init__(self, redis):
+        self.redis = redis
+
+    async def save(self, token_hash: str, user_id: str, expires_at: datetime) -> None:
+        """Persist a refresh token hash with its owner and expiry."""
+        ttl = int((expires_at - datetime.now(timezone.utc)).total_seconds())
+        await self.redis.setex(f"rt:{token_hash}", ttl, user_id)
+
+    async def get(self, token_hash: str) -> dict | None:
+        """Return {"user_id": "..."} if the token exists, else None."""
+        val = await self.redis.get(f"rt:{token_hash}")
+        return {"user_id": val.decode()} if val else None
+
+    async def delete(self, token_hash: str) -> None:
+        """Delete a single token (called on rotation or explicit logout)."""
+        await self.redis.delete(f"rt:{token_hash}")
+
+    async def revoke_all_for_user(self, user_id: str) -> None:
+        """Revoke all tokens for a user (POST /auth/revoke-all)."""
+        # Implement with a user→tokens reverse index if needed
+        pass
+
+# Usage
+import redis.asyncio as aioredis
+redis_client = aioredis.from_url("redis://localhost")
+
+auth = RapidAuth(
+    user_model=User,
+    jwt_secret="...",
+    token_store=RedisTokenStore(redis_client),
+)</code></pre>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           API REFERENCE
+      ══════════════════════════════════════════════════════ -->
+      <hr class="doc-divider" />
+
+      <!-- Register -->
+      <section class="doc-section" id="api-register">
+        <div class="section-category">API Reference</div>
+        <h2>Register User</h2>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/register</span>
+            <span class="endpoint-desc">No auth required</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Creates a new user account and returns a token pair. If email is configured and <code>email_verification_required=True</code>, a verification email is sent. Otherwise, a welcome email is sent.</p>
+            <h4>Request body</h4>
+            <div class="table-wrap"><table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+              <tr><td class="param-name">username</td><td class="param-type">string</td><td class="param-req"><span class="badge badge-red">required</span></td><td>3–100 chars, letters/digits/_ and - only</td></tr>
+              <tr><td class="param-name">email</td><td class="param-type">string</td><td class="param-req"><span class="badge badge-red">required</span></td><td>Valid email address</td></tr>
+              <tr><td class="param-name">password</td><td class="param-type">string</td><td class="param-req"><span class="badge badge-red">required</span></td><td>Minimum 8 characters</td></tr>
+            </tbody></table></div>
+            <h4>Response <span class="badge badge-green" style="font-size:.65rem">201</span></h4>
+            <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">json</span></div><button class="copy-btn">copy</button><pre><code class="language-json">{
+  "access_token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type":    "bearer"
+}</code></pre></div>
+          </div>
+        </div>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash · curl example</span></div><button class="copy-btn">copy</button><pre><code class="language-bash">curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"alice","email":"alice@example.com","password":"AlicePass1!"}'</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Login -->
+      <section class="doc-section" id="api-login">
+        <div class="section-category">API Reference</div>
+        <h2>Login</h2>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/login</span>
+            <span class="endpoint-desc">No auth required · Rate limited</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Authenticate with <strong>username or email</strong> and password. Rate-limited to 5 failed attempts per IP per 5 minutes.</p>
+            <h4>Request body</h4>
+            <div class="table-wrap"><table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody>
+              <tr><td class="param-name">username</td><td class="param-type">string</td><td>Username or email address</td></tr>
+              <tr><td class="param-name">password</td><td class="param-type">string</td><td>Account password</td></tr>
+            </tbody></table></div>
+            <h4>Error responses</h4>
+            <div class="table-wrap"><table><thead><tr><th>Status</th><th>Detail</th></tr></thead><tbody>
+              <tr><td><span class="badge badge-red">401</span></td><td>Invalid credentials</td></tr>
+              <tr><td><span class="badge badge-red">403</span></td><td>Account is inactive / Email not verified</td></tr>
+              <tr><td><span class="badge badge-yellow">429</span></td><td>Too many login attempts. Try again in 5 minutes.</td></tr>
+            </tbody></table></div>
+          </div>
+        </div>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash</span></div><button class="copy-btn">copy</button><pre><code class="language-bash">curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"alice","password":"AlicePass1!"}'</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Logout -->
+      <section class="doc-section" id="api-logout">
+        <div class="section-category">API Reference</div>
+        <h2>Logout</h2>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/logout</span>
+            <span class="endpoint-desc">Bearer token</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Blacklists the current access token's <code>jti</code> and clears any refresh token cookies. The token is immediately invalid — no need to wait for expiry.</p>
+          </div>
+        </div>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash</span></div><button class="copy-btn">copy</button><pre><code class="language-bash">curl -X POST http://localhost:8000/auth/logout \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Refresh -->
+      <section class="doc-section" id="api-refresh">
+        <div class="section-category">API Reference</div>
+        <h2>Refresh Token</h2>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/refresh</span>
+            <span class="endpoint-desc">Refresh token (body or cookie)</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Issues a new token pair. The old refresh token is <strong>immediately revoked</strong> — any replay attempt returns <code>401</code>. Accepts token from body or <code>refresh_token</code> cookie.</p>
+          </div>
+        </div>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash</span></div><button class="copy-btn">copy</button><pre><code class="language-bash">curl -X POST http://localhost:8000/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{"refresh_token":"YOUR_REFRESH_TOKEN"}'</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Me -->
+      <section class="doc-section" id="api-me">
+        <div class="section-category">API Reference</div>
+        <h2>Get Current User</h2>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/auth/me</span>
+            <span class="endpoint-desc">Bearer token required</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Returns the authenticated user's profile fields.</p>
+            <div class="code-block" style="margin:0"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">json · response</span></div><pre><code class="language-json">{
+  "id":          1,
+  "username":    "alice",
+  "email":       "alice@example.com",
+  "is_active":   true,
+  "is_verified": true,
+  "roles":       ["user"]
+}</code></pre></div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Password Reset -->
+      <section class="doc-section" id="api-reset">
+        <div class="section-category">API Reference</div>
+        <h2>Password Reset</h2>
+
+        <h3>Request reset</h3>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/reset-password</span>
+            <span class="endpoint-desc">Anti-enumeration · always 200</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Creates a 1-hour one-time reset token and sends an email. <strong>Always returns 200</strong> regardless of whether the email is registered — this prevents user enumeration.</p>
+            <p>If <code>reset_password_url</code> is not configured, a dev-mode email is sent showing the raw token + curl command for testing.</p>
+          </div>
+        </div>
+
+        <h3>Confirm reset</h3>
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/reset-password/confirm</span>
+            <span class="endpoint-desc">No auth required</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Validates the token, updates the password, and invalidates the token. Token expires in 1 hour and is single-use.</p>
+            <div class="code-block" style="margin:0"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">json · request body</span></div><pre><code class="language-json">{"token": "ONE_TIME_TOKEN", "new_password": "NewPassword1!"}</code></pre></div>
+          </div>
+        </div>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">bash · full flow</span></div><button class="copy-btn">copy</button><pre><code class="language-bash"># 1. Request reset
+curl -X POST http://localhost:8000/auth/reset-password \
+  -H "Content-Type: application/json" \
+  -d '{"email":"alice@example.com"}'
+
+# 2. Confirm (token from email)
+curl -X POST http://localhost:8000/auth/reset-password/confirm \
+  -H "Content-Type: application/json" \
+  -d '{"token":"TOKEN_FROM_EMAIL","new_password":"NewPass1!"}'</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Email Verify -->
+      <section class="doc-section" id="api-verify">
+        <div class="section-category">API Reference</div>
+        <h2>Email Verification</h2>
+
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/auth/verify-email?token=…</span>
+            <span class="endpoint-desc">Inline verify · JSON response</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Verifies the token and marks the user as verified. Returns JSON — suitable as the direct email link target in development. In production, set <code>verify_email_url</code> to your frontend page.</p>
+          </div>
+        </div>
+
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/auth/resend-verification</span>
+            <span class="endpoint-desc">Bearer token OR {"email":"…"}</span>
+          </div>
+          <div class="endpoint-body">
+            <p>Resends verification email. Accepts a Bearer token (logged-in user) OR an email in the request body (no auth required). Useful when <code>email_verification_required=True</code> and the user's token expired before they verified.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           SOCIAL LOGIN
+      ══════════════════════════════════════════════════════ -->
+      <hr class="doc-divider" />
+
+      <!-- Google OAuth -->
+      <section class="doc-section" id="oauth-google">
+        <div class="section-category">Social Login</div>
+        <h2>Google OAuth</h2>
+        <div class="provider-badge provider-google"><i class="fa-brands fa-google"></i> Google OAuth 2.0</div>
+
+        <p>RapidAuth handles the full Google OAuth 2.0 flow. When a user authenticates with Google, RapidAuth creates or retrieves their account automatically and returns a token pair.</p>
+
+        <h3>Step 1 — Create a Google Cloud project</h3>
+        <div class="oauth-step"><div class="oauth-step-num">1</div><div class="oauth-step-body"><h4>Go to Google Cloud Console</h4><p>Navigate to <strong>console.cloud.google.com</strong> and create a new project (or select an existing one).</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">2</div><div class="oauth-step-body"><h4>Enable Google+ API</h4><p>Go to <strong>APIs &amp; Services → Library</strong> and enable the <strong>Google+ API</strong> (or People API).</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">3</div><div class="oauth-step-body"><h4>Create OAuth credentials</h4><p>Go to <strong>APIs &amp; Services → Credentials → Create Credentials → OAuth 2.0 Client ID</strong>. Choose <strong>Web application</strong>.</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">4</div><div class="oauth-step-body"><h4>Set Authorized redirect URIs</h4><p>Add your callback URL: <code>https://api.myapp.com/auth/google/callback</code><br>For local development: <code>http://localhost:8000/auth/google/callback</code></p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">5</div><div class="oauth-step-body"><h4>Copy Client ID and Secret</h4><p>Download the credentials JSON or copy the <strong>Client ID</strong> and <strong>Client Secret</strong> values.</p></div></div>
+
+        <h3>Step 2 — Configure RapidAuth</h3>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+    social_auth={
+        "google": {
+            "client_id":     "1234567890-abc.apps.googleusercontent.com",
+            "client_secret": "GOCSPX-your_client_secret",
+            "redirect_uri":  "https://api.myapp.com/auth/google/callback",
+        }
+    },
+)</code></pre></div>
+
+        <h3>Step 3 — Use the endpoints</h3>
+        <p>RapidAuth automatically adds these two routes:</p>
+        <div class="table-wrap"><table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody>
+          <tr><td><span class="method method-get">GET</span></td><td>/auth/google/login</td><td>Redirects user to Google consent screen</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/auth/google/callback</td><td>Handles callback, creates/logs in user, returns token pair</td></tr>
+        </tbody></table></div>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">javascript · frontend</span></div><button class="copy-btn">copy</button><pre><code class="language-javascript">// Redirect user to Google login
+window.location.href = "https://api.myapp.com/auth/google/login";
+
+// After Google redirects to your callback URL, RapidAuth
+// automatically handles the token exchange and returns:
+// { access_token: "...", refresh_token: "...", token_type: "bearer" }</code></pre></div>
+
+        <div class="callout callout-info">
+          <i class="fa-solid fa-circle-info callout-icon"></i>
+          <p>Google OAuth users are created automatically on first login with <code>is_verified=True</code>. A random password is generated — these users log in only via Google.</p>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- GitHub OAuth -->
+      <section class="doc-section" id="oauth-github">
+        <div class="section-category">Social Login</div>
+        <h2>GitHub OAuth</h2>
+        <div class="provider-badge provider-github"><i class="fa-brands fa-github"></i> GitHub OAuth Apps</div>
+
+        <p>Authenticate users with their GitHub accounts. RapidAuth uses GitHub's OAuth 2.0 flow to retrieve user info and create accounts automatically.</p>
+
+        <h3>Step 1 — Create a GitHub OAuth App</h3>
+        <div class="oauth-step"><div class="oauth-step-num">1</div><div class="oauth-step-body"><h4>Go to GitHub Settings</h4><p>Navigate to <strong>github.com → Settings → Developer settings → OAuth Apps → New OAuth App</strong>.</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">2</div><div class="oauth-step-body"><h4>Fill in the application details</h4><p><strong>Application name:</strong> Your app name<br><strong>Homepage URL:</strong> <code>https://myapp.com</code><br><strong>Authorization callback URL:</strong> <code>https://api.myapp.com/auth/github/callback</code></p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">3</div><div class="oauth-step-body"><h4>Register the application</h4><p>Click <strong>Register application</strong>. Copy the <strong>Client ID</strong>.</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">4</div><div class="oauth-step-body"><h4>Generate a Client Secret</h4><p>On the app settings page, click <strong>Generate a new client secret</strong>. Copy it immediately — it won't be shown again.</p></div></div>
+
+        <h3>Step 2 — Configure RapidAuth</h3>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+    social_auth={
+        "github": {
+            "client_id":     "Iv1.abc1234567890abc",
+            "client_secret": "your_github_client_secret",
+            "redirect_uri":  "https://api.myapp.com/auth/github/callback",
+        }
+    },
+)</code></pre></div>
+
+        <h3>Flow</h3>
+        <div class="table-wrap"><table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody>
+          <tr><td><span class="method method-get">GET</span></td><td>/auth/github/login</td><td>Redirects to GitHub authorization page</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/auth/github/callback</td><td>Handles code exchange, creates/logs in user</td></tr>
+        </tbody></table></div>
+
+        <div class="callout callout-info">
+          <i class="fa-solid fa-circle-info callout-icon"></i>
+          <p>GitHub may not provide an email address for users with private emails. In that case, RapidAuth generates a placeholder: <code>{username}@github.oauth</code>.</p>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Facebook Login -->
+      <section class="doc-section" id="oauth-facebook">
+        <div class="section-category">Social Login</div>
+        <h2>Facebook Login</h2>
+        <div class="provider-badge provider-facebook"><i class="fa-brands fa-facebook"></i> Meta / Facebook Login</div>
+
+        <p>Allow users to log in with their Facebook accounts using Meta's OAuth 2.0 implementation.</p>
+
+        <h3>Step 1 — Create a Meta App</h3>
+        <div class="oauth-step"><div class="oauth-step-num">1</div><div class="oauth-step-body"><h4>Go to Meta for Developers</h4><p>Navigate to <strong>developers.facebook.com → My Apps → Create App</strong>. Choose <strong>"Allow people to log in with their Facebook account"</strong>.</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">2</div><div class="oauth-step-body"><h4>Set up Facebook Login product</h4><p>In your app dashboard, click <strong>Set Up</strong> under <strong>Facebook Login</strong>. Under <strong>Valid OAuth Redirect URIs</strong>, add: <code>https://api.myapp.com/auth/facebook/callback</code></p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">3</div><div class="oauth-step-body"><h4>Get App ID and Secret</h4><p>Go to <strong>Settings → Basic</strong> to copy your <strong>App ID</strong> and <strong>App Secret</strong>.</p></div></div>
+        <div class="oauth-step"><div class="oauth-step-num">4</div><div class="oauth-step-body"><h4>Go Live</h4><p>Toggle your app to <strong>Live mode</strong> before production. In development mode, only test users can authenticate.</p></div></div>
+
+        <h3>Configure RapidAuth</h3>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="your-secret",
+    social_auth={
+        "facebook": {
+            "client_id":     "1234567890123456",       # App ID
+            "client_secret": "your_facebook_app_secret",
+            "redirect_uri":  "https://api.myapp.com/auth/facebook/callback",
+        }
+    },
+)</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- OAuth Callback Flow -->
+      <section class="doc-section" id="oauth-callback">
+        <div class="section-category">Social Login</div>
+        <h2>Callback Handling</h2>
+        <p>RapidAuth handles the entire OAuth callback flow internally. You do not need to write any callback logic.</p>
+
+        <h3>Complete OAuth flow</h3>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-body"><h4>1. User initiates login</h4><p>Frontend redirects user to <code>GET /auth/{provider}/login</code></p></div></div>
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-body"><h4>2. Provider redirect</h4><p>RapidAuth redirects to the provider's consent screen (Google/GitHub/Facebook). User grants permission.</p></div></div>
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-body"><h4>3. Authorization code returned</h4><p>Provider redirects to <code>GET /auth/{provider}/callback?code=…</code>. RapidAuth receives the authorization code.</p></div></div>
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-body"><h4>4. Token exchange</h4><p>RapidAuth exchanges the code for an access token with the provider's token endpoint.</p></div></div>
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-body"><h4>5. User info retrieved</h4><p>RapidAuth calls the provider's user info endpoint to get email and username.</p></div></div>
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-body"><h4>6. Account created or retrieved</h4><p>If a user with this email exists → log them in. If not → create a new account automatically with <code>is_verified=True</code>.</p></div></div>
+          <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div></div><div class="flow-body"><h4>7. Token pair returned</h4><p>RapidAuth returns <code>{"access_token":"…","refresh_token":"…"}</code>. Frontend stores and uses these for subsequent API calls.</p></div></div>
+        </div>
+
+        <h3>Handling multiple providers, same email</h3>
+        <p>If a user already has a password-based account with the same email and tries to log in via OAuth, RapidAuth will find the existing account by email and log them in. No duplicate accounts are created.</p>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Environment Variables -->
+      <section class="doc-section" id="oauth-env">
+        <div class="section-category">Social Login</div>
+        <h2>Environment Variables</h2>
+        <p>Never hard-code secrets in source code. Use environment variables loaded from a <code>.env</code> file.</p>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">env · .env</span></div><button class="copy-btn">copy</button><pre><code># JWT
+JWT_SECRET=your-very-long-random-secret-min-32-chars
+JWT_ACCESS_EXPIRE=900
+JWT_REFRESH_EXPIRE=604800
+
+# Email (SMTP)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USERNAME=you@gmail.com
+EMAIL_PASSWORD=xxxx_xxxx_xxxx_xxxx
+EMAIL_FROM=you@gmail.com
+
+# URLs
+BASE_URL=https://api.myapp.com
+VERIFY_EMAIL_URL=https://myapp.com/verify-email
+RESET_PASSWORD_URL=https://myapp.com/reset-password
+
+# Google OAuth
+GOOGLE_CLIENT_ID=1234567890-abc.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-your_secret
+GOOGLE_REDIRECT_URI=https://api.myapp.com/auth/google/callback
+
+# GitHub OAuth
+GITHUB_CLIENT_ID=Iv1.abc1234567890
+GITHUB_CLIENT_SECRET=your_github_secret
+GITHUB_REDIRECT_URI=https://api.myapp.com/auth/github/callback
+
+# Facebook OAuth
+FACEBOOK_CLIENT_ID=1234567890123456
+FACEBOOK_CLIENT_SECRET=your_facebook_secret
+FACEBOOK_REDIRECT_URI=https://api.myapp.com/auth/facebook/callback
+
+# Database
+DATABASE_URL=postgresql+asyncpg://user:pass@localhost/mydb</code></pre></div>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · config.py</span></div><button class="copy-btn">copy</button><pre><code class="language-python">import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+auth = RapidAuth(
+    user_model=User,
+    jwt_secret=os.getenv("JWT_SECRET"),
+    email={
+        "host":       os.getenv("EMAIL_HOST"),
+        "port":       int(os.getenv("EMAIL_PORT", 587)),
+        "username":   os.getenv("EMAIL_USERNAME"),
+        "password":   os.getenv("EMAIL_PASSWORD"),
+        "from_email": os.getenv("EMAIL_FROM"),
+    },
+    base_url=os.getenv("BASE_URL", "http://localhost:8000"),
+    verify_email_url=os.getenv("VERIFY_EMAIL_URL"),
+    reset_password_url=os.getenv("RESET_PASSWORD_URL"),
+    social_auth={
+        "google": {
+            "client_id":     os.getenv("GOOGLE_CLIENT_ID"),
+            "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+            "redirect_uri":  os.getenv("GOOGLE_REDIRECT_URI"),
+        },
+        "github": {
+            "client_id":     os.getenv("GITHUB_CLIENT_ID"),
+            "client_secret": os.getenv("GITHUB_CLIENT_SECRET"),
+            "redirect_uri":  os.getenv("GITHUB_REDIRECT_URI"),
+        },
+    },
+)</code></pre></div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           SECURITY
+      ══════════════════════════════════════════════════════ -->
+      <hr class="doc-divider" />
+
+      <!-- Password Hashing -->
+      <section class="doc-section" id="password-hashing">
+        <div class="section-category">Security</div>
+        <h2>Password Hashing</h2>
+        <p>RapidAuth supports two battle-tested hashing algorithms. Both use timing-safe comparison to prevent timing attacks.</p>
+
+        <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Default</th><th>Strength</th><th>Speed</th></tr></thead><tbody>
+          <tr><td><span class="badge badge-indigo">bcrypt</span></td><td><span class="badge badge-green">default</span></td><td>Very strong (cost 12)</td><td>Moderate</td></tr>
+          <tr><td><span class="badge badge-cyan">argon2</span></td><td>—</td><td>Winner of Password Hashing Competition 2015</td><td>Slightly slower</td></tr>
+        </tbody></table></div>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="...",
+    password_hasher="bcrypt",   # "bcrypt" (default) | "argon2"
+)
+
+# Manual hashing (e.g. for seed scripts)
+hashed = auth.hash_password("my-password")
+valid  = auth.verify_password("my-password", hashed)  # True</code></pre></div>
+
+        <div class="callout callout-success">
+          <i class="fa-solid fa-shield-halved callout-icon"></i>
+          <p><strong>Timing attack prevention:</strong> When a username is not found, RapidAuth performs a dummy hash verification to ensure the response time is the same regardless of whether the user exists.</p>
+        </div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Token Expiration -->
+      <section class="doc-section" id="token-expiration">
+        <div class="section-category">Security</div>
+        <h2>Token Expiration</h2>
+
+        <div class="table-wrap"><table><thead><tr><th>Token</th><th>Default</th><th>Config key</th><th>Recommendation</th></tr></thead><tbody>
+          <tr><td>Access token</td><td>15 min (900s)</td><td><code>access_expire</code></td><td>Keep short. 5–15 min for high security.</td></tr>
+          <tr><td>Refresh token</td><td>7 days (604800s)</td><td><code>refresh_expire</code></td><td>7–30 days. Longer = better UX, shorter = more secure.</td></tr>
+          <tr><td>Email verify token</td><td>24 hours</td><td>Not configurable</td><td>Single-use, invalidated on success.</td></tr>
+          <tr><td>Password reset token</td><td>1 hour</td><td>Not configurable</td><td>Single-use, invalidated on success.</td></tr>
+        </tbody></table></div>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt={
+        "secret":         "your-secret",
+        "access_expire":  300,      # 5 minutes (high-security apps)
+        "refresh_expire": 2592000,  # 30 days (mobile apps)
+    },
+)</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Rate Limiting -->
+      <section class="doc-section" id="rate-limiting">
+        <div class="section-category">Security</div>
+        <h2>Rate Limiting</h2>
+        <p>RapidAuth includes a built-in sliding-window rate limiter on the login endpoint to prevent brute-force attacks.</p>
+
+        <h3>How it works</h3>
+        <ul>
+          <li>Tracks failed login attempts per client IP.</li>
+          <li>After <code>max_login_attempts</code> failures, the IP is locked out for <code>lockout_seconds</code>.</li>
+          <li>On successful login, the counter is reset immediately.</li>
+          <li>Returns <code>HTTP 429</code> during lockout.</li>
+        </ul>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="...",
+    rate_limit={
+        "enabled":             True,   # default True
+        "max_login_attempts":  5,      # failures before lockout
+        "lockout_seconds":     300,    # 5-minute lockout window
+    },
+)</code></pre></div>
+
+        <div class="callout callout-info">
+          <i class="fa-solid fa-circle-info callout-icon"></i>
+          <p>Forwarded IPs (<code>X-Forwarded-For</code> header) are respected automatically. Make sure your reverse proxy (nginx, Caddy) sets this header correctly.</p>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           ADVANCED
+      ══════════════════════════════════════════════════════ -->
+      <hr class="doc-divider" />
+
+      <!-- Middleware -->
+      <section class="doc-section" id="middleware">
+        <div class="section-category">Advanced</div>
+        <h2>Middleware Usage</h2>
+        <p>RapidAuth provides an <code>AuthMiddleware</code> that populates <code>request.state.user</code> on every request — useful for logging, analytics, or global access control.</p>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth.add_middleware(app)
+
+@app.get("/")
+async def home(request: Request):
+    user = request.state.user
+    if user.is_authenticated:
+        return {"hello": user.username}
+    return {"hello": "anonymous"}
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    user = request.state.user
+    if user.is_authenticated:
+        print(f"Request from: {user.username}")
+    return await call_next(request)</code></pre></div>
+
+        <div class="callout callout-info">
+          <i class="fa-solid fa-circle-info callout-icon"></i>
+          <p>Unauthenticated requests get a proxy object with <code>is_authenticated = False</code>. Accessing any user field raises no exception — it simply returns <code>None</code>.</p>
+        </div>
+
+        <h3>RBAC with dependency injection</h3>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">from fastapi import Depends
+from rapidauth.exceptions import PermissionDeniedError
+
+def require_role(*roles: str):
+    """Factory that returns a FastAPI dependency checking for roles."""
+    async def dep(user = Depends(auth.get_current_user())):
+        for role in roles:
+            if role not in (user.roles or []):
+                raise PermissionDeniedError(f"Role '{role}' required")
+        return user
+    return dep
+
+@app.get("/admin")
+async def admin(user = Depends(require_role("admin"))):
+    return {"ok": True}
+
+@app.get("/staff")
+async def staff(user = Depends(require_role("admin", "moderator"))):
+    return {"ok": True}</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- Custom Backend -->
+      <section class="doc-section" id="custom-backend">
+        <div class="section-category">Advanced</div>
+        <h2>Custom Backend Integration</h2>
+        <p>You can override the token store, use custom field names, or hook into the user creation flow.</p>
+
+        <h3>Custom field names</h3>
+        <p>If your User model uses different column names than the defaults:</p>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">auth = RapidAuth(
+    user_model=User,
+    jwt_secret="...",
+    # Override field names to match your model
+    username_field="login",        # default: "username"
+    email_field="email_address",   # default: "email"
+    password_field="pwd_hash",     # default: "password"
+    id_field="user_id",            # default: "id"
+    is_active_field="active",      # default: "is_active"
+    is_verified_field="verified",  # default: "is_verified"
+    roles_field="user_roles",      # default: "roles"
+)</code></pre></div>
+
+        <h3>Programmatic user management</h3>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python</span></div><button class="copy-btn">copy</button><pre><code class="language-python">manager = auth.manager
+
+# Create user (e.g. in a seed script)
+user = await auth.create_user(
+    "admin", "admin@example.com", "AdminPass1!",
+    extra={"roles": ["admin"], "permissions": ["users.write"]},
+)
+
+# Find users
+user = await manager.get_by_email("alice@example.com")
+user = await manager.get_by_username("alice")
+user = await manager.get_by_id(42)
+
+# Check credentials
+user = await auth.authenticate("alice", "AlicePass1!")
+
+# Token operations
+access, refresh = await manager.create_token_pair(user)
+await manager.revoke_all_tokens(user)
+
+# Password operations
+hashed = auth.hash_password("password")
+ok     = auth.verify_password("password", hashed)</code></pre></div>
+      </section>
+
+      <hr class="doc-divider" />
+
+      <!-- DB Adapters -->
+      <section class="doc-section" id="db-adapters">
+        <div class="section-category">Advanced</div>
+        <h2>Database Adapters</h2>
+        <p>RapidAuth auto-detects your ORM by inspecting the model's class hierarchy at startup. You rarely need to configure this manually.</p>
+
+        <div class="table-wrap"><table><thead><tr><th>ORM</th><th>Detection</th><th>Session</th><th>Notes</th></tr></thead><tbody>
+          <tr><td>Tortoise ORM</td><td>Auto (inspects <code>__mro__</code>)</td><td>Global (via RegisterTortoise)</td><td>Requires Tortoise 1.x + RegisterTortoise lifespan</td></tr>
+          <tr><td>SQLAlchemy async</td><td>Auto</td><td>Per-request via <code>get_db</code></td><td>Pass <code>get_db=get_db</code> to RapidAuth</td></tr>
+          <tr><td>SQLAlchemy sync</td><td>Auto</td><td>Per-request via <code>get_db</code></td><td>Blocks event loop — dev only</td></tr>
+          <tr><td>SQLModel</td><td>Auto</td><td>Per-request via <code>get_db</code></td><td>Built on SQLAlchemy — same config</td></tr>
+        </tbody></table></div>
+
+        <h3>Tortoise ORM 1.x — common error</h3>
+        <div class="callout callout-danger">
+          <i class="fa-solid fa-triangle-exclamation callout-icon"></i>
+          <p><strong>RuntimeError: No TortoiseContext is currently active.</strong><br>
+          This happens when using <code>Tortoise.init()</code> or the old <code>register_tortoise()</code> without the global fallback. Fix: use <code>RegisterTortoise</code> inside a FastAPI <code>lifespan</code> as shown in the <a href="#project-setup">Project Setup</a> section.</p>
+        </div>
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · ✅ correct for Tortoise 1.x</span></div><button class="copy-btn">copy</button><pre><code class="language-python">from tortoise.contrib.fastapi import RegisterTortoise
+
+@asynccontextmanager
+async def lifespan(app):
+    async with RegisterTortoise(          # sets _enable_global_fallback=True
+        app,
+        db_url="sqlite://./app.db",
+        modules={"models": ["models"]},
+        generate_schemas=True,
+    ):
+        yield
+
+app = FastAPI(lifespan=lifespan)</code></pre></div>
+
+        <div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div><span class="code-block-lang">python · ❌ broken with Tortoise 1.x</span></div><button class="copy-btn">copy</button><pre><code class="language-python"># DON'T use register_tortoise() or Tortoise.init() without the global fallback
+from tortoise.contrib.fastapi import register_tortoise
+
+register_tortoise(app, ...)  # broken in Tortoise 1.x — no global context set
+
+# Also broken:
+await Tortoise.init(db_url="...", modules={"models": [...]})  # no global fallback</code></pre></div>
+
+      </section>
+
+      <!-- bottom padding -->
+      <div style="height:3rem"></div>
+
+    </div><!-- content-inner -->
+  </main>
+
+</div><!-- docs-layout -->
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-logo"><div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>RapidAuth</div>
+    <p class="footer-tagline">Professional authentication framework for FastAPI</p>
+    <div class="footer-links">
+      <a href="https://pypi.org/project/rapidauth/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
+      <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+      <a href="https://github.com/pypi-packages-akhmedcodes/rapidauth/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
+      <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
+    </div>
+    <p class="footer-copy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;·&nbsp; MIT License &nbsp;·&nbsp; v1.0.2</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>
