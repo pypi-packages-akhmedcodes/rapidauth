@@ -84,16 +84,20 @@ class FastAuth:
         # ── Database (for SQLAlchemy) ─────────────────────────────────────────
         get_db: Optional[Callable] = None,
         # ── URL config ────────────────────────────────────────────────────────
-        # base_url          : URL of this backend API (for backend verify links)
-        # frontend_url      : URL of your SPA/frontend (for frontend verify links)
-        # verify_type       : 'backend' → GET /auth/verify-email verifies directly
-        #                     'frontend' → GET /auth/verify-email redirects to frontend
-        # reset_password_url: Full URL for password-reset emails. Token appended as
-        #                     ?token=<token>. Example: "https://domain.uz/reset-password"
-        #                     If omitted, defaults to {base_url}/auth/reset-password/confirm
+        # base_url          : URL of this backend (used as fallback for verify links).
+        #
+        # verify_email_url  : Where email verification links point.
+        #                     Token appended as ?token=TOKEN.
+        #                     Default (None) → {base_url}/auth/verify-email?token=TOKEN
+        #                     GET /auth/verify-email always returns JSON.
+        #                     Production: "https://myapp.com/verify-email"
+        #
+        # reset_password_url: Where password-reset email links point.
+        #                     Token appended as ?token=TOKEN.
+        #                     Default (None) → dev mode email (raw token + instructions)
+        #                     Production: "https://myapp.com/reset-password"
         base_url: str = "http://localhost:8000",
-        frontend_url: Optional[str] = None,
-        verify_type: str = "backend",
+        verify_email_url: Optional[str] = None,
         reset_password_url: Optional[str] = None,
         # ── Custom token store (e.g., Redis) ──────────────────────────────────
         token_store: Optional[Any] = None,
@@ -129,8 +133,7 @@ class FastAuth:
             email_verification_required=email_verification_required,
             enable_refresh_rotation=enable_refresh_rotation,
             base_url=base_url,
-            frontend_url=frontend_url,
-            verify_type=verify_type,
+            verify_email_url=verify_email_url,
             reset_password_url=reset_password_url,
             router_prefix=router_prefix,
             router_tags=router_tags or ["Authentication"],

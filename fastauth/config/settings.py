@@ -76,20 +76,23 @@ class FastAuthSettings(BaseModel):
     email_verification_required: bool = False
     enable_refresh_rotation: bool = True
 
-    # ── URL / redirect config ─────────────────────────────────────────────────
-    # base_url   : URL of THIS backend  (e.g. "http://localhost:8000")
-    # frontend_url: URL of the SPA/frontend (e.g. "https://domain.uz")
-    # verify_type: controls where email verification / reset links point
-    #   'backend'  → link = {base_url}/auth/verify-email?token=...
-    #                GET /auth/verify-email verifies token and shows HTML page
-    #   'frontend' → link = {frontend_url}/auth/verify-email?token=...
-    #                GET /auth/verify-email redirects to that frontend URL
-    #                frontend reads ?token= and calls POST /auth/verify-email
+    # ── URL config ────────────────────────────────────────────────────────────
+    # base_url        : URL of THIS backend.  Used as fallback for verify_email_url.
+    #
+    # verify_email_url: Where email verification links point.
+    #                   Token appended as ?token=TOKEN.
+    #                   Default (None) → {base_url}/auth/verify-email?token=TOKEN
+    #                   GET /auth/verify-email always verifies and returns JSON.
+    #                   Production: set to your frontend page, e.g.
+    #                       "https://myapp.com/verify-email"
+    #
+    # reset_password_url: Where password-reset email links point.
+    #                   Token appended as ?token=TOKEN.
+    #                   Default (None) → dev mode: email shows raw token + curl example
+    #                   Production: set to your frontend page, e.g.
+    #                       "https://myapp.com/reset-password"
     base_url: str = "http://localhost:8000"
-    frontend_url: Optional[str] = None
-    verify_type: Literal["backend", "frontend"] = "backend"
-    # Custom URL for password-reset emails.  Token appended as ?token=<token>.
-    # If None, defaults to {base_url}/auth/reset-password/confirm?token=<token>.
+    verify_email_url: Optional[str] = None
     reset_password_url: Optional[str] = None
 
     # ── Router ───────────────────────────────────────────────────────────────

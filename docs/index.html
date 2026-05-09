@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FastAuth — Professional Authentication Framework for FastAPI</title>
-  <meta name="description" content="FastAuth is a plug-and-play authentication framework for FastAPI. JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification, rate limiting." />
+  <meta name="description" content="FastAuth is a plug-and-play backend authentication framework for FastAPI. JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification, rate limiting. Pure JSON API." />
   <meta name="keywords" content="fastauth, fastapi authentication, fastapi jwt, fastapi oauth2, python auth, fastapi security, fastapi login, fastapi rbac" />
   <meta name="author" content="akhmedcodes" />
   <meta name="robots" content="index, follow" />
@@ -12,12 +12,12 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://pypi-packages-akhmedcodes.github.io/fastauth-framework/" />
   <meta property="og:title" content="FastAuth — Professional Authentication Framework for FastAPI" />
-  <meta property="og:description" content="Plug-and-play JWT, OAuth2, bcrypt, RBAC for FastAPI. One line. Full auth system." />
+  <meta property="og:description" content="Pure backend JSON API auth for FastAPI. JWT, OAuth2, bcrypt, RBAC, email flows. One line setup." />
   <meta property="og:site_name" content="FastAuth" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FastAuth — Auth Framework for FastAPI" />
   <meta name="twitter:description" content="JWT, OAuth2, RBAC, bcrypt. pip install fastauth-framework" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FastAuth","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","description":"Professional plug-and-play authentication framework for FastAPI.","url":"https://pypi.org/project/fastauth-framework/","author":{"@type":"Person","name":"akhmedcodes","url":"https://beacons.ai/akhmedcodes"},"license":"https://opensource.org/licenses/MIT","programmingLanguage":"Python","codeRepository":"https://github.com/pypi-packages-akhmedcodes/fastauth-framework"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FastAuth","applicationCategory":"DeveloperApplication","operatingSystem":"Linux, macOS, Windows","description":"Professional plug-and-play backend authentication framework for FastAPI.","url":"https://pypi.org/project/fastauth-framework/","author":{"@type":"Person","name":"akhmedcodes","url":"https://beacons.ai/akhmedcodes"},"license":"https://opensource.org/licenses/MIT","programmingLanguage":"Python","codeRepository":"https://github.com/pypi-packages-akhmedcodes/fastauth-framework"}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -55,6 +55,7 @@
     .ty  { background:rgba(251,191,36,.1);  color:var(--yellow); }
     .ti  { background:rgba(99,102,241,.12); color:var(--ind-lt); }
     .tc  { background:rgba(34,211,238,.1);  color:var(--cyan); }
+    .tr2 { background:rgba(248,113,113,.1); color:var(--red); }
 
     /* NAV */
     #nav {
@@ -107,7 +108,7 @@
       margin-bottom:1.6rem; letter-spacing:.3px; text-transform:uppercase;
     }
     h1 { font-size:clamp(2.6rem,7vw,5rem); font-weight:900; line-height:1.06; letter-spacing:-2px; margin-bottom:1.2rem; }
-    .hsub { font-size:clamp(.92rem,2vw,1.1rem); color:var(--muted); max-width:560px; margin:0 auto 2.4rem; }
+    .hsub { font-size:clamp(.92rem,2vw,1.1rem); color:var(--muted); max-width:600px; margin:0 auto 2.4rem; }
     .hinstall {
       display:inline-flex; align-items:center; gap:.8rem;
       background:var(--bg3); border:1px solid var(--border2);
@@ -128,7 +129,7 @@
     .w { max-width:1080px; margin:0 auto; }
     .sl { font-size:.71rem; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; color:var(--ind); margin-bottom:.6rem; }
     h2 { font-size:clamp(1.6rem,3.5vw,2.5rem); font-weight:800; letter-spacing:-.7px; margin-bottom:.9rem; line-height:1.2; }
-    .sd { color:var(--muted); font-size:.975rem; max-width:560px; margin-bottom:2.7rem; }
+    .sd { color:var(--muted); font-size:.975rem; max-width:620px; margin-bottom:2.7rem; }
     hr.dv { border:none; border-top:1px solid var(--border); margin:0; }
 
     /* CARDS */
@@ -236,7 +237,7 @@
     .sc h4 { font-size:.855rem; font-weight:700; margin-bottom:.2rem; }
     .sc p { font-size:.79rem; color:var(--muted); line-height:1.53; }
 
-    /* EMAIL */
+    /* EMAIL FLOWS */
     .fc { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.35rem; }
     .fc h4 { font-size:.88rem; font-weight:700; margin-bottom:.95rem; display:flex; align-items:center; gap:.45rem; }
     .fstep { display:flex; gap:.7rem; align-items:flex-start; padding:.55rem .75rem; background:var(--bg3); border-radius:var(--rsm); margin-bottom:.45rem; }
@@ -248,6 +249,15 @@
     .ny { background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.17); color:var(--muted); }
     .ng { background:rgba(52,211,153,.06);  border:1px solid rgba(52,211,153,.17); color:var(--muted); }
     .nr { background:rgba(248,113,113,.06); border:1px solid rgba(248,113,113,.17); color:var(--muted); }
+
+    /* URL DIAGRAM */
+    .url-diagram { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); padding:1.2rem 1.4rem; font-size:.82rem; }
+    .url-diagram .label { font-size:.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--ind); margin-bottom:.7rem; }
+    .url-row { display:flex; align-items:flex-start; gap:.7rem; margin-bottom:.55rem; }
+    .url-row:last-child { margin-bottom:0; }
+    .url-cond { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--yellow); flex-shrink:0; padding-top:.08rem; }
+    .url-val { font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--green); }
+    .url-desc { font-size:.75rem; color:var(--muted); }
 
     /* FOOTER */
     footer { background:var(--bg2); border-top:1px solid var(--border); padding:2.8rem 1.5rem 2.2rem; text-align:center; }
@@ -295,12 +305,12 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hglow"></div>
-  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.9</div>
-  <h1>Authentication for FastAPI.<br><span class="grad">Done in one line.</span></h1>
+  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.9.1</div>
+  <h1>Auth for FastAPI.<br><span class="grad">Pure backend. Pure JSON.</span></h1>
   <p class="hsub">
-    JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification and rate limiting —
-    all wired together and ready the moment you call
-    <code style="color:var(--cyan);font-size:.9em">app.include_router(auth.router)</code>.
+    JWT, OAuth2, bcrypt/argon2, refresh rotation, RBAC, email verification, rate limiting —
+    one <code style="color:var(--cyan);font-size:.9em">include_router</code> call, 14 endpoints ready, zero HTML.
+    Your frontend talks to the API.
   </p>
   <div class="hinstall" onclick="copyInstall(this)">
     <i class="fa-solid fa-terminal" style="color:var(--ind)"></i>
@@ -327,20 +337,20 @@
   <div class="w">
     <div class="sl">Why FastAuth</div>
     <h2>Everything auth. Zero boilerplate.</h2>
-    <p class="sd">Stop rewriting auth logic on every project. FastAuth handles the complete authentication stack so you can focus on your product.</p>
+    <p class="sd">Stop rewriting auth logic on every project. FastAuth handles the complete authentication stack — as a pure JSON API — so you focus on your product.</p>
     <div class="grid g3">
-      <div class="card"><div class="cicon"><i class="fa-solid fa-plug"></i></div><h3>Plug &amp; Play</h3><p>One <code>include_router</code> call registers all auth endpoints automatically.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-plug"></i></div><h3>Plug &amp; Play</h3><p>One <code>include_router</code> call registers 14 auth endpoints. Works with any frontend framework.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-brackets-curly"></i></div><h3>Pure JSON API</h3><p>Every endpoint returns JSON. No HTML pages, no redirects. Your frontend owns the UI.</p></div>
       <div class="card"><div class="cicon"><i class="fa-solid fa-key"></i></div><h3>JWT + Refresh Tokens</h3><p>Per-token <code>jti</code> blacklisting, automatic rotation on refresh, configurable expiry.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-lock"></i></div><h3>bcrypt &amp; argon2</h3><p>Best-in-class password hashing. Timing-safe verify. Automatic rehash detection.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-lock"></i></div><h3>bcrypt &amp; argon2</h3><p>Best-in-class password hashing. Timing-safe verify. Switch hasher with one config value.</p></div>
       <div class="card"><div class="cicon"><i class="fa-brands fa-google"></i></div><h3>Social OAuth2</h3><p>Google, GitHub, Discord. Auto-create users from OAuth profiles. One config dict.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-users"></i></div><h3>RBAC</h3><p>Built-in role and permission system. Gate any route with one dependency call.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-envelope"></i></div><h3>Email Verification</h3><p>Auto-send on register. Backend or frontend mode. Full flow included.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-rotate"></i></div><h3>Password Reset</h3><p>Token-based flow. 1-hour expiry. Anti-enumeration by design.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-ban"></i></div><h3>Rate Limiting</h3><p>Sliding-window brute-force protection on login. Configurable attempts and window.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-database"></i></div><h3>Multi-ORM</h3><p>Tortoise ORM, SQLAlchemy async and sync. Auto-detected at runtime.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-users"></i></div><h3>RBAC</h3><p>Built-in role and permission system. Gate any route with one dependency function.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-envelope"></i></div><h3>Email Verification</h3><p>Auto-send on register. Dev mode shows token in email for instant testing. Production: point at your SPA.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-rotate"></i></div><h3>Password Reset</h3><p>Token-based, 1-hour expiry. Dev mode email shows raw token + curl command. Anti-enumeration by design.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-ban"></i></div><h3>Rate Limiting</h3><p>Sliding-window brute-force protection on login. Configurable attempts and lockout window.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-database"></i></div><h3>Multi-ORM</h3><p>Tortoise ORM, SQLAlchemy async and sync. Auto-detected at runtime from your model class.</p></div>
       <div class="card"><div class="cicon"><i class="fa-solid fa-cookie"></i></div><h3>Cookie / Body / Both</h3><p>Refresh tokens in body, httpOnly cookie, or both. One config value.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-code"></i></div><h3>Custom User Models</h3><p>Bring your own model. Map any field names via <code>username_field</code>, etc.</p></div>
-      <div class="card"><div class="cicon"><i class="fa-solid fa-terminal"></i></div><h3>CLI Scaffolding</h3><p><code>fastauth --default-setup sqlite --async</code> generates the full boilerplate.</p></div>
+      <div class="card"><div class="cicon"><i class="fa-solid fa-terminal"></i></div><h3>CLI Scaffolding</h3><p><code>fastauth --default-setup postgresql --async</code> generates a complete project in seconds.</p></div>
     </div>
   </div>
 </section>
@@ -351,11 +361,11 @@
   <div class="w">
     <div class="sl">Installation</div>
     <h2>Choose your ORM</h2>
-    <p class="sd">FastAuth auto-detects Tortoise ORM and SQLAlchemy from your model class.</p>
+    <p class="sd">FastAuth auto-detects Tortoise ORM and SQLAlchemy from your model class. Pass <code>get_db</code> for SQLAlchemy; omit it for Tortoise.</p>
     <div class="ig">
       <div class="ic"><h4><i class="fa-solid fa-box" style="color:var(--ind)"></i> Base only</h4><code>pip install fastauth-framework</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--green)"></i> Tortoise ORM <span class="tag tg">recommended</span></h4><code>pip install "fastauth-framework[tortoise]"</code></div>
-      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x <span class="tag ty">async</span></h4><code>pip install "fastauth-framework[sqlalchemy]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--green)"></i> Tortoise ORM <span class="tag tg">recommended async</span></h4><code>pip install "fastauth-framework[tortoise]"</code></div>
+      <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--yellow)"></i> SQLAlchemy 2.x</h4><code>pip install "fastauth-framework[sqlalchemy]"</code></div>
       <div class="ic"><h4><i class="fa-solid fa-database" style="color:var(--cyan)"></i> SQLModel</h4><code>pip install "fastauth-framework[sqlmodel]"</code></div>
       <div class="ic"><h4><i class="fa-solid fa-star" style="color:var(--yellow)"></i> All extras</h4><code>pip install "fastauth-framework[all]"</code></div>
     </div>
@@ -367,8 +377,8 @@
 <section id="quickstart" class="cbg">
   <div class="w">
     <div class="sl">Quick Start</div>
-    <h2>Up and running in minutes</h2>
-    <p class="sd">From zero to a complete auth system — faster than writing a single hashing function.</p>
+    <h2>From zero to full auth in minutes</h2>
+    <p class="sd">14 endpoints, JWT, RBAC, refresh rotation — the moment you call <code>include_router</code>.</p>
 
     <div class="smb">
       <div class="srow"><div class="snum">1</div><h4>Install</h4></div>
@@ -391,7 +401,7 @@ fastauth --default-setup postgresql --async   # SQLAlchemy async + PostgreSQL
         <button class="tab" onclick="st(this,'t-tort')">Tortoise ORM</button>
         <button class="tab" onclick="st(this,'t-async')">SQLAlchemy async</button>
         <button class="tab" onclick="st(this,'t-sync')">SQLAlchemy sync</button>
-        <button class="tab" onclick="st(this,'t-adv')">Advanced</button>
+        <button class="tab" onclick="st(this,'t-adv')">Full config</button>
       </div>
       <div id="t-min" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import FastAPI, Depends
 from fastauth import FastAuth
@@ -421,6 +431,7 @@ class User(Model):
     is_active   = fields.BooleanField(default=True)
     is_verified = fields.BooleanField(default=True)
     roles       = fields.JSONField(default=list)
+    permissions = fields.JSONField(default=list)
     class Meta:
         table = "users"
 
@@ -430,10 +441,8 @@ app.include_router(auth.router)
 register_tortoise(app, db_url="sqlite://./app.db",
                   modules={"models": ["__main__"]}, generate_schemas=True)
 
-get_current_user = auth.get_current_user()
-
 @app.get("/profile")
-async def profile(user: User = Depends(get_current_user)):
+async def profile(user = Depends(auth.get_current_user())):
     return {"id": user.id, "username": user.username}</code></pre></div></div>
 
       <div id="t-async" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
@@ -457,10 +466,11 @@ class User(Base):
     is_active   : Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified : Mapped[bool] = mapped_column(Boolean, default=False)
     roles       : Mapped[list] = mapped_column(JSON, default=list)
+    permissions : Mapped[list] = mapped_column(JSON, default=list)
 
 async def get_db():
     async with AsyncSessionLocal() as session:
-        yield session  # generator — FastAPI handles lifecycle
+        yield session
 
 @asynccontextmanager
 async def lifespan(app):
@@ -469,11 +479,11 @@ async def lifespan(app):
     yield
 
 app  = FastAPI(lifespan=lifespan)
-auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
+auth = FastAuth(user_model=User, jwt_secret="super-secret-key", get_db=get_db)
 app.include_router(auth.router)</code></pre></div></div>
 
       <div id="t-sync" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from sqlalchemy import create_engine, Boolean, Integer, String, JSON
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from fastauth import FastAuth
@@ -507,18 +517,13 @@ async def lifespan(app):
     yield
 
 app  = FastAPI(lifespan=lifespan)
-# FastAuth auto-detects sync vs async session at runtime
-auth = FastAuth(user_model=User, jwt_secret="super-secret-key-change-it", get_db=get_db)
+auth = FastAuth(user_model=User, jwt_secret="super-secret-key", get_db=get_db)
 app.include_router(auth.router)</code></pre></div></div>
 
       <div id="t-adv" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
     user_model=User,
 
-    # Custom field names (if your model uses different names)
-    username_field="login",
-    email_field="mail",
-    password_field="passwd",
-
+    # JWT
     jwt={
         "secret":         "your-secret-key-min-32-chars",
         "algorithm":      "HS256",
@@ -526,10 +531,12 @@ app.include_router(auth.router)</code></pre></div></div>
         "refresh_expire": 604800,   # 7 days
     },
 
+    # Token delivery
     refresh_token_mode="cookie",    # "body" | "cookie" | "both"
     cookie={"httponly": True, "secure": True, "samesite": "lax"},
     password_hasher="argon2",       # "bcrypt" (default) | "argon2"
 
+    # Email
     email={
         "host":       "smtp.gmail.com",
         "port":       587,
@@ -538,14 +545,14 @@ app.include_router(auth.router)</code></pre></div></div>
         "from_email": "you@gmail.com",
     },
 
+    # URL config — see Email section for full explanation
     base_url="https://api.myapp.com",
-    frontend_url="https://myapp.com",
-    verify_type="frontend",              # "backend" | "frontend"
-    # Custom URL for password-reset emails — token appended as ?token=TOKEN
-    # If not set, defaults to {base_url}/auth/reset-password/confirm (HTML form on GET)
-    reset_password_url="https://myapp.com/reset-password",
+    verify_email_url="https://myapp.com/verify-email",   # optional
+    reset_password_url="https://myapp.com/reset-password", # optional
+
     email_verification_required=True,
 
+    # Social OAuth
     social_auth={
         "google": {
             "client_id":     "...",
@@ -553,11 +560,14 @@ app.include_router(auth.router)</code></pre></div></div>
             "redirect_uri":  "https://api.myapp.com/auth/google/callback",
         },
     },
+
+    # Rate limiting
+    rate_limit={"enabled": True, "max_login_attempts": 5, "lockout_seconds": 300},
 )</code></pre></div></div>
     </div>
 
     <div>
-      <div class="srow"><div class="snum">4</div><h4>Protect routes with roles</h4></div>
+      <div class="srow"><div class="snum">4</div><h4>RBAC — protect routes with roles</h4></div>
       <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">from fastapi import Depends
 from fastauth.exceptions import PermissionDeniedError
 
@@ -571,11 +581,11 @@ def require_role(*roles):
 
 @app.get("/admin")
 async def admin_panel(user = Depends(require_role("admin"))):
-    return {"message": f"Hello, {user.username}"}
+    return {"message": f"Hello admin {user.username}"}
 
-@app.get("/dashboard")
-async def dashboard(user = Depends(auth.get_current_user())):
-    return {"welcome": user.username}</code></pre></div>
+@app.get("/mod")
+async def mod_panel(user = Depends(require_role("admin", "moderator"))):
+    return {"message": "Mod panel"}</code></pre></div>
     </div>
   </div>
 </section>
@@ -585,27 +595,26 @@ async def dashboard(user = Depends(auth.get_current_user())):
 <section id="endpoints">
   <div class="w">
     <div class="sl">API Reference</div>
-    <h2>Auto-registered endpoints</h2>
-    <p class="sd">All endpoints are mounted under <code>/auth</code> (configurable via <code>router_prefix</code>).</p>
+    <h2>All 14 endpoints — pure JSON</h2>
+    <p class="sd">Mounted under <code>/auth</code> by default (configurable via <code>router_prefix</code>). Every endpoint returns JSON. No HTML, no redirects.</p>
     <div class="tw">
       <table>
         <thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/register</td><td>—</td><td>Create account, return token pair</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/login</td><td>—</td><td>Login with username or email + password</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/register</td><td>—</td><td>Create account; sends welcome or verification email if configured</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/login</td><td>—</td><td>Login with username <em>or</em> email + password; returns token pair</td></tr>
           <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/me</td><td>Bearer</td><td>Return current authenticated user</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/refresh</td><td>Refresh token</td><td>Issue new token pair, rotate old refresh token</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/logout</td><td>Bearer</td><td>Blacklist current access token</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/change-password</td><td>Bearer</td><td>Change password (requires old password)</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password</td><td>—</td><td>Request password reset email (always 200, anti-enumeration)</td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Show HTML password-reset form (user clicks email link)</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Submit token + new password — resets password</td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>backend: verify + HTML page &nbsp;|&nbsp; frontend: 302 redirect</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>Programmatic verify (frontend calls after redirect)</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/resend-verification</td><td>Bearer <em>or</em> <code>{"email":"..."}</code></td><td>Re-send verification email — no auth needed if email provided</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/refresh</td><td>Refresh token</td><td>Issue new token pair; old refresh token immediately revoked</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/logout</td><td>Bearer</td><td>Blacklist current access token, clear cookies</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/change-password</td><td>Bearer</td><td>Change password — old password required</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password</td><td>—</td><td>Request reset email; always 200 (anti-enumeration)</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Confirm with <code>{"token":"…","new_password":"…"}</code></td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/verify-email?token=…</td><td>—</td><td>Verify email inline — returns JSON confirmation</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>Verify email with token in body <code>{"token":"…"}</code></td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/resend-verification</td><td>Bearer <em>or</em> <code>{"email":"…"}</code></td><td>Resend verification email; no auth needed if email provided in body</td></tr>
           <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/revoke-all</td><td>Bearer</td><td>Revoke all refresh tokens for this user</td></tr>
           <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/login</td><td>—</td><td>Redirect to OAuth2 provider (google / github / discord)</td></tr>
-          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/callback</td><td>—</td><td>Handle OAuth2 callback, return token pair</td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/callback</td><td>—</td><td>Handle OAuth2 callback; create or login user; return token pair</td></tr>
         </tbody>
       </table>
     </div>
@@ -618,29 +627,35 @@ async def dashboard(user = Depends(auth.get_current_user())):
   <div class="w">
     <div class="sl">Email Setup</div>
     <h2>Password reset &amp; email verification</h2>
-    <p class="sd">Without email config the endpoints still work but no email is sent. Add the <code>email</code> dict and configure <code>verify_type</code>.</p>
+    <p class="sd">Without email config the endpoints still work — no email is sent. Tokens can be tested directly via Swagger or curl. Add the <code>email</code> dict when ready for real delivery.</p>
 
-    <div style="margin-bottom:2rem">
-      <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-arrow-right-arrow-left" style="color:var(--ind);margin-right:.4rem"></i><code>verify_type</code></h3>
-      <div class="tw">
-        <table>
-          <thead><tr><th>verify_type</th><th>Email link</th><th>GET /auth/verify-email</th></tr></thead>
-          <tbody>
-            <tr><td><code style="color:var(--green)">'backend'</code> <span class="tag tg">default</span></td><td class="ep">{base_url}/auth/verify-email?token=...</td><td>Verifies token, returns HTML success page</td></tr>
-            <tr><td><code style="color:var(--cyan)">'frontend'</code></td><td class="ep">{frontend_url}/auth/verify-email?token=...</td><td>302 redirect to frontend; frontend calls POST /auth/verify-email</td></tr>
-          </tbody>
-        </table>
+    <div style="margin-bottom:2.5rem">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.9rem"><i class="fa-solid fa-link" style="color:var(--ind);margin-right:.4rem"></i>URL Configuration — the right way</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">FastAuth uses two URL parameters to control where email links point. Both are optional with sensible dev-mode defaults.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem;margin-bottom:1rem">
+        <div class="url-diagram">
+          <div class="label"><i class="fa-solid fa-envelope-circle-check"></i> verify_email_url</div>
+          <div class="url-row"><span class="url-cond">dev </span><div><div class="url-val">{base_url}/auth/verify-email?token=…</div><div class="url-desc">Link goes to backend GET endpoint → returns JSON</div></div></div>
+          <div class="url-row"><span class="url-cond">prod</span><div><div class="url-val">https://myapp.com/verify?token=…</div><div class="url-desc">Link goes to your frontend page → frontend calls POST /auth/verify-email</div></div></div>
+        </div>
+        <div class="url-diagram">
+          <div class="label"><i class="fa-solid fa-key"></i> reset_password_url</div>
+          <div class="url-row"><span class="url-cond">dev </span><div><div class="url-val">not set → dev email</div><div class="url-desc">Email shows raw token + curl example for Swagger testing</div></div></div>
+          <div class="url-row"><span class="url-cond">prod</span><div><div class="url-val">https://myapp.com/reset?token=…</div><div class="url-desc">Link goes to your frontend page → frontend calls POST /auth/reset-password/confirm</div></div></div>
+        </div>
       </div>
     </div>
 
     <div style="margin-bottom:2rem">
       <div class="tr">
-        <button class="tab on" onclick="et(this,'e-back')">Backend mode</button>
-        <button class="tab" onclick="et(this,'e-front')">Frontend mode</button>
-        <button class="tab" onclick="et(this,'e-reset')">reset_password_url</button>
+        <button class="tab on" onclick="et(this,'e-dev')">Development</button>
+        <button class="tab" onclick="et(this,'e-prod')">Production</button>
         <button class="tab" onclick="et(this,'e-js')">Frontend JS</button>
+        <button class="tab" onclick="et(this,'e-resend')">Resend verify</button>
       </div>
-      <div id="e-back" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
+
+      <div id="e-dev" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># Development — no verify_email_url or reset_password_url needed
+auth = FastAuth(
     user_model=User,
     jwt_secret="your-secret",
     email={
@@ -650,18 +665,20 @@ async def dashboard(user = Depends(auth.get_current_user())):
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
     },
-    base_url="http://localhost:8000",  # backend URL
-    verify_type="backend",             # default
+    base_url="http://localhost:8000",          # used in email link defaults
     email_verification_required=True,
 )
-# Verify email link: GET http://localhost:8000/auth/verify-email?token=...
-#   → FastAuth verifies token and shows HTML "Email Verified!" page
-#
-# Reset password link: GET http://localhost:8000/auth/reset-password/confirm?token=...
-#   → FastAuth shows a built-in HTML form for entering a new password
-#   → Form submits via JavaScript → POST /auth/reset-password/confirm</code></pre></div></div>
 
-      <div id="e-front" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
+# Verify email link  → GET http://localhost:8000/auth/verify-email?token=TOKEN
+#   User clicks → returns JSON: {"message": "Email verified successfully"}
+#
+# Reset password  → dev email with raw token + curl example:
+#   curl -X POST http://localhost:8000/auth/reset-password/confirm
+#        -H "Content-Type: application/json"
+#        -d '{"token": "TOKEN", "new_password": "NewPass1!"}'</code></pre></div></div>
+
+      <div id="e-prod" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># Production — set both URLs to your frontend pages
+auth = FastAuth(
     user_model=User,
     jwt_secret="your-secret",
     get_db=get_db,
@@ -669,79 +686,61 @@ async def dashboard(user = Depends(auth.get_current_user())):
         "host":       "smtp.gmail.com",
         "port":       587,
         "username":   "you@gmail.com",
-        "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
+        "password":   "xxxx xxxx xxxx xxxx",
         "from_email": "you@gmail.com",
     },
-    base_url="https://api.domain.uz",          # your FastAPI backend
-    frontend_url="https://domain.uz",          # your SPA (for verify links)
-    verify_type="frontend",
-    reset_password_url="https://domain.uz/reset-password",  # SPA reset page
+    base_url="https://api.myapp.com",
+    # Where verification email links point
+    verify_email_url="https://myapp.com/verify-email",
+    # Where password-reset email links point
+    reset_password_url="https://myapp.com/reset-password",
     email_verification_required=True,
 )
-# Verify link: GET https://domain.uz/auth/verify-email?token=...
-#   → SPA reads ?token= → calls POST /auth/verify-email
+
+# Verify email link  → https://myapp.com/verify-email?token=TOKEN
+#   Your SPA reads ?token= → calls POST /auth/verify-email  {"token":"…"}
 #
-# Reset link: GET https://domain.uz/reset-password?token=...
-#   → SPA reads ?token= → user enters password → POST /auth/reset-password/confirm</code></pre></div></div>
-
-      <div id="e-reset" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># reset_password_url controls where the password-reset email link points.
-# Token is always appended as ?token=TOKEN.
-
-# Option 1 — Backend mode (no reset_password_url set)
-auth = FastAuth(
-    user_model=User, jwt_secret="...",
-    base_url="https://api.myapp.com",
-    # Reset email link → GET https://api.myapp.com/auth/reset-password/confirm?token=TOKEN
-    # FastAuth serves a built-in HTML form. User enters new password.
-    # Form submits via JavaScript to POST /auth/reset-password/confirm.
-)
-
-# Option 2 — Custom SPA URL
-auth = FastAuth(
-    user_model=User, jwt_secret="...",
-    base_url="https://api.myapp.com",
-    reset_password_url="https://myapp.com/reset-password",
-    # Reset email link → GET https://myapp.com/reset-password?token=TOKEN
-    # Your SPA reads ?token= and calls POST /api/auth/reset-password/confirm
-)
-
-# Option 3 — Any custom URL (different domain, path, etc.)
-auth = FastAuth(
-    user_model=User, jwt_secret="...",
-    reset_password_url="https://admin.myapp.com/auth/password/reset",
-    # Reset email link → GET https://admin.myapp.com/auth/password/reset?token=TOKEN
-)</code></pre></div></div>
+# Reset email link   → https://myapp.com/reset-password?token=TOKEN
+#   Your SPA reads ?token= → user enters password → POST /auth/reset-password/confirm</code></pre></div></div>
 
       <div id="e-js" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-javascript">// ── Email verification ───────────────────────────────────────────────────────
-// User lands on your SPA verify page with ?token=... in the URL
+// User lands on your SPA verify page with ?token=TOKEN in the URL
 const token = new URLSearchParams(window.location.search).get("token");
-const res = await fetch("https://api.domain.uz/auth/verify-email", {
+
+const res = await fetch("https://api.myapp.com/auth/verify-email", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
 });
-const data = await res.json();
-// data.message === "Email verified successfully"
+// { "message": "Email verified successfully" }
 
 // ── Password reset ───────────────────────────────────────────────────────────
-// User lands on your SPA reset page (reset_password_url) with ?token=... in URL
+// User lands on your SPA reset page with ?token=TOKEN in the URL
 const token = new URLSearchParams(window.location.search).get("token");
-// User enters new password in your SPA form, then:
-const res = await fetch("https://api.domain.uz/auth/reset-password/confirm", {
+
+// User enters new password, then:
+const res = await fetch("https://api.myapp.com/auth/reset-password/confirm", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, new_password: "NewPass123!" }),
 });
-const data = await res.json();
-// data.message === "Password reset successfully"
+// { "message": "Password reset successfully" }</code></pre></div></div>
 
-// ── Resend verification (no login required) ──────────────────────────────────
-const res = await fetch("https://api.domain.uz/auth/resend-verification", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "user@example.com" }),
-});
-// Always returns 200 with a generic message</code></pre></div></div>
+      <div id="e-resend" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># POST /auth/resend-verification accepts either:
+
+# 1. Bearer token (user has a valid access token)
+import httpx
+httpx.post("/auth/resend-verification",
+    headers={"Authorization": f"Bearer {access_token}"})
+
+# 2. Email in body — no auth needed
+#    Useful when email_verification_required=True and the user cannot log in
+#    because their token expired before they verified.
+httpx.post("/auth/resend-verification",
+    json={"email": "user@example.com"})
+
+# Both always return 200 with a generic message (anti-enumeration):
+# { "message": "If that account exists and is unverified, a verification email has been sent" }</code></pre></div></div>
     </div>
 
     <div style="margin-bottom:2rem">
@@ -752,7 +751,7 @@ const res = await fetch("https://api.domain.uz/auth/resend-verification", {
         <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">2</div><span style="font-size:.865rem">Enable <strong>2-Step Verification</strong> (required)</span></div>
         <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">3</div><span style="font-size:.865rem">Search <strong>App passwords</strong> in Security settings</span></div>
         <div class="clrow2"><div class="snum" style="width:24px;height:24px;font-size:.7rem">4</div><span style="font-size:.865rem">App: <strong>Mail</strong> / Device: <strong>Other</strong> &rarr; name it <code>fastauth</code> &rarr; Generate</span></div>
-        <div class="clrow2" style="border-color:rgba(52,211,153,.22)"><div class="snum" style="width:24px;height:24px;font-size:.7rem;background:var(--green)">5</div><span style="font-size:.865rem">Copy the <strong style="color:var(--green)">16-character password</strong> &rarr; paste as <code>"password"</code> in your config</span></div>
+        <div class="clrow2" style="border-color:rgba(52,211,153,.22)"><div class="snum" style="width:24px;height:24px;font-size:.7rem;background:var(--green)">5</div><span style="font-size:.865rem">Copy the <strong style="color:var(--green)">16-character password</strong> &rarr; paste as <code>"password"</code></span></div>
       </div>
     </div>
 
@@ -777,32 +776,33 @@ const res = await fetch("https://api.domain.uz/auth/resend-verification", {
 
     <div style="margin-bottom:2rem">
       <h3 style="font-size:.95rem;font-weight:700;margin-bottom:.85rem"><i class="fa-solid fa-flask" style="color:var(--green);margin-right:.4rem"></i>Testing without real SMTP</h3>
-      <div class="notice nr"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red);flex-shrink:0;margin-top:.1rem"></i>Dev-only endpoint — remove before production.</div>
-      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">@app.post("/dev/reset-token")   # REMOVE IN PRODUCTION
-async def dev_reset_token(email: str):
-    token = await auth._manager.create_reset_token(email)
-    return {"token": token}
+      <div class="notice nr"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red);flex-shrink:0;margin-top:.1rem"></i>Dev-only endpoints — remove before production.</div>
+      <div class="cb full"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">@app.post("/dev/get-verify-token")   # REMOVE IN PRODUCTION
+async def dev_verify_token(email: str):
+    user = await auth.manager.get_by_email(email)
+    token = await auth.manager.create_verification_token(user)
+    return {"token": token, "url": f"/auth/verify-email?token={token}"}
 
-# Usage: POST /dev/reset-token?email=user@example.com
-# Then:  POST /auth/reset-password/confirm {"token":"...","new_password":"..."}</code></pre></div>
+@app.post("/dev/get-reset-token")    # REMOVE IN PRODUCTION
+async def dev_reset_token(email: str):
+    token = await auth.manager.create_reset_token(email)
+    return {"token": token}</code></pre></div>
     </div>
 
     <div class="grid g2">
       <div class="fc">
         <h4><i class="fa-solid fa-key" style="color:var(--yellow)"></i> Password reset flow</h4>
-        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password</div><div class="fnote">Creates token (1h expiry), sends email if configured</div></div></div>
-        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks link in email</div>
-        <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/reset-password/confirm?token=…</div><div class="fnote"><strong>Shows HTML form</strong> if <code>reset_password_url</code> not set — user enters new password directly in browser</div></div></div>
-        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> form submits via JavaScript</div>
-        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password/confirm</div><div class="fnote"><code>{"token": "...", "new_password": "..."}</code></div></div></div>
-        <div style="margin-top:.75rem;font-size:.77rem;color:var(--faint)"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> Always returns 200 even if email not found (anti-enumeration)</div>
+        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password</div><div class="fnote">Creates 1h token; sends email (link or dev token)</div></div></div>
+        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user follows reset_password_url link</div>
+        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password/confirm</div><div class="fnote"><code>{"token": "…", "new_password": "…"}</code></div></div></div>
+        <div style="margin-top:.75rem;font-size:.77rem;color:var(--faint)"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> Always returns 200 — no email enumeration</div>
       </div>
       <div class="fc">
         <h4><i class="fa-solid fa-envelope-circle-check" style="color:var(--cyan)"></i> Email verification flow</h4>
-        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/register</div><div class="fnote">Account created, verification email sent</div></div></div>
-        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks link in email (24h expiry)</div>
-        <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/verify-email?token=...</div><div class="fnote">backend: verify + HTML &nbsp;|&nbsp; frontend: 302 redirect</div></div></div>
-        <div class="fstep" style="margin-top:.45rem"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/resend-verification</div><div class="fnote">Re-send — Bearer token <em>or</em> <code>{"email":"..."}</code> in body (no auth required)</div></div></div>
+        <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/register</div><div class="fnote">Account created; verification email sent (24h token)</div></div></div>
+        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks verify_email_url link</div>
+        <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/verify-email?token=…</div><div class="fnote">returns JSON confirmation — always</div></div></div>
+        <div class="fstep" style="margin-top:.45rem"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/resend-verification</div><div class="fnote">Bearer token <em>or</em> <code>{"email":"…"}</code> — no auth required</div></div></div>
       </div>
     </div>
   </div>
@@ -814,16 +814,16 @@ async def dev_reset_token(email: str):
   <div class="w">
     <div class="sl">Security</div>
     <h2>Secure by default</h2>
-    <p class="sd">Every security decision is made for you using industry-standard defaults.</p>
+    <p class="sd">Every security decision is made for you using industry-standard defaults. No configuration required.</p>
     <div class="sg">
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-lock"></i></div><div><h4>bcrypt / argon2</h4><p>Adaptive cost hashing with timing-safe <code>checkpw</code>. Auto rehash on upgrade.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-shield-halved"></i></div><div><h4>JWT jti blacklist</h4><p>Every token has a unique ID. Logout blacklists it instantly. Pluggable store.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-rotate"></i></div><div><h4>Refresh rotation</h4><p>Old refresh token is revoked the moment a new pair is issued.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-gauge-high"></i></div><div><h4>Brute-force protection</h4><p>Sliding-window: 5 failed attempts triggers a 5-minute IP lockout.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-eye-slash"></i></div><div><h4>Email enumeration guard</h4><p>Password reset always returns 200 regardless of whether the email exists.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-lock"></i></div><div><h4>bcrypt / argon2</h4><p>Adaptive cost hashing with timing-safe verify. Switch hashers with one config value.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-shield-halved"></i></div><div><h4>JWT jti blacklist</h4><p>Every token has a unique ID. Logout blacklists it instantly. Pluggable store (Redis).</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-rotate"></i></div><div><h4>Refresh rotation</h4><p>Old refresh token is revoked the moment a new pair is issued — replay attacks blocked.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-gauge-high"></i></div><div><h4>Brute-force protection</h4><p>Sliding-window rate limiter: 5 failed attempts triggers a 5-minute IP lockout.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-eye-slash"></i></div><div><h4>Email enumeration guard</h4><p>Password reset and resend always return 200 regardless of whether the email exists.</p></div></div>
       <div class="sc"><div class="scicon"><i class="fa-solid fa-hourglass-half"></i></div><div><h4>Timing attack mitigation</h4><p>Dummy hash verify runs on unknown usernames to prevent response-time leaks.</p></div></div>
       <div class="sc"><div class="scicon"><i class="fa-solid fa-cookie-bite"></i></div><div><h4>Secure cookie flags</h4><p><code>httpOnly</code>, <code>secure</code>, <code>sameSite</code> configurable. Safe defaults included.</p></div></div>
-      <div class="sc"><div class="scicon"><i class="fa-solid fa-clock"></i></div><div><h4>Token expiry</h4><p>Access: 15 min. Refresh: 7 days. Both fully configurable per project.</p></div></div>
+      <div class="sc"><div class="scicon"><i class="fa-solid fa-clock"></i></div><div><h4>Short-lived tokens</h4><p>Access: 15 min. Reset links: 1 hour. Verify links: 24 hours. All configurable.</p></div></div>
     </div>
   </div>
 </section>
@@ -859,7 +859,7 @@ async def dev_reset_token(email: str):
       <div class="clrow2"><span class="clcmd">fastauth init</span><span class="cldesc">Scaffold <code>.env.example</code> and <code>auth_config.py</code></span></div>
       <div class="clrow2"><span class="clcmd">fastauth version</span><span class="cldesc">Print installed fastauth-framework version</span></div>
     </div>
-    <div class="notice ny" style="margin-top:1rem"><i class="fa-solid fa-circle-info" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i><code>--sync</code> mode generates synchronous DB code. Sync calls block the FastAPI event loop — use <code>--async</code> for production.</div>
+    <div class="notice ny" style="margin-top:1rem"><i class="fa-solid fa-circle-info" style="color:var(--yellow);flex-shrink:0;margin-top:.1rem"></i><code>--sync</code> generates synchronous SQLAlchemy code. Sync calls block the FastAPI event loop — use <code>--async</code> for production.</div>
   </div>
 </section>
 <hr class="dv" />
@@ -869,7 +869,7 @@ async def dev_reset_token(email: str):
   <div class="w">
     <div class="sl">Configuration</div>
     <h2>FastAuth() parameters</h2>
-    <p class="sd">All parameters are optional except <code>user_model</code> and <code>jwt_secret</code>.</p>
+    <p class="sd">Only <code>user_model</code> and <code>jwt_secret</code> are required. Everything else has a sensible default.</p>
     <div class="tw">
       <table>
         <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
@@ -878,20 +878,28 @@ async def dev_reset_token(email: str):
           <tr><td class="kw">jwt_secret</td><td class="tp2">str</td><td class="df">required</td><td>Secret key for signing JWTs (min 16 chars)</td></tr>
           <tr><td class="kw">jwt</td><td class="tp2">dict</td><td class="df">None</td><td><code>secret</code>, <code>algorithm</code>, <code>access_expire</code>, <code>refresh_expire</code></td></tr>
           <tr><td class="kw">username_field</td><td class="tp2">str</td><td class="df">"username"</td><td>Field name for username in your model</td></tr>
-          <tr><td class="kw">email_field</td><td class="tp2">str</td><td class="df">"email"</td><td>Field name for email in your model</td></tr>
-          <tr><td class="kw">password_field</td><td class="tp2">str</td><td class="df">"password"</td><td>Field name for hashed password in your model</td></tr>
+          <tr><td class="kw">email_field</td><td class="tp2">str</td><td class="df">"email"</td><td>Field name for email</td></tr>
+          <tr><td class="kw">password_field</td><td class="tp2">str</td><td class="df">"password"</td><td>Field name for hashed password</td></tr>
+          <tr><td class="kw">id_field</td><td class="tp2">str</td><td class="df">"id"</td><td>Field name for primary key</td></tr>
+          <tr><td class="kw">is_active_field</td><td class="tp2">str</td><td class="df">"is_active"</td><td>Field name for active flag</td></tr>
+          <tr><td class="kw">is_verified_field</td><td class="tp2">str</td><td class="df">"is_verified"</td><td>Field name for email-verified flag</td></tr>
+          <tr><td class="kw">roles_field</td><td class="tp2">str</td><td class="df">"roles"</td><td>Field name for roles list (JSON)</td></tr>
+          <tr><td class="kw">permissions_field</td><td class="tp2">str</td><td class="df">"permissions"</td><td>Field name for permissions list (JSON)</td></tr>
           <tr><td class="kw">password_hasher</td><td class="tp2">str</td><td class="df">"bcrypt"</td><td><code>"bcrypt"</code> or <code>"argon2"</code></td></tr>
-          <tr><td class="kw">refresh_token_mode</td><td class="tp2">str</td><td class="df">"body"</td><td><code>"body"</code> | <code>"cookie"</code> | <code>"both"</code></td></tr>
-          <tr><td class="kw">cookie</td><td class="tp2">dict</td><td class="df">{}</td><td><code>httponly</code>, <code>secure</code>, <code>samesite</code>, <code>domain</code></td></tr>
-          <tr><td class="kw">email</td><td class="tp2">dict</td><td class="df">None</td><td>SMTP: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from_email</code></td></tr>
-          <tr><td class="kw">base_url</td><td class="tp2">str</td><td class="df">"http://localhost:8000"</td><td>Backend URL for verify/reset links in backend mode</td></tr>
-          <tr><td class="kw">frontend_url</td><td class="tp2">str</td><td class="df">None</td><td>SPA URL; used when <code>verify_type="frontend"</code> for verify links</td></tr>
-          <tr><td class="kw">verify_type</td><td class="tp2">str</td><td class="df">"backend"</td><td><code>"backend"</code> verify directly | <code>"frontend"</code> redirect to SPA</td></tr>
-          <tr><td class="kw">reset_password_url</td><td class="tp2">str</td><td class="df">None</td><td>Custom URL for reset emails. Token appended as <code>?token=TOKEN</code>. If not set, defaults to <code>{base_url}/auth/reset-password/confirm</code> where an HTML form is served on GET.</td></tr>
+          <tr><td class="kw">refresh_token_mode</td><td class="tp2">str</td><td class="df">"body"</td><td><code>"body"</code> · <code>"cookie"</code> · <code>"both"</code></td></tr>
+          <tr><td class="kw">cookie</td><td class="tp2">dict</td><td class="df">{}</td><td><code>httponly</code>, <code>secure</code>, <code>samesite</code>, <code>domain</code>, <code>max_age</code></td></tr>
+          <tr><td class="kw">email</td><td class="tp2">dict</td><td class="df">None</td><td>SMTP config: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from_email</code>, <code>use_tls</code>, <code>use_ssl</code>, <code>timeout</code></td></tr>
+          <tr><td class="kw">base_url</td><td class="tp2">str</td><td class="df">"http://localhost:8000"</td><td>Backend URL; fallback base for verify_email_url in dev mode</td></tr>
+          <tr><td class="kw">verify_email_url</td><td class="tp2">str</td><td class="df">None</td><td>Full URL for email verification links. Token appended as <code>?token=TOKEN</code>. Default → <code>{base_url}/auth/verify-email</code> (GET returns JSON)</td></tr>
+          <tr><td class="kw">reset_password_url</td><td class="tp2">str</td><td class="df">None</td><td>Full URL for password-reset email links. Token appended as <code>?token=TOKEN</code>. Default → dev email with raw token + curl example</td></tr>
           <tr><td class="kw">email_verification_required</td><td class="tp2">bool</td><td class="df">False</td><td>Block login until email is verified</td></tr>
+          <tr><td class="kw">enable_refresh_rotation</td><td class="tp2">bool</td><td class="df">True</td><td>Revoke old refresh token when issuing a new pair</td></tr>
+          <tr><td class="kw">rate_limit</td><td class="tp2">dict</td><td class="df">{}</td><td><code>enabled</code>, <code>max_login_attempts</code>, <code>lockout_seconds</code></td></tr>
           <tr><td class="kw">social_auth</td><td class="tp2">dict</td><td class="df">None</td><td>OAuth providers: <code>google</code>, <code>github</code>, <code>discord</code></td></tr>
-          <tr><td class="kw">get_db</td><td class="tp2">callable</td><td class="df">None</td><td>FastAPI dependency yielding DB session (SQLAlchemy async or sync)</td></tr>
+          <tr><td class="kw">get_db</td><td class="tp2">callable</td><td class="df">None</td><td>FastAPI dependency yielding DB session (SQLAlchemy async or sync). Omit for Tortoise ORM.</td></tr>
           <tr><td class="kw">router_prefix</td><td class="tp2">str</td><td class="df">"/auth"</td><td>URL prefix for all auth endpoints</td></tr>
+          <tr><td class="kw">router_tags</td><td class="tp2">list</td><td class="df">["Authentication"]</td><td>OpenAPI tags shown in Swagger UI</td></tr>
+          <tr><td class="kw">token_store</td><td class="tp2">any</td><td class="df">None</td><td>Custom token store (e.g. Redis). Must implement <code>save / get / delete / revoke_all_for_user</code></td></tr>
         </tbody>
       </table>
     </div>
@@ -902,14 +910,14 @@ async def dev_reset_token(email: str):
 <!-- FOOTER -->
 <footer>
   <div class="flogo"><i class="fa-solid fa-lock"></i> FastAuth</div>
-  <p class="ftag">Professional authentication framework for FastAPI</p>
+  <p class="ftag">Professional backend authentication framework for FastAPI</p>
   <div class="flinks">
     <a href="https://pypi.org/project/fastauth-framework/" target="_blank"><i class="fa-solid fa-box"></i> PyPI</a>
     <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
     <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
     <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
   </div>
-  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.9</p>
+  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.9.1</p>
 </footer>
 
 <button id="top" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
@@ -925,7 +933,7 @@ async def dev_reset_token(email: str):
   });
 
   const QS_IDS = ['t-min','t-tort','t-async','t-sync','t-adv'];
-  const EM_IDS = ['e-back','e-front','e-reset','e-js'];
+  const EM_IDS = ['e-dev','e-prod','e-js','e-resend'];
 
   function st(btn, id) { switchTabs(btn, id, QS_IDS); }
   function et(btn, id) { switchTabs(btn, id, EM_IDS); }

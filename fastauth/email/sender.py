@@ -38,6 +38,21 @@ class EmailSender:
 </body></html>
 """
 
+    RESET_DEV_HTML = """
+<html><body style="font-family:sans-serif;background:#f8fafc;padding:2rem">
+<div style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+  <h2 style="color:#6366f1">Password reset request <span style="font-size:.7em;color:#94a3b8">(dev mode)</span></h2>
+  <p style="color:#64748b;font-size:.9rem"><strong>reset_password_url</strong> is not configured.<br>Use the token below to test via Swagger or curl:</p>
+  <div style="background:#f1f5f9;border-radius:8px;padding:1rem 1.2rem;margin:1rem 0;font-family:monospace;font-size:.95rem;word-break:break-all;color:#1e293b">{{ token }}</div>
+  <p style="color:#64748b;font-size:.88rem;margin:.5rem 0 .3rem">Test with curl:</p>
+  <pre style="background:#0f172a;color:#7dd3fc;border-radius:8px;padding:1rem 1.2rem;font-size:.8rem;overflow-x:auto;margin:.4rem 0">curl -X POST {{ base_url }}/auth/reset-password/confirm \
+  -H "Content-Type: application/json" \
+  -d '{"token": "{{ token }}", "new_password": "YourNewPassword1!"}'</pre>
+  <p style="font-size:.78rem;color:#cbd5e1;margin-top:1rem">This token expires in 1 hour. Set <code>reset_password_url</code> in FastAuth() for production.</p>
+</div>
+</body></html>
+"""
+
     WELCOME_HTML = """
 <html><body style="font-family:sans-serif;background:#f8fafc;padding:2rem">
 <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:12px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.08)">
@@ -102,6 +117,16 @@ class EmailSender:
         from jinja2 import Template
         html = Template(self.RESET_HTML).render(reset_url=reset_url)
         return await self.send(to, "Password reset request", html)
+
+    async def send_reset_dev(self, to: str, token: str, base_url: str = "http://localhost:8000") -> bool:
+        """Dev-mode reset email: shows raw token + curl example.
+
+        Sent when reset_password_url is not configured.  Switch to send_reset()
+        by setting reset_password_url in FastAuth() before going to production.
+        """
+        from jinja2 import Template
+        html = Template(self.RESET_DEV_HTML).render(token=token, base_url=base_url.rstrip("/"))
+        return await self.send(to, "[DEV] Password reset token", html)
 
     async def send_welcome(self, to: str, username: str) -> bool:
         from jinja2 import Template

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Literal, Optional
+from typing import Any, Callable, Dict, Optional
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from fastauth.config.settings import FastAuthSettings
@@ -32,200 +32,31 @@ def _get_token(
     return credentials.credentials if credentials else None
 
 
-# ── Simple HTML pages returned for backend verify/reset ──────────────────────
-
-_HTML_VERIFIED = """<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Email Verified</title>
-<style>
-  body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;color:#e2e8f0;
-       display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
-  .card{text-align:center;background:#0f1525;border:1px solid rgba(255,255,255,.08);
-        border-radius:16px;padding:3rem 2.5rem;max-width:420px;width:90%}
-  .icon{font-size:4rem;margin-bottom:1rem}
-  h1{font-size:1.6rem;font-weight:800;color:#34d399;margin:.5rem 0}
-  p{color:#94a3b8;font-size:.95rem;line-height:1.6}
-  .badge{display:inline-block;margin-top:1.2rem;padding:.4rem 1rem;background:rgba(52,211,153,.12);
-         color:#34d399;border-radius:99px;font-size:.8rem;font-weight:600}
-</style>
-</head>
-<body>
-<div class="card">
-  <div class="icon">✅</div>
-  <h1>Email Verified!</h1>
-  <p>Your email address has been successfully verified.<br>You can now close this tab and log in.</p>
-  <span class="badge">Powered by FastAuth</span>
-</div>
-</body></html>"""
-
-_HTML_VERIFY_ERROR = """<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Verification Failed</title>
-<style>
-  body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;color:#e2e8f0;
-       display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
-  .card{text-align:center;background:#0f1525;border:1px solid rgba(255,255,255,.08);
-        border-radius:16px;padding:3rem 2.5rem;max-width:420px;width:90%}
-  .icon{font-size:4rem;margin-bottom:1rem}
-  h1{font-size:1.6rem;font-weight:800;color:#f87171;margin:.5rem 0}
-  p{color:#94a3b8;font-size:.95rem;line-height:1.6}
-  .badge{display:inline-block;margin-top:1.2rem;padding:.4rem 1rem;background:rgba(248,113,113,.12);
-         color:#f87171;border-radius:99px;font-size:.8rem;font-weight:600}
-</style>
-</head>
-<body>
-<div class="card">
-  <div class="icon">❌</div>
-  <h1>Verification Failed</h1>
-  <p>{detail}<br>The link may have expired or already been used.<br>Please request a new verification email.</p>
-  <span class="badge">Powered by FastAuth</span>
-</div>
-</body></html>"""
-
-
-_HTML_RESET_FORM = """<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reset Password</title>
-<style>
-  * { box-sizing: border-box }
-  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e2e8f0;
-         display: flex; align-items: center; justify-content: center;
-         min-height: 100vh; margin: 0 }
-  .card { background: #0f1525; border: 1px solid rgba(255,255,255,.08);
-          border-radius: 16px; padding: 3rem 2.5rem; max-width: 420px; width: 90% }
-  h1 { font-size: 1.6rem; font-weight: 800; color: #60a5fa; margin: 0 0 .4rem }
-  .sub { color: #94a3b8; font-size: .9rem; margin: .2rem 0 1.6rem }
-  label { display: block; font-size: .82rem; color: #94a3b8;
-          margin-bottom: .35rem; font-weight: 500 }
-  input[type=password] { width: 100%; background: #0a0e1a;
-    border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
-    padding: .65rem .9rem; color: #e2e8f0; font-size: .95rem;
-    margin-bottom: 1rem; outline: none; transition: border-color .2s }
-  input[type=password]:focus { border-color: #60a5fa }
-  button { width: 100%; background: #3b82f6; color: #fff; border: none;
-    border-radius: 8px; padding: .75rem; font-size: 1rem; font-weight: 600;
-    cursor: pointer; transition: background .2s }
-  button:hover { background: #2563eb }
-  button:disabled { background: #1e3a5f; cursor: not-allowed }
-  .msg { margin-top: 1rem; padding: .75rem 1rem; border-radius: 8px;
-         font-size: .88rem; text-align: center; display: none }
-  .ok  { background: rgba(52,211,153,.12); color: #34d399 }
-  .err { background: rgba(248,113,113,.12); color: #f87171 }
-  .badge { display: block; text-align: center; margin-top: 1.4rem;
-           padding: .4rem 1rem; background: rgba(96,165,250,.1); color: #60a5fa;
-           border-radius: 99px; font-size: .78rem; font-weight: 600 }
-</style>
-</head>
-<body>
-<div class="card">
-  <h1>Reset Password</h1>
-  <p class="sub">Enter your new password below.</p>
-  <form id="f">
-    <label>New password</label>
-    <input type="password" id="pw" placeholder="At least 8 characters" required minlength="8">
-    <label>Confirm password</label>
-    <input type="password" id="pw2" placeholder="Repeat password" required minlength="8">
-    <button type="submit" id="btn">Set new password</button>
-  </form>
-  <div class="msg" id="msg"></div>
-  <span class="badge">Powered by FastAuth</span>
-</div>
-<script>
-(function() {
-  var TOKEN = "{token}";
-  var form  = document.getElementById("f");
-  var msg   = document.getElementById("msg");
-  var btn   = document.getElementById("btn");
-  form.addEventListener("submit", async function(e) {
-    e.preventDefault();
-    msg.style.display = "none";
-    var pw  = document.getElementById("pw").value;
-    var pw2 = document.getElementById("pw2").value;
-    if (pw !== pw2) { show("Passwords do not match.", "err"); return; }
-    btn.disabled = true; btn.textContent = "Resetting…";
-    try {
-      var r = await fetch(window.location.pathname, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({token: TOKEN, new_password: pw})
-      });
-      var data = await r.json();
-      if (r.ok) {
-        form.style.display = "none";
-        show(data.message || "Password reset! You can now log in.", "ok");
-      } else {
-        show(data.detail || "Reset failed. The link may have expired.", "err");
-        btn.disabled = false; btn.textContent = "Set new password";
-      }
-    } catch(ex) {
-      show("Network error. Please try again.", "err");
-      btn.disabled = false; btn.textContent = "Set new password";
-    }
-  });
-  function show(text, cls) {
-    msg.textContent = text;
-    msg.className = "msg " + cls;
-    msg.style.display = "block";
-  }
-})();
-</script>
-</body></html>"""
-
-_HTML_RESET_LINK_INVALID = """<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Invalid Reset Link</title>
-<style>
-  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e2e8f0;
-         display: flex; align-items: center; justify-content: center;
-         min-height: 100vh; margin: 0 }
-  .card { text-align: center; background: #0f1525;
-          border: 1px solid rgba(255,255,255,.08); border-radius: 16px;
-          padding: 3rem 2.5rem; max-width: 420px; width: 90% }
-  h1 { font-size: 1.6rem; font-weight: 800; color: #f87171; margin: .5rem 0 }
-  p { color: #94a3b8; font-size: .95rem; line-height: 1.6 }
-  .badge { display: inline-block; margin-top: 1.2rem; padding: .4rem 1rem;
-           background: rgba(248,113,113,.12); color: #f87171; border-radius: 99px;
-           font-size: .8rem; font-weight: 600 }
-</style>
-</head>
-<body>
-<div class="card">
-  <div style="font-size:3.5rem;margin-bottom:.8rem">&#128274;</div>
-  <h1>Invalid Reset Link</h1>
-  <p>This password reset link is missing or malformed.<br>
-     Please request a new one from the login page.</p>
-  <span class="badge">Powered by FastAuth</span>
-</div>
-</body></html>"""
-
+# ── URL helpers ───────────────────────────────────────────────────────────────
 
 def _build_verify_url(settings: FastAuthSettings, token: str) -> str:
-    """Build the email verification URL based on verify_type."""
-    if settings.verify_type == "frontend" and settings.frontend_url:
-        base = settings.frontend_url.rstrip("/")
-    else:
-        base = settings.base_url.rstrip("/")
-    return f"{base}/auth/verify-email?token={token}"
+    """Return the full email verification link.
+
+    Uses verify_email_url if set; otherwise falls back to the backend
+    GET /auth/verify-email endpoint which verifies the token inline and
+    returns JSON — useful during development without a frontend.
+    """
+    base = (settings.verify_email_url or f"{settings.base_url.rstrip('/')}/auth/verify-email").rstrip("/")
+    return f"{base}?token={token}"
 
 
-def _build_reset_url(settings: FastAuthSettings, token: str) -> str:
-    """Build the password reset URL.
+def _build_reset_url(settings: FastAuthSettings, token: str) -> Optional[str]:
+    """Return the full password-reset link, or None if no URL is configured.
 
-    Priority:
-    1. reset_password_url (explicit custom URL, e.g. SPA reset page)
-    2. frontend_url + /reset-password  (when verify_type='frontend')
-    3. base_url + /auth/reset-password/confirm  (backend default — GET shows HTML form)
+    When None is returned the caller should send a dev-mode email that
+    shows the raw token so the developer can test via Swagger / curl.
     """
     if settings.reset_password_url:
         return f"{settings.reset_password_url.rstrip('/')}?token={token}"
-    if settings.verify_type == "frontend" and settings.frontend_url:
-        return f"{settings.frontend_url.rstrip('/')}/reset-password?token={token}"
-    return f"{settings.base_url.rstrip('/')}/auth/reset-password/confirm?token={token}"
+    return None
 
+
+# ── Router builder ────────────────────────────────────────────────────────────
 
 def build_router(
     user_manager: UserManager,
@@ -235,12 +66,6 @@ def build_router(
     oauth_providers: Optional[Dict[str, Any]] = None,
     extra_kwargs_factory: Optional[Callable[..., Dict[str, Any]]] = None,
 ) -> APIRouter:
-    """
-    Build and return the FastAuth APIRouter.
-
-    verify_type='backend'  → GET /auth/verify-email verifies token & shows HTML
-    verify_type='frontend' → GET /auth/verify-email redirects to frontend_url
-    """
 
     router = APIRouter(prefix=settings.router_prefix, tags=settings.router_tags)
 
@@ -252,7 +77,7 @@ def build_router(
         async def get_extra() -> Dict[str, Any]:  # type: ignore[misc]
             return {}
 
-    # ── get current user ──────────────────────────────────────────────────────
+    # ── Current user ──────────────────────────────────────────────────────────
     async def get_current_user(
         token: Optional[str] = Depends(_get_token),
         extra: Dict[str, Any] = Depends(get_extra),
@@ -352,27 +177,21 @@ def build_router(
         _set_cookies(response, settings, access, new_refresh)
         return _token_response(settings, access, new_refresh)
 
-    # ── GET /verify-email  (backend: verify directly; frontend: redirect) ─────
-    @router.get("/verify-email")
+    # ── GET /verify-email ─────────────────────────────────────────────────────
+    # Verifies the token and returns JSON.
+    # When verify_email_url is not set, email links point here directly —
+    # the user clicks and sees {"message": "Email verified successfully"}.
+    # When verify_email_url is set (e.g. a frontend page), this endpoint is
+    # called programmatically by the frontend after reading ?token= from the URL.
+    @router.get("/verify-email", response_model=MessageSchema)
     async def verify_email_get(
         token: str,
         extra: Dict[str, Any] = Depends(get_extra),
     ) -> Any:
-        if settings.verify_type == "frontend" and settings.frontend_url:
-            # Redirect to the frontend page; frontend calls POST /auth/verify-email
-            url = _build_verify_url(settings, token)
-            return RedirectResponse(url=url, status_code=302)
-        else:
-            # Backend mode: verify the token directly and show a nice HTML page
-            try:
-                await user_manager.verify_email_token(token, **extra)
-                return HTMLResponse(content=_HTML_VERIFIED, status_code=200)
-            except Exception as exc:
-                detail = getattr(exc, "detail", "Invalid or expired token")
-                html = _HTML_VERIFY_ERROR.replace("{detail}", str(detail))
-                return HTMLResponse(content=html, status_code=400)
+        await user_manager.verify_email_token(token, **extra)
+        return MessageSchema(message="Email verified successfully")
 
-    # ── POST /verify-email (programmatic — for frontend) ─────────────────────
+    # ── POST /verify-email ────────────────────────────────────────────────────
     @router.post("/verify-email", response_model=MessageSchema)
     async def verify_email_post(
         body: EmailVerifySchema,
@@ -382,7 +201,8 @@ def build_router(
         return MessageSchema(message="Email verified successfully")
 
     # ── POST /resend-verification ─────────────────────────────────────────────
-    # Accepts EITHER a Bearer token (authenticated user) OR {"email": "..."} body.
+    # Accepts a Bearer token (logged-in user) OR {"email": "..."} body.
+    # Useful when email_verification_required=True and the user cannot log in.
     # Always returns a generic message to prevent user enumeration.
     @router.post("/resend-verification", response_model=MessageSchema)
     async def resend_verification(
@@ -412,7 +232,9 @@ def build_router(
                 to=user_manager.get_email(user),
                 verify_url=verify_url,
             )
-        return MessageSchema(message="If that account exists and is unverified, a verification email has been sent")
+        return MessageSchema(
+            message="If that account exists and is unverified, a verification email has been sent"
+        )
 
     # ── POST /reset-password ──────────────────────────────────────────────────
     @router.post("/reset-password", response_model=MessageSchema)
@@ -423,19 +245,15 @@ def build_router(
         token = await user_manager.create_reset_token(body.email, **extra)
         if token and email_sender:
             reset_url = _build_reset_url(settings, token)
-            await email_sender.send_reset(
-                to=body.email,
-                reset_url=reset_url,
-            )
+            if reset_url:
+                await email_sender.send_reset(to=body.email, reset_url=reset_url)
+            else:
+                # Dev mode: no reset_password_url configured.
+                # Send the raw token so the developer can test via Swagger / curl.
+                await email_sender.send_reset_dev(
+                    to=body.email, token=token, base_url=settings.base_url
+                )
         return MessageSchema(message="If that email exists, a reset link has been sent")
-
-    # ── GET /reset-password/confirm  (user clicks link from email) ────────────
-    @router.get("/reset-password/confirm", response_class=HTMLResponse)
-    async def reset_password_form(token: Optional[str] = None) -> Any:
-        if not token:
-            return HTMLResponse(content=_HTML_RESET_LINK_INVALID, status_code=400)
-        html = _HTML_RESET_FORM.replace("{token}", token)
-        return HTMLResponse(content=html, status_code=200)
 
     # ── POST /reset-password/confirm ──────────────────────────────────────────
     @router.post("/reset-password/confirm", response_model=MessageSchema)
@@ -506,18 +324,22 @@ def _register_oauth_routes(
         user_info = await provider.get_user_info(access_token)
 
         email = user_info.get("email")
-        username = user_info.get("username") or (email.split("@")[0] if email else f"{name}_user")
+        username = (
+            user_info.get("username")
+            or (email.split("@")[0] if email else f"{name}_user")
+        )
 
         user = await user_manager.get_by_email(email, **extra) if email else None
         if user is None:
-            from fastauth.utils.helpers import generate_token
             import re
+            from fastauth.utils.helpers import generate_token
+
             safe_username = re.sub(r"[^a-zA-Z0-9_-]", "_", username)[:30]
-            base = safe_username
+            base_name = safe_username
             counter = 0
             while await user_manager.get_by_username(safe_username, **extra):
                 counter += 1
-                safe_username = f"{base}{counter}"
+                safe_username = f"{base_name}{counter}"
 
             user = await user_manager._db.create(
                 {
