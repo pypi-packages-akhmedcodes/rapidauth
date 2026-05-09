@@ -19,6 +19,7 @@ from fastauth.schemas.auth import (
     PasswordResetRequestSchema,
     RefreshSchema,
     RegisterSchema,
+    ResendVerificationSchema,
     TokenSchema,
 )
 
@@ -84,6 +85,124 @@ _HTML_VERIFY_ERROR = """<!DOCTYPE html>
 </body></html>"""
 
 
+_HTML_RESET_FORM = """<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset Password</title>
+<style>
+  * { box-sizing: border-box }
+  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e2e8f0;
+         display: flex; align-items: center; justify-content: center;
+         min-height: 100vh; margin: 0 }
+  .card { background: #0f1525; border: 1px solid rgba(255,255,255,.08);
+          border-radius: 16px; padding: 3rem 2.5rem; max-width: 420px; width: 90% }
+  h1 { font-size: 1.6rem; font-weight: 800; color: #60a5fa; margin: 0 0 .4rem }
+  .sub { color: #94a3b8; font-size: .9rem; margin: .2rem 0 1.6rem }
+  label { display: block; font-size: .82rem; color: #94a3b8;
+          margin-bottom: .35rem; font-weight: 500 }
+  input[type=password] { width: 100%; background: #0a0e1a;
+    border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
+    padding: .65rem .9rem; color: #e2e8f0; font-size: .95rem;
+    margin-bottom: 1rem; outline: none; transition: border-color .2s }
+  input[type=password]:focus { border-color: #60a5fa }
+  button { width: 100%; background: #3b82f6; color: #fff; border: none;
+    border-radius: 8px; padding: .75rem; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: background .2s }
+  button:hover { background: #2563eb }
+  button:disabled { background: #1e3a5f; cursor: not-allowed }
+  .msg { margin-top: 1rem; padding: .75rem 1rem; border-radius: 8px;
+         font-size: .88rem; text-align: center; display: none }
+  .ok  { background: rgba(52,211,153,.12); color: #34d399 }
+  .err { background: rgba(248,113,113,.12); color: #f87171 }
+  .badge { display: block; text-align: center; margin-top: 1.4rem;
+           padding: .4rem 1rem; background: rgba(96,165,250,.1); color: #60a5fa;
+           border-radius: 99px; font-size: .78rem; font-weight: 600 }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Reset Password</h1>
+  <p class="sub">Enter your new password below.</p>
+  <form id="f">
+    <label>New password</label>
+    <input type="password" id="pw" placeholder="At least 8 characters" required minlength="8">
+    <label>Confirm password</label>
+    <input type="password" id="pw2" placeholder="Repeat password" required minlength="8">
+    <button type="submit" id="btn">Set new password</button>
+  </form>
+  <div class="msg" id="msg"></div>
+  <span class="badge">Powered by FastAuth</span>
+</div>
+<script>
+(function() {
+  var TOKEN = "{token}";
+  var form  = document.getElementById("f");
+  var msg   = document.getElementById("msg");
+  var btn   = document.getElementById("btn");
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    msg.style.display = "none";
+    var pw  = document.getElementById("pw").value;
+    var pw2 = document.getElementById("pw2").value;
+    if (pw !== pw2) { show("Passwords do not match.", "err"); return; }
+    btn.disabled = true; btn.textContent = "Resetting…";
+    try {
+      var r = await fetch(window.location.pathname, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({token: TOKEN, new_password: pw})
+      });
+      var data = await r.json();
+      if (r.ok) {
+        form.style.display = "none";
+        show(data.message || "Password reset! You can now log in.", "ok");
+      } else {
+        show(data.detail || "Reset failed. The link may have expired.", "err");
+        btn.disabled = false; btn.textContent = "Set new password";
+      }
+    } catch(ex) {
+      show("Network error. Please try again.", "err");
+      btn.disabled = false; btn.textContent = "Set new password";
+    }
+  });
+  function show(text, cls) {
+    msg.textContent = text;
+    msg.className = "msg " + cls;
+    msg.style.display = "block";
+  }
+})();
+</script>
+</body></html>"""
+
+_HTML_RESET_LINK_INVALID = """<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invalid Reset Link</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e2e8f0;
+         display: flex; align-items: center; justify-content: center;
+         min-height: 100vh; margin: 0 }
+  .card { text-align: center; background: #0f1525;
+          border: 1px solid rgba(255,255,255,.08); border-radius: 16px;
+          padding: 3rem 2.5rem; max-width: 420px; width: 90% }
+  h1 { font-size: 1.6rem; font-weight: 800; color: #f87171; margin: .5rem 0 }
+  p { color: #94a3b8; font-size: .95rem; line-height: 1.6 }
+  .badge { display: inline-block; margin-top: 1.2rem; padding: .4rem 1rem;
+           background: rgba(248,113,113,.12); color: #f87171; border-radius: 99px;
+           font-size: .8rem; font-weight: 600 }
+</style>
+</head>
+<body>
+<div class="card">
+  <div style="font-size:3.5rem;margin-bottom:.8rem">&#128274;</div>
+  <h1>Invalid Reset Link</h1>
+  <p>This password reset link is missing or malformed.<br>
+     Please request a new one from the login page.</p>
+  <span class="badge">Powered by FastAuth</span>
+</div>
+</body></html>"""
+
+
 def _build_verify_url(settings: FastAuthSettings, token: str) -> str:
     """Build the email verification URL based on verify_type."""
     if settings.verify_type == "frontend" and settings.frontend_url:
@@ -94,14 +213,18 @@ def _build_verify_url(settings: FastAuthSettings, token: str) -> str:
 
 
 def _build_reset_url(settings: FastAuthSettings, token: str) -> str:
-    """Build the password reset URL based on verify_type."""
+    """Build the password reset URL.
+
+    Priority:
+    1. reset_password_url (explicit custom URL, e.g. SPA reset page)
+    2. frontend_url + /reset-password  (when verify_type='frontend')
+    3. base_url + /auth/reset-password/confirm  (backend default — GET shows HTML form)
+    """
+    if settings.reset_password_url:
+        return f"{settings.reset_password_url.rstrip('/')}?token={token}"
     if settings.verify_type == "frontend" and settings.frontend_url:
-        base = settings.frontend_url.rstrip("/")
-        # frontend typically has its own reset page path
-        return f"{base}/auth/reset-password?token={token}"
-    else:
-        base = settings.base_url.rstrip("/")
-        return f"{base}/auth/reset-password/confirm?token={token}"
+        return f"{settings.frontend_url.rstrip('/')}/reset-password?token={token}"
+    return f"{settings.base_url.rstrip('/')}/auth/reset-password/confirm?token={token}"
 
 
 def build_router(
@@ -259,22 +382,37 @@ def build_router(
         return MessageSchema(message="Email verified successfully")
 
     # ── POST /resend-verification ─────────────────────────────────────────────
+    # Accepts EITHER a Bearer token (authenticated user) OR {"email": "..."} body.
+    # Always returns a generic message to prevent user enumeration.
     @router.post("/resend-verification", response_model=MessageSchema)
     async def resend_verification(
-        user: Any = Depends(get_current_user),
+        body: Optional[ResendVerificationSchema] = None,
+        token: Optional[str] = Depends(_get_token),
+        extra: Dict[str, Any] = Depends(get_extra),
     ) -> Any:
         if not email_sender:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Email service not configured",
             )
-        vtoken = await user_manager.create_verification_token(user)
-        verify_url = _build_verify_url(settings, vtoken)
-        await email_sender.send_verification(
-            to=user_manager.get_email(user),
-            verify_url=verify_url,
-        )
-        return MessageSchema(message="Verification email sent")
+        user = None
+        if token:
+            try:
+                payload = user_manager._jwt.decode_access(token)
+                user = await user_manager.get_by_id(payload["sub"], **extra)
+            except Exception:
+                pass
+        elif body and body.email:
+            user = await user_manager.get_by_email(body.email, **extra)
+
+        if user and not user_manager.is_verified(user):
+            vtoken = await user_manager.create_verification_token(user)
+            verify_url = _build_verify_url(settings, vtoken)
+            await email_sender.send_verification(
+                to=user_manager.get_email(user),
+                verify_url=verify_url,
+            )
+        return MessageSchema(message="If that account exists and is unverified, a verification email has been sent")
 
     # ── POST /reset-password ──────────────────────────────────────────────────
     @router.post("/reset-password", response_model=MessageSchema)
@@ -290,6 +428,14 @@ def build_router(
                 reset_url=reset_url,
             )
         return MessageSchema(message="If that email exists, a reset link has been sent")
+
+    # ── GET /reset-password/confirm  (user clicks link from email) ────────────
+    @router.get("/reset-password/confirm", response_class=HTMLResponse)
+    async def reset_password_form(token: Optional[str] = None) -> Any:
+        if not token:
+            return HTMLResponse(content=_HTML_RESET_LINK_INVALID, status_code=400)
+        html = _HTML_RESET_FORM.replace("{token}", token)
+        return HTMLResponse(content=html, status_code=200)
 
     # ── POST /reset-password/confirm ──────────────────────────────────────────
     @router.post("/reset-password/confirm", response_model=MessageSchema)

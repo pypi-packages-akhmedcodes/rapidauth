@@ -88,6 +88,9 @@ class FastAuthSettings(BaseModel):
     base_url: str = "http://localhost:8000"
     frontend_url: Optional[str] = None
     verify_type: Literal["backend", "frontend"] = "backend"
+    # Custom URL for password-reset emails.  Token appended as ?token=<token>.
+    # If None, defaults to {base_url}/auth/reset-password/confirm?token=<token>.
+    reset_password_url: Optional[str] = None
 
     # ── Router ───────────────────────────────────────────────────────────────
     router_prefix: str = "/auth"

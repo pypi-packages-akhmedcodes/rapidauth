@@ -84,13 +84,17 @@ class FastAuth:
         # ── Database (for SQLAlchemy) ─────────────────────────────────────────
         get_db: Optional[Callable] = None,
         # ── URL config ────────────────────────────────────────────────────────
-        # base_url    : URL of this backend API (for backend verify links)
-        # frontend_url: URL of your SPA/frontend (for frontend verify links)
-        # verify_type : 'backend' → GET /auth/verify-email verifies directly
-        #               'frontend' → GET /auth/verify-email redirects to frontend
+        # base_url          : URL of this backend API (for backend verify links)
+        # frontend_url      : URL of your SPA/frontend (for frontend verify links)
+        # verify_type       : 'backend' → GET /auth/verify-email verifies directly
+        #                     'frontend' → GET /auth/verify-email redirects to frontend
+        # reset_password_url: Full URL for password-reset emails. Token appended as
+        #                     ?token=<token>. Example: "https://domain.uz/reset-password"
+        #                     If omitted, defaults to {base_url}/auth/reset-password/confirm
         base_url: str = "http://localhost:8000",
         frontend_url: Optional[str] = None,
         verify_type: str = "backend",
+        reset_password_url: Optional[str] = None,
         # ── Custom token store (e.g., Redis) ──────────────────────────────────
         token_store: Optional[Any] = None,
     ) -> None:
@@ -127,6 +131,7 @@ class FastAuth:
             base_url=base_url,
             frontend_url=frontend_url,
             verify_type=verify_type,
+            reset_password_url=reset_password_url,
             router_prefix=router_prefix,
             router_tags=router_tags or ["Authentication"],
         )

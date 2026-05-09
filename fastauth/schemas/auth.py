@@ -70,6 +70,10 @@ class EmailVerifySchema(BaseModel):
     token: str
 
 
+class ResendVerificationSchema(BaseModel):
+    email: EmailStr
+
+
 class ChangePasswordSchema(BaseModel):
     old_password: str
     new_password: str
