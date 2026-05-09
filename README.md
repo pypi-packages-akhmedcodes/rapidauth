@@ -94,18 +94,23 @@ async def profile(user=Depends(auth.get_current_user())):
 
 **Auto-registered endpoints:**
 
-| Endpoint | Method | Auth |
-|---|---|---|
-| `/auth/register` | POST | — |
-| `/auth/login` | POST | — |
-| `/auth/me` | GET | Bearer |
-| `/auth/refresh` | POST | Refresh token |
-| `/auth/logout` | POST | Bearer |
-| `/auth/change-password` | POST | Bearer |
-| `/auth/reset-password` | POST | — |
-| `/auth/reset-password/confirm` | POST | — |
-| `/auth/verify-email` | POST | — |
-| `/auth/revoke-all` | POST | Bearer |
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/auth/register` | — | Create account, return token pair |
+| POST | `/auth/login` | — | Login with username or email + password |
+| GET | `/auth/me` | Bearer | Return current authenticated user |
+| POST | `/auth/refresh` | Refresh token | Issue new token pair, rotate old refresh |
+| POST | `/auth/logout` | Bearer | Blacklist current access token |
+| POST | `/auth/change-password` | Bearer | Change password (requires old password) |
+| POST | `/auth/reset-password` | — | Request password reset email |
+| **GET** | **`/auth/reset-password/confirm`** | — | **Show HTML reset form** (user clicks email link) |
+| POST | `/auth/reset-password/confirm` | — | Submit token + new password |
+| GET | `/auth/verify-email` | — | backend: verify + HTML page · frontend: 302 redirect |
+| POST | `/auth/verify-email` | — | Programmatic verify (frontend calls after redirect) |
+| POST | `/auth/resend-verification` | Bearer **or email body** | Re-send verification email |
+| POST | `/auth/revoke-all` | Bearer | Revoke all refresh tokens for this user |
+| GET | `/auth/{provider}/login` | — | Redirect to OAuth2 provider |
+| GET | `/auth/{provider}/callback` | — | Handle OAuth2 callback, return token pair |
 
 ---
 
@@ -197,8 +202,14 @@ auth = FastAuth(
         },
     },
 
-    # Base URL for email links
-    base_url="https://myapp.com",
+    # URLs
+    base_url="https://api.myapp.com",      # backend URL for email links
+    frontend_url="https://myapp.com",       # SPA URL (used with verify_type='frontend')
+    verify_type="frontend",                 # 'backend' | 'frontend'
+
+    # Custom URL for password-reset emails — token appended as ?token=TOKEN
+    # If not set, defaults to {base_url}/auth/reset-password/confirm?token=TOKEN
+    reset_password_url="https://myapp.com/reset-password",
 
     # Require email verification before login
     email_verification_required=True,
@@ -309,12 +320,71 @@ async def home(request: Request):
 Without email config the endpoints still work, but **no email is sent**.  
 To enable real delivery, pass the `email` dict, set `base_url` / `frontend_url`, and choose `verify_type`.
 
+### Password Reset Flow
+
+```
+1. POST /auth/reset-password   {"email": "user@example.com"}
+   → FastAuth creates a token (1-hour expiry), sends reset email
+   → Always returns 200 (no email enumeration)
+
+2a. Backend mode  (reset_password_url not set)
+    Email link: GET {base_url}/auth/reset-password/confirm?token=TOKEN
+    → FastAuth shows a styled HTML form for entering a new password
+    → User submits form → POST /auth/reset-password/confirm   (via JavaScript fetch)
+
+2b. Frontend mode  (reset_password_url set)
+    Email link: GET {reset_password_url}?token=TOKEN
+    → Your SPA reads ?token= from URL
+    → SPA calls POST /auth/reset-password/confirm {"token":"...","new_password":"..."}
+
+3. POST /auth/reset-password/confirm  {"token": "...", "new_password": "NewPass1!"}
+   → Token verified, password updated, token invalidated
+```
+
+### Email Verification Flow
+
+```
+1. POST /auth/register
+   → Account created, verification email sent (if email_verification_required=True)
+   → Token expires in 24 hours
+
+2. User clicks link in email
+   → verify_type='backend': GET /auth/verify-email?token=TOKEN
+        FastAuth verifies token and shows HTML "Email Verified!" page
+   → verify_type='frontend': email link goes to {frontend_url}/...
+        Your SPA reads token, calls POST /auth/verify-email {"token":"..."}
+
+3. Re-send verification:
+   POST /auth/resend-verification
+   → With Bearer token:  {"Authorization": "Bearer <access_token>"}
+   → Without token:      {"email": "user@example.com"}   (no auth required)
+   → Always returns generic message (prevents enumeration)
+```
+
 ### `verify_type` — backend vs frontend
 
 | `verify_type` | Email link points to | `GET /auth/verify-email?token=…` |
 |---|---|---|
 | `'backend'` (default) | `{base_url}/auth/verify-email?token=…` | Verifies token, shows **HTML success page** |
-| `'frontend'` | `{frontend_url}/auth/verify-email?token=…` | **Redirects** to frontend; frontend calls `POST /auth/verify-email` |
+| `'frontend'` | `{frontend_url}/auth/verify-email?token=…` | **302 redirect** to frontend; frontend calls `POST /auth/verify-email` |
+
+### `reset_password_url` — custom reset link
+
+```python
+# Backend mode (default) — email link → GET /auth/reset-password/confirm?token=TOKEN
+# FastAuth shows an HTML form, user enters new password, form POSTs via JavaScript
+auth = FastAuth(
+    ...
+    base_url="http://localhost:8000",
+)
+
+# Frontend / SPA mode — email link → your custom reset page
+auth = FastAuth(
+    ...
+    reset_password_url="https://myapp.com/reset-password",
+    # Email link becomes: https://myapp.com/reset-password?token=TOKEN
+)
+```
 
 ### Backend mode (default) — full stack or API-only
 
@@ -329,11 +399,15 @@ auth = FastAuth(
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
     },
-    base_url="http://localhost:8000",          # backend URL (verify link points here)
+    base_url="http://localhost:8000",
     verify_type="backend",                     # default
     email_verification_required=True,
 )
-# Email link → GET http://localhost:8000/auth/verify-email?token=...
+# Reset email link → GET http://localhost:8000/auth/reset-password/confirm?token=...
+# → FastAuth shows HTML form, user enters new password
+# → form submits via JavaScript → POST /auth/reset-password/confirm
+
+# Verify email link → GET http://localhost:8000/auth/verify-email?token=...
 # → FastAuth verifies token, shows HTML "Email Verified!" page
 ```
 
@@ -351,44 +425,31 @@ auth = FastAuth(
         "from_email": "you@gmail.com",
     },
     base_url="https://api.domain.uz",          # your backend
-    frontend_url="https://domain.uz",          # your SPA
+    frontend_url="https://domain.uz",          # your SPA (for verify links)
     verify_type="frontend",
+    reset_password_url="https://domain.uz/reset-password",  # SPA reset page
     email_verification_required=True,
 )
-# Email link → GET https://domain.uz/auth/verify-email?token=...
-# → your frontend reads ?token= from URL
-# → calls POST https://api.domain.uz/auth/verify-email  {"token": "..."}
+# Verify email link  → GET https://domain.uz/auth/verify-email?token=...
+# Reset email link   → GET https://domain.uz/reset-password?token=...
 ```
 
 ### Frontend flow (what your SPA does)
 
 ```javascript
-// 1. User lands on /auth/verify-email?token=...
+// Email verification — user lands on /verify-email?token=...
 const token = new URLSearchParams(window.location.search).get("token");
-
-// 2. Call backend to verify
-const res = await fetch("/auth/verify-email", {
+const res = await fetch("https://api.domain.uz/auth/verify-email", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
 });
-
-// 3. Show result
 const data = await res.json();
-console.log(data.message);  // "Email verified successfully"
-```
+// data.message === "Email verified successfully"
 
-### Password reset — frontend mode
-
-For password reset in frontend mode, the link points to:  
-`{frontend_url}/auth/reset-password?token=...`
-
-```javascript
-// 1. User lands on /auth/reset-password?token=...
+// Password reset — user lands on /reset-password?token=...
 const token = new URLSearchParams(window.location.search).get("token");
-
-// 2. User enters new password, call backend
-await fetch("/auth/reset-password/confirm", {
+await fetch("https://api.domain.uz/auth/reset-password/confirm", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, new_password: "NewPass123!" }),
@@ -416,33 +477,7 @@ await fetch("/auth/reset-password/confirm", {
 | Mailgun | `smtp.mailgun.org` | 587 | SMTP credentials from dashboard |
 | SendGrid | `smtp.sendgrid.net` | 587 | username=`apikey`, password=API key |
 | Amazon SES | `email-smtp.<region>.amazonaws.com` | 587 | SMTP credentials from AWS Console |
-| Custom VPS | your server hostname | 25 / 587 / 465 | — |
-
-### Full password reset flow
-
-```
-1. User calls  POST /auth/reset-password       {"email": "user@example.com"}
-   → FastAuth creates a one-time token (expires in 1 hour)
-   → Sends an email with link: https://myapp.com/auth/reset-password/confirm?token=<token>
-   → Always returns 200 (no email enumeration)
-
-2. User clicks the link, your frontend reads the token from URL
-   → Calls  POST /auth/reset-password/confirm  {"token": "...", "new_password": "NewPass1!"}
-   → FastAuth verifies token, updates password, token is invalidated
-```
-
-### Email verification flow
-
-```
-1. User registers → FastAuth sends verification email (if email_verification_required=True)
-   → Link: https://myapp.com/auth/verify-email?token=<token>
-   → Token expires in 24 hours
-
-2. User clicks link → POST /auth/verify-email  {"token": "..."}
-   → Email marked as verified, login now allowed
-
-3. Re-send:  POST /auth/resend-verification  (requires Bearer token)
-```
+| Custom VPS | your server hostname | 25 / 587 / 465 | port 465 → `use_ssl: True` |
 
 ### Testing without real SMTP
 
@@ -470,6 +505,35 @@ Same pattern for `github`, `discord`.
 
 ---
 
+## Configuration Reference
+
+All parameters are optional except `user_model` and `jwt_secret`.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `user_model` | `type` | required | Your ORM User model class |
+| `jwt_secret` | `str` | required | Secret key for signing JWTs (min 16 chars) |
+| `jwt` | `dict` | `None` | `secret`, `algorithm`, `access_expire`, `refresh_expire` |
+| `username_field` | `str` | `"username"` | Field name for username in your model |
+| `email_field` | `str` | `"email"` | Field name for email in your model |
+| `password_field` | `str` | `"password"` | Field name for hashed password |
+| `password_hasher` | `str` | `"bcrypt"` | `"bcrypt"` or `"argon2"` |
+| `refresh_token_mode` | `str` | `"body"` | `"body"` · `"cookie"` · `"both"` |
+| `cookie` | `dict` | `{}` | `httponly`, `secure`, `samesite`, `domain` |
+| `email` | `dict` | `None` | SMTP: `host`, `port`, `username`, `password`, `from_email` |
+| `base_url` | `str` | `"http://localhost:8000"` | Backend URL for email verification links |
+| `frontend_url` | `str` | `None` | SPA URL; used when `verify_type="frontend"` |
+| `verify_type` | `str` | `"backend"` | `"backend"` verify directly · `"frontend"` redirect to SPA |
+| `reset_password_url` | `str` | `None` | Custom URL for reset emails. Token appended as `?token=TOKEN`. If not set, defaults to `{base_url}/auth/reset-password/confirm` where a built-in HTML form is served |
+| `email_verification_required` | `bool` | `False` | Block login until email is verified |
+| `social_auth` | `dict` | `None` | OAuth providers: `google`, `github`, `discord` |
+| `get_db` | `callable` | `None` | FastAPI dependency yielding DB session (SQLAlchemy async or sync) |
+| `router_prefix` | `str` | `"/auth"` | URL prefix for all auth endpoints |
+| `rate_limit` | `dict` | `{}` | `enabled`, `max_login_attempts`, `lockout_seconds` |
+| `token_store` | `any` | `None` | Custom token store (e.g. Redis). Must implement `save/get/delete/revoke_all` |
+
+---
+
 ## Security
 
 | Feature | Details |
@@ -480,7 +544,8 @@ Same pattern for `github`, `discord`.
 | Brute-force protection | Sliding-window rate limiter (5 attempts / 5 min) |
 | Email enumeration | Password reset always returns 200 |
 | Timing attacks | Dummy hash verify on unknown username |
-| Cookie flags | httponly, secure, samesite configurable |
+| Cookie flags | `httponly`, `secure`, `samesite` configurable |
+| Reset form | GET `/auth/reset-password/confirm` serves HTML form, not raw JSON |
 
 ---
 

@@ -295,7 +295,7 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hglow"></div>
-  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.7</div>
+  <div class="hbadge"><i class="fa-solid fa-tag"></i> fastauth-framework 0.2.9</div>
   <h1>Authentication for FastAPI.<br><span class="grad">Done in one line.</span></h1>
   <p class="hsub">
     JWT, OAuth2, bcrypt/argon2, refresh tokens, RBAC, email verification and rate limiting —
@@ -540,7 +540,10 @@ app.include_router(auth.router)</code></pre></div></div>
 
     base_url="https://api.myapp.com",
     frontend_url="https://myapp.com",
-    verify_type="frontend",            # "backend" | "frontend"
+    verify_type="frontend",              # "backend" | "frontend"
+    # Custom URL for password-reset emails — token appended as ?token=TOKEN
+    # If not set, defaults to {base_url}/auth/reset-password/confirm (HTML form on GET)
+    reset_password_url="https://myapp.com/reset-password",
     email_verification_required=True,
 
     social_auth={
@@ -594,11 +597,12 @@ async def dashboard(user = Depends(auth.get_current_user())):
           <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/refresh</td><td>Refresh token</td><td>Issue new token pair, rotate old refresh token</td></tr>
           <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/logout</td><td>Bearer</td><td>Blacklist current access token</td></tr>
           <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/change-password</td><td>Bearer</td><td>Change password (requires old password)</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password</td><td>—</td><td>Request password reset email</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Confirm reset with token + new password</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password</td><td>—</td><td>Request password reset email (always 200, anti-enumeration)</td></tr>
+          <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Show HTML password-reset form (user clicks email link)</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/reset-password/confirm</td><td>—</td><td>Submit token + new password — resets password</td></tr>
           <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>backend: verify + HTML page &nbsp;|&nbsp; frontend: 302 redirect</td></tr>
           <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/verify-email</td><td>—</td><td>Programmatic verify (frontend calls after redirect)</td></tr>
-          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/resend-verification</td><td>Bearer</td><td>Re-send verification email</td></tr>
+          <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/resend-verification</td><td>Bearer <em>or</em> <code>{"email":"..."}</code></td><td>Re-send verification email — no auth needed if email provided</td></tr>
           <tr><td><span class="mth post">POST</span></td><td class="ep">/auth/revoke-all</td><td>Bearer</td><td>Revoke all refresh tokens for this user</td></tr>
           <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/login</td><td>—</td><td>Redirect to OAuth2 provider (google / github / discord)</td></tr>
           <tr><td><span class="mth get">GET</span></td><td class="ep">/auth/{provider}/callback</td><td>—</td><td>Handle OAuth2 callback, return token pair</td></tr>
@@ -633,6 +637,7 @@ async def dashboard(user = Depends(auth.get_current_user())):
       <div class="tr">
         <button class="tab on" onclick="et(this,'e-back')">Backend mode</button>
         <button class="tab" onclick="et(this,'e-front')">Frontend mode</button>
+        <button class="tab" onclick="et(this,'e-reset')">reset_password_url</button>
         <button class="tab" onclick="et(this,'e-js')">Frontend JS</button>
       </div>
       <div id="e-back" class="tp on"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
@@ -649,8 +654,12 @@ async def dashboard(user = Depends(auth.get_current_user())):
     verify_type="backend",             # default
     email_verification_required=True,
 )
-# Email link: GET http://localhost:8000/auth/verify-email?token=...
-# FastAuth verifies token and returns HTML "Email Verified!" page.</code></pre></div></div>
+# Verify email link: GET http://localhost:8000/auth/verify-email?token=...
+#   → FastAuth verifies token and shows HTML "Email Verified!" page
+#
+# Reset password link: GET http://localhost:8000/auth/reset-password/confirm?token=...
+#   → FastAuth shows a built-in HTML form for entering a new password
+#   → Form submits via JavaScript → POST /auth/reset-password/confirm</code></pre></div></div>
 
       <div id="e-front" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python">auth = FastAuth(
     user_model=User,
@@ -663,16 +672,48 @@ async def dashboard(user = Depends(auth.get_current_user())):
         "password":   "xxxx xxxx xxxx xxxx",  # Gmail App Password
         "from_email": "you@gmail.com",
     },
-    base_url="https://api.domain.uz",    # your FastAPI backend
-    frontend_url="https://domain.uz",    # your SPA
+    base_url="https://api.domain.uz",          # your FastAPI backend
+    frontend_url="https://domain.uz",          # your SPA (for verify links)
     verify_type="frontend",
+    reset_password_url="https://domain.uz/reset-password",  # SPA reset page
     email_verification_required=True,
 )
-# Email link: GET https://domain.uz/auth/verify-email?token=...
-# Backend GET /auth/verify-email -> 302 redirect to frontend
-# Frontend reads ?token= and calls POST /auth/verify-email</code></pre></div></div>
+# Verify link: GET https://domain.uz/auth/verify-email?token=...
+#   → SPA reads ?token= → calls POST /auth/verify-email
+#
+# Reset link: GET https://domain.uz/reset-password?token=...
+#   → SPA reads ?token= → user enters password → POST /auth/reset-password/confirm</code></pre></div></div>
 
-      <div id="e-js" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-javascript">// Email verification — user lands on /auth/verify-email?token=...
+      <div id="e-reset" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-python"># reset_password_url controls where the password-reset email link points.
+# Token is always appended as ?token=TOKEN.
+
+# Option 1 — Backend mode (no reset_password_url set)
+auth = FastAuth(
+    user_model=User, jwt_secret="...",
+    base_url="https://api.myapp.com",
+    # Reset email link → GET https://api.myapp.com/auth/reset-password/confirm?token=TOKEN
+    # FastAuth serves a built-in HTML form. User enters new password.
+    # Form submits via JavaScript to POST /auth/reset-password/confirm.
+)
+
+# Option 2 — Custom SPA URL
+auth = FastAuth(
+    user_model=User, jwt_secret="...",
+    base_url="https://api.myapp.com",
+    reset_password_url="https://myapp.com/reset-password",
+    # Reset email link → GET https://myapp.com/reset-password?token=TOKEN
+    # Your SPA reads ?token= and calls POST /api/auth/reset-password/confirm
+)
+
+# Option 3 — Any custom URL (different domain, path, etc.)
+auth = FastAuth(
+    user_model=User, jwt_secret="...",
+    reset_password_url="https://admin.myapp.com/auth/password/reset",
+    # Reset email link → GET https://admin.myapp.com/auth/password/reset?token=TOKEN
+)</code></pre></div></div>
+
+      <div id="e-js" class="tp"><div class="cb"><button class="cpbtn" onclick="cp(this)">copy</button><pre><code class="language-javascript">// ── Email verification ───────────────────────────────────────────────────────
+// User lands on your SPA verify page with ?token=... in the URL
 const token = new URLSearchParams(window.location.search).get("token");
 const res = await fetch("https://api.domain.uz/auth/verify-email", {
     method: "POST",
@@ -682,15 +723,25 @@ const res = await fetch("https://api.domain.uz/auth/verify-email", {
 const data = await res.json();
 // data.message === "Email verified successfully"
 
-// Password reset — user lands on /auth/reset-password?token=...
+// ── Password reset ───────────────────────────────────────────────────────────
+// User lands on your SPA reset page (reset_password_url) with ?token=... in URL
 const token = new URLSearchParams(window.location.search).get("token");
+// User enters new password in your SPA form, then:
 const res = await fetch("https://api.domain.uz/auth/reset-password/confirm", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, new_password: "NewPass123!" }),
 });
 const data = await res.json();
-// data.message === "Password reset successfully"</code></pre></div></div>
+// data.message === "Password reset successfully"
+
+// ── Resend verification (no login required) ──────────────────────────────────
+const res = await fetch("https://api.domain.uz/auth/resend-verification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "user@example.com" }),
+});
+// Always returns 200 with a generic message</code></pre></div></div>
     </div>
 
     <div style="margin-bottom:2rem">
@@ -741,6 +792,8 @@ async def dev_reset_token(email: str):
         <h4><i class="fa-solid fa-key" style="color:var(--yellow)"></i> Password reset flow</h4>
         <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password</div><div class="fnote">Creates token (1h expiry), sends email if configured</div></div></div>
         <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks link in email</div>
+        <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/reset-password/confirm?token=…</div><div class="fnote"><strong>Shows HTML form</strong> if <code>reset_password_url</code> not set — user enters new password directly in browser</div></div></div>
+        <div class="farrow"><i class="fa-solid fa-arrow-down"></i> form submits via JavaScript</div>
         <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/reset-password/confirm</div><div class="fnote"><code>{"token": "...", "new_password": "..."}</code></div></div></div>
         <div style="margin-top:.75rem;font-size:.77rem;color:var(--faint)"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> Always returns 200 even if email not found (anti-enumeration)</div>
       </div>
@@ -749,7 +802,7 @@ async def dev_reset_token(email: str):
         <div class="fstep"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/register</div><div class="fnote">Account created, verification email sent</div></div></div>
         <div class="farrow"><i class="fa-solid fa-arrow-down"></i> user clicks link in email (24h expiry)</div>
         <div class="fstep"><span class="mth get" style="flex-shrink:0">GET</span><div><div class="fep">/auth/verify-email?token=...</div><div class="fnote">backend: verify + HTML &nbsp;|&nbsp; frontend: 302 redirect</div></div></div>
-        <div class="fstep" style="margin-top:.45rem"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/resend-verification</div><div class="fnote">Re-send (requires Bearer token)</div></div></div>
+        <div class="fstep" style="margin-top:.45rem"><span class="mth post" style="flex-shrink:0">POST</span><div><div class="fep">/auth/resend-verification</div><div class="fnote">Re-send — Bearer token <em>or</em> <code>{"email":"..."}</code> in body (no auth required)</div></div></div>
       </div>
     </div>
   </div>
@@ -831,9 +884,10 @@ async def dev_reset_token(email: str):
           <tr><td class="kw">refresh_token_mode</td><td class="tp2">str</td><td class="df">"body"</td><td><code>"body"</code> | <code>"cookie"</code> | <code>"both"</code></td></tr>
           <tr><td class="kw">cookie</td><td class="tp2">dict</td><td class="df">{}</td><td><code>httponly</code>, <code>secure</code>, <code>samesite</code>, <code>domain</code></td></tr>
           <tr><td class="kw">email</td><td class="tp2">dict</td><td class="df">None</td><td>SMTP: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>from_email</code></td></tr>
-          <tr><td class="kw">base_url</td><td class="tp2">str</td><td class="df">"http://localhost:8000"</td><td>Backend URL used for verify/reset links in backend mode</td></tr>
-          <tr><td class="kw">frontend_url</td><td class="tp2">str</td><td class="df">None</td><td>Frontend SPA URL; used when <code>verify_type="frontend"</code></td></tr>
+          <tr><td class="kw">base_url</td><td class="tp2">str</td><td class="df">"http://localhost:8000"</td><td>Backend URL for verify/reset links in backend mode</td></tr>
+          <tr><td class="kw">frontend_url</td><td class="tp2">str</td><td class="df">None</td><td>SPA URL; used when <code>verify_type="frontend"</code> for verify links</td></tr>
           <tr><td class="kw">verify_type</td><td class="tp2">str</td><td class="df">"backend"</td><td><code>"backend"</code> verify directly | <code>"frontend"</code> redirect to SPA</td></tr>
+          <tr><td class="kw">reset_password_url</td><td class="tp2">str</td><td class="df">None</td><td>Custom URL for reset emails. Token appended as <code>?token=TOKEN</code>. If not set, defaults to <code>{base_url}/auth/reset-password/confirm</code> where an HTML form is served on GET.</td></tr>
           <tr><td class="kw">email_verification_required</td><td class="tp2">bool</td><td class="df">False</td><td>Block login until email is verified</td></tr>
           <tr><td class="kw">social_auth</td><td class="tp2">dict</td><td class="df">None</td><td>OAuth providers: <code>google</code>, <code>github</code>, <code>discord</code></td></tr>
           <tr><td class="kw">get_db</td><td class="tp2">callable</td><td class="df">None</td><td>FastAPI dependency yielding DB session (SQLAlchemy async or sync)</td></tr>
@@ -855,7 +909,7 @@ async def dev_reset_token(email: str):
     <a href="https://github.com/pypi-packages-akhmedcodes/fastauth-framework/issues" target="_blank"><i class="fa-solid fa-bug"></i> Issues</a>
     <a href="https://beacons.ai/akhmedcodes" target="_blank"><i class="fa-solid fa-user"></i> akhmedcodes</a>
   </div>
-  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.7</p>
+  <p class="fcopy">Built by <a href="https://beacons.ai/akhmedcodes" target="_blank">akhmedcodes</a> &nbsp;&middot;&nbsp; MIT License &nbsp;&middot;&nbsp; v0.2.9</p>
 </footer>
 
 <button id="top" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
@@ -871,7 +925,7 @@ async def dev_reset_token(email: str):
   });
 
   const QS_IDS = ['t-min','t-tort','t-async','t-sync','t-adv'];
-  const EM_IDS = ['e-back','e-front','e-js'];
+  const EM_IDS = ['e-back','e-front','e-reset','e-js'];
 
   function st(btn, id) { switchTabs(btn, id, QS_IDS); }
   function et(btn, id) { switchTabs(btn, id, EM_IDS); }
